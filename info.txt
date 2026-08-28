@@ -1,0 +1,8 @@
+dataset downloading scripts enviroment setup scripts and commands 
+also all experiments should go under one directory and for each run should go in seperate directory 
+and all resutls should be reproducible
+use IEEE style scincsplot for figure generation 
+and all the results must be visualized with relevant plot and visualization 
+
+
+First build the preleminary codebase 

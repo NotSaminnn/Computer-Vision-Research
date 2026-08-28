@@ -1,0 +1,14 @@
+# Phase 2 benchmark core: adds transmission through planar glass and mixed optics.
+# NOT YET USED by any executed experiment -- see docs/EXPERIMENT_PLAN.md (Phase 2).
+_base: configs/synthetic/phase1.yaml
+
+dataset:
+  name: intervene3d_synth_benchmark_core
+  seed: 20260901
+  num_base_scenes: 192
+
+mechanisms: [direct, emissive, reflection, transmission]
+
+glass:
+  thickness: [0.004, 0.060]
+  refractive_index: [1.40, 1.75]

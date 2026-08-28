@@ -1,0 +1,19 @@
+# Pure analytical optics -- the default preliminary model.
+model:
+  geometry_encoder:
+    name: ground_truth
+  transition:
+    name: analytical
+  belief:
+    beta: 1.0
+    floor: 1.0e-6
+  identifiability:
+    epsilon_px: 1.0
+  abstention:
+    enabled: true
+    tau: 0.8
+  distance:
+    lambda_motion: 1.0
+    lambda_occlusion: 4.0
+    lambda_geometry: 0.0
+    lambda_feature: 0.0

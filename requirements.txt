@@ -1,0 +1,8 @@
+# Intervene3D preliminary codebase -- runtime requirements.
+# Deliberately minimal: the preliminary pipeline is pure NumPy + Matplotlib and
+# runs on CPU.  Deep-learning dependencies are OPTIONAL (see requirements-gpu.txt)
+# and are only needed once a real geometry foundation encoder is plugged in.
+numpy>=1.26
+matplotlib>=3.8
+PyYAML>=6.0
+SciencePlots>=2.1

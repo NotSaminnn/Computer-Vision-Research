@@ -1,0 +1,269 @@
+# External dataset registry.
+#
+# STATUS VOCABULARY (research-integrity rules, plan section 29):
+#   verified            -- the official source page was fetched and the stated
+#                          facts were confirmed on 2026-08-28.
+#   ACCESS UNVERIFIED   -- the paper is real and cited correctly, but the download
+#                          mechanism, licence or terms were NOT confirmed here.
+#   manual              -- a human must accept terms / obtain credentials.  The
+#                          tooling will never attempt an automated download.
+#
+# NOTHING in this file is downloaded automatically.  `scripts/download_datasets.sh`
+# prints instructions and refuses to fetch any dataset whose licence or download
+# permission is not `verified`.  See docs/DATASET_MATRIX.md for the full matrix.
+
+registry_version: "1.0"
+verified_on: "2026-08-28"
+verification_method: "web search + official page fetch; see docs/LITERATURE_CROSS_RESEARCH.md"
+
+datasets:
+
+  layereddepth:
+    title: "LayeredDepth (Seeing and Seeing Through the Glass)"
+    venue: "ICCV 2025"
+    arxiv: "2503.11633"
+    official_repo: "https://github.com/princeton-vl/LayeredDepth"
+    paper_page: "https://openaccess.thecvf.com/content/ICCV2025/html/Wen_Seeing_and_Seeing_Through_the_Glass_Real_and_Synthetic_Data_ICCV_2025_paper.html"
+    status: verified
+    licence: "benchmark data stated as CC0 on the official repository"
+    licence_status: verified
+    automated_download_permitted: unknown      # repo confirmed; exact asset URLs not fetched here
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: false
+    contents: "1,500 real images with multi-layer depth annotations (~14.2M relative-depth tuples); 15,300 synthetic images from a procedural generator (LayeredDepth-Syn, built on Infinigen Indoor)"
+    intervene3d_role: "external test: does the model preserve interface vs behind-glass depth instead of collapsing them?"
+    priority: 5
+    expected_layout: "data/raw/layereddepth/{real,synthetic}/..."
+    instructions: |
+      1. Read the licence and usage terms at https://github.com/princeton-vl/LayeredDepth
+      2. Follow the repository's own download instructions.
+      3. Place the result under data/raw/layereddepth/ and run
+         python scripts/validate_datasets.py --dataset layereddepth
+
+  transphy3d:
+    title: "TransPhy3D (Diffusion Knows Transparency)"
+    venue: "arXiv 2512.23705"
+    arxiv: "2512.23705"
+    official_repo: "https://daniellli.github.io/projects/DKT/"
+    data_page: "https://huggingface.co/datasets/Daniellesry/TransPhy3D"
+    status: verified
+    licence: "not stated on the pages consulted"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "~11,000 Blender/Cycles video sequences (~1.32M frames) of transparent/reflective scenes with RGB, metric depth, normals and camera calibration"
+    intervene3d_role: "pretraining source for the hypothesis-conditioned transition model"
+    priority: 5
+    expected_layout: "data/raw/transphy3d/sequences/..."
+    instructions: |
+      A Hugging Face dataset page exists (Daniellesry/TransPhy3D) but its licence
+      was NOT confirmed.  Read the dataset card, accept any terms, then download
+      with the huggingface-cli and place the result under data/raw/transphy3d/.
+
+  visual_illusion_3d:
+    title: "3D Visual Illusion Depth Estimation"
+    venue: "NeurIPS 2025"
+    arxiv: "2505.13061"
+    official_repo: "https://github.com/YaoChengTang/3D-Visual-Illusion-Depth-Estimation"
+    status: verified
+    licence: "not stated on the pages consulted"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "~3,000 scenes / ~200k images (reported: 178,912 train + 617 test frames) across five illusion categories: inpainting, picture, replay (screens), holography, mirror"
+    intervene3d_role: "external test of apparent-vs-physical geometry; the closest existing analogue of our display and mirror variants"
+    priority: 5
+    expected_layout: "data/raw/visual_illusion_3d/{train,test}/..."
+    instructions: |
+      Follow the download instructions in the official GitHub repository and
+      place the data under data/raw/visual_illusion_3d/.
+
+  mirror3d:
+    title: "Mirror3D: Depth Refinement for Mirror Surfaces"
+    venue: "CVPR 2021"
+    arxiv: "2106.06629"
+    official_repo: "https://github.com/3dlg-hcvc/mirror3d"
+    project_page: "https://3dlg-hcvc.github.io/mirror3d/"
+    status: verified
+    licence: "annotations under the repository's terms; the underlying RGB-D data is governed by Matterport3D / ScanNet / NYUv2 licences"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: true
+    contents: "7,011 mirror instance masks and 3D mirror planes over 5,894 RGB-D frames from 457 scenes, layered on Matterport3D, ScanNet and NYUv2"
+    intervene3d_role: "external test of physical mirror contact depth"
+    priority: 5
+    expected_layout: "data/raw/mirror3d/{annotations,matterport3d,scannet,nyuv2}/..."
+    instructions: |
+      REQUIRES SEPARATE DATA AGREEMENTS.  Mirror3D provides annotations only; the
+      underlying frames come from Matterport3D, ScanNet and NYUv2, each of which
+      requires its own signed terms of use.  Obtain those first, then follow
+      https://github.com/3dlg-hcvc/mirror3d/blob/main/docs/Mirror3D_dataset.md
+
+  clearpose:
+    title: "ClearPose: Large-scale Transparent Object Dataset and Benchmark"
+    venue: "ECCV 2022"
+    arxiv: "2203.03890"
+    official_repo: "https://github.com/opipari/ClearPose"
+    status: verified
+    licence: "not stated on the pages consulted"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "350k+ real RGB-D frames, ~5M instance annotations, 63 transparent household objects, captured with a RealSense L515"
+    intervene3d_role: "external test of contact depth on real transparent objects"
+    priority: 4
+    expected_layout: "data/raw/clearpose/..."
+    instructions: "Follow the download instructions at https://github.com/opipari/ClearPose"
+
+  dreds:
+    title: "DREDS + STD"
+    venue: "ECCV 2022"
+    official_repo: "https://github.com/PKU-EPIC/DREDS"
+    status: verified
+    licence: "CC BY-NC 4.0 (non-commercial) as stated on the official repository"
+    licence_status: verified
+    automated_download_permitted: false     # non-commercial terms; obtain via the official links
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: false
+    contents: "DREDS-CatKnown 100,200 train / 19,380 test; DREDS-CatNovel 11,520; real STD-CatKnown 27,000; STD-CatNovel 11,000"
+    intervene3d_role: "domain randomisation and unseen-material generalisation"
+    priority: 4
+    expected_layout: "data/raw/dreds/{DREDS-CatKnown,DREDS-CatNovel,STD}/..."
+    instructions: "CC BY-NC 4.0. Read the terms, then use the official download links at https://github.com/PKU-EPIC/DREDS"
+
+  booster:
+    title: "Booster: Depth from Images of Specular and Transparent Surfaces"
+    venue: "TPAMI 2023"
+    arxiv: "2301.08245"
+    official_repo: "https://cvlab-unibo.github.io/booster-web/"
+    status: verified
+    licence: "not confirmed; the download page was not reached"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "606 labelled samples from 85 scenes with high-resolution and unbalanced stereo pairs, material segmentation masks, plus ~15k unlabelled samples"
+    intervene3d_role: "independent high-quality external test of contact depth"
+    priority: 4
+    expected_layout: "data/raw/booster/..."
+    instructions: "Registration is typically required. Consult the official Booster page and follow its terms."
+
+  md3k:
+    title: "MultiDepth-3k / MD-3k (One Scene, Two Depths)"
+    venue: "arXiv 2606.29600"
+    arxiv: "2606.29600"
+    official_repo: "unknown"
+    status: ACCESS UNVERIFIED
+    licence: "unknown"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "3,161 RGB images sourced from the GDD dataset with sparse ordinal labels for two ray-wise depth layers"
+    intervene3d_role: "external test: does the hypothesis generator keep multiple valid geometric explanations alive?"
+    priority: 4
+    expected_layout: "data/raw/md3k/..."
+    instructions: "No official release page was confirmed. Contact the authors or wait for a release before relying on this dataset."
+
+  depthfocus_synth:
+    title: "DepthFocus synthetic multilayer stereo dataset"
+    venue: "CVPR 2026"
+    arxiv: "2511.16993"
+    official_repo: "unknown"
+    status: ACCESS UNVERIFIED
+    licence: "unknown"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "~500k synthetic stereo pairs with per-layer depth and disparity, transmissive-object and semantic masks, intrinsics and extrinsics"
+    intervene3d_role: "optional pretraining source for optical layer representations"
+    priority: 3
+    expected_layout: "data/raw/depthfocus/..."
+    instructions: "Release status not confirmed. Do not assume availability."
+
+  magd:
+    title: "MAGD (video mirror and glass segmentation)"
+    venue: "Multimedia Tools and Applications 2024"
+    official_repo: "unknown"
+    status: ACCESS UNVERIFIED
+    licence: "unknown"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "36 indoor videos / 9,960 frames at 30 fps with pixel-level mirror and glass masks"
+    intervene3d_role: "external test: does the inferred mechanism stay stable through real camera motion?"
+    priority: 3
+    expected_layout: "data/raw/magd/..."
+    instructions: "Contact the authors; no public release page was confirmed."
+
+  mvmd:
+    title: "MVMD multi-view mirror detection dataset"
+    venue: "WACV 2025"
+    official_repo: "unknown"
+    status: ACCESS UNVERIFIED
+    licence: "unknown"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "multi-view imagery for mirror detection exploiting viewpoint-dependent reflection changes"
+    intervene3d_role: "the closest existing analogue of viewpoint-intervention evidence for mirrors"
+    priority: 3
+    expected_layout: "data/raw/mvmd/..."
+    instructions: "Consult the WACV 2025 paper for the authors' release link; not confirmed here."
+
+  gift_benchmark:
+    title: "GIFT controlled non-Lambertian depth benchmark"
+    venue: "arXiv 2608.02068"
+    arxiv: "2608.02068"
+    official_repo: "unknown"
+    status: ACCESS UNVERIFIED
+    licence: "unknown"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "controlled benchmark for mirror and transparent-surface depth where appearance changes while geometry is fixed"
+    intervene3d_role: "the most directly comparable external evaluation if released"
+    priority: 5
+    expected_layout: "data/raw/gift_benchmark/..."
+    instructions: |
+      The paper is confirmed (arXiv:2608.02068, GIFT: Geometry-Invariant Fine-Tuning
+      for Non-Lambertian Monocular Depth Estimation).  No public data release was
+      confirmed.  Do not claim access until a release page is verified.
+
+  pdi_dataset:
+    title: "PDI-Dataset (PDI-Bench)"
+    venue: "arXiv 2605.15185"
+    arxiv: "2605.15185"
+    official_repo: "unknown"
+    status: ACCESS UNVERIFIED
+    licence: "unknown"
+    licence_status: ACCESS UNVERIFIED
+    automated_download_permitted: false
+    download_mechanism: manual
+    approx_size_gb: null
+    authentication_required: unknown
+    contents: "geometric-consistency stress tests for video world models: scale-depth consistency, 3D motion consistency, structural rigidity"
+    intervene3d_role: "optional: does the geometry world model predict geometrically coherent futures?"
+    priority: 2
+    expected_layout: "data/raw/pdi_dataset/..."
+    instructions: "Release status not confirmed."

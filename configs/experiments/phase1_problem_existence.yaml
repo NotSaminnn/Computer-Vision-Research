@@ -1,0 +1,109 @@
+# Phase 1 -- does the problem exist?
+#
+# Research question:  can competing physical explanations of appearance-matched
+# geometry be distinguished through controlled observer motion, and does the
+# ordering  single-frame < passive multi-view < intervention-aware  hold?
+#
+# Success criterion (see docs/EXPERIMENT_PLAN.md):
+#   * single-frame CEA is at chance (the variants are pixel-identical at C_0);
+#   * passive multi-view beats single-frame;
+#   * intervention-aware beats passive multi-view;
+#   * FPCR on non-identifiable cases is far lower with abstention than without.
+_base: configs/default.yaml
+
+experiment:
+  name: phase1_problem_existence
+  kind: phase1_problem_existence
+  seed: 42
+
+data:
+  synthetic_config: configs/synthetic/phase1.yaml
+  split: test
+  # Redraw the benchmark for each experiment seed, so the aggregate confidence
+  # intervals measure variation over the data-generating process rather than
+  # model-side noise alone.  Costs ~12 s of generation per seed.
+  reseed_with_experiment_seed: true
+
+model:
+  abstention:
+    # FPCR threshold.  With a three-hypothesis family whose residual ambiguity is
+    # two-way, a forced argmax over an unresolvable pair sits at exactly p = 0.5,
+    # so any tau >= 0.5 would score that case as "not confident" and the metric
+    # would report zero for the wrong reason.  0.45 is set just below the tie so
+    # a forced choice over a genuine tie is counted as false certainty -- which is
+    # precisely what FPCR exists to detect.  metrics.json also records a sweep
+    # over tau in {0.40 ... 0.90} so the choice is never load-bearing.
+    tau: 0.45
+
+# Action executed by the passive multi-view baseline: fixed in advance, chosen
+# without any reference to the hypotheses.  Leave unset to pick a mid-size
+# lateral translation automatically.
+passive_action: null
+classifier_epochs: 600
+
+methods:
+  - name: single_frame_classifier
+    kind: classifier
+    classifier: single_frame
+    description: >-
+      Trained softmax classifier over reference-view features only.  Because the
+      causal variants are pixel-identical at C_0, this is expected to sit at
+      chance -- that expectation IS the test of the benchmark's construction.
+
+  - name: passive_multiview_classifier
+    kind: classifier
+    classifier: passive_multiview
+    description: >-
+      Same classifier plus the response to one fixed, unchosen action.  It can
+      see parallax, so it can separate a display from a real scene, but it cannot
+      choose the action that would reveal a mirror.
+
+  - name: random_intervention
+    kind: engine
+    selector: random
+    description: Hypothesis-conditioned inference, but the action is chosen at random.
+
+  - name: max_baseline_intervention
+    kind: engine
+    selector: max_baseline
+    description: Always takes the largest allowed translation.
+
+  - name: entropy_nbv
+    kind: engine
+    selector: entropy_nbv
+    description: >-
+      Hypothesis-blind next-best-view proxy: takes the action with the largest
+      predicted change under the MAP hypothesis.  Tests whether causal hypothesis
+      conditioning matters, not any particular published NBV method.
+
+  - name: intervene3d_no_hypothesis_conditioning
+    kind: engine
+    selector: max_separability
+    transition: no_hypothesis_conditioning
+    description: Ablation -- the world model forecasts geometry without conditioning on the mechanism.
+
+  - name: intervene3d_no_abstention
+    kind: engine
+    selector: max_separability
+    abstention: false
+    description: Ablation -- forced choice; isolates the effect of abstention on FPCR.
+
+  - name: intervene3d_noisy_encoder
+    kind: engine
+    selector: max_separability
+    encoder:
+      name: mock
+      pixel_noise_std: 0.6
+      depth_noise_rel: 0.02
+    description: >-
+      The non-degenerate condition.  With a noisy encoder the model no longer
+      shares the simulator's exact state, so CEA, AUROC and MCRB error stop being
+      trivially perfect.
+
+  - name: intervene3d
+    kind: engine
+    selector: max_separability
+    description: >-
+      Full preliminary method: analytical hypothesis-conditioned prediction,
+      maximum-separability intervention selection, likelihood belief update and
+      identifiability-driven abstention.

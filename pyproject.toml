@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "intervene3d"
+version = "0.1.0"
+description = "Intervene3D: Interventional Identifiability of Physical Geometry under Optical Ambiguity (preliminary research codebase)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "Abrar Samin" }]
+keywords = ["computer-vision", "identifiability", "active-vision", "optical-ambiguity", "depth"]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "numpy>=1.26",
+  "matplotlib>=3.8",
+  "PyYAML>=6.0",
+  "SciencePlots>=2.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6", "pre-commit>=3.7"]
+gpu = ["torch>=2.3", "torchvision>=0.18"]
+
+[project.scripts]
+intervene3d-experiment = "intervene3d.experiments.runner:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+  "slow: marks tests that take more than a few seconds",
+  "smoke: end-to-end smoke tests",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "W"]
+# E501: long lines are acceptable in docstrings carrying equations and tables.
+# E741: `I` is the identifiability matrix I_A from the specification. Renaming it
+#       to satisfy a linter would make the code harder to check against the maths.
+ignore = ["E501", "E741"]

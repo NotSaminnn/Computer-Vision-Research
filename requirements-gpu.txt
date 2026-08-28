@@ -1,0 +1,6 @@
+# OPTIONAL extras.  Not required by the preliminary pipeline, the smoke test or
+# the Phase 1 experiment.  Install only when integrating a real geometry
+# foundation encoder (Gate 6) or scaling the learned world model (Gate 7).
+-r requirements.txt
+torch>=2.3
+torchvision>=0.18

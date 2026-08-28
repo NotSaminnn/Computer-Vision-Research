@@ -1,0 +1,39 @@
+# The Phase 1 benchmark: direct / static-or-view-tracked display / planar mirror.
+# Deliberately contains cases that NO allowed action can resolve.
+_base: configs/synthetic/smoke.yaml
+
+dataset:
+  name: intervene3d_synth_phase1
+  version: "0.1.0"
+  seed: 20260828
+  num_base_scenes: 96
+
+camera:
+  fx: 320.0
+  fy: 320.0
+  cx: 160.0
+  cy: 120.0
+  width: 320
+  height: 240
+
+scene:
+  num_content_landmarks: 40
+
+action_space:
+  translation_steps: [0.05, 0.10, 0.20, 0.30]
+  rotation_steps_deg: [5.0, 10.0]
+  enabled_kinds: [translate_x, translate_y, translate_z, yaw, pitch]
+  max_translation: 0.35
+  max_rotation_deg: 15.0
+  include_null: true
+  symmetric: true
+
+mcrb:
+  num_baseline_samples: 41
+  max_baseline: 0.35
+
+render:
+  enabled: true
+  width: 160
+  height: 120
+  preview_limit: 6

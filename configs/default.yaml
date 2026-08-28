@@ -1,0 +1,66 @@
+# Intervene3D -- shared experiment defaults.
+# Every experiment config inherits from this file via `_base: configs/default.yaml`
+# and overrides only what it changes.  Nothing here is hard-coded in Python.
+
+experiment:
+  root: experiments          # ALL runs live under this single top-level directory
+  seed: 42
+
+data:
+  split: test                # train | val | test | all
+
+model:
+  # F_t = E(I_t).  ground_truth models a perfect geometry foundation model that is
+  # still fooled by the optical illusion (it reports the APPARENT content depth).
+  geometry_encoder:
+    name: ground_truth       # ground_truth | mock | moge (NOT IMPLEMENTED) | vggt_like (NOT IMPLEMENTED)
+
+  # F_hat_{t+1} = W(F_t, H_k, a)
+  transition:
+    name: analytical         # analytical | hybrid | learned_only | no_hypothesis_conditioning
+
+  # p_{t+1}(H_k) ~ exp(-beta e_k) p_t(H_k)
+  belief:
+    beta: 1.0                # inverse temperature, in 1 / px-equivalent
+    floor: 1.0e-6            # minimum posterior mass per hypothesis (numerical stability)
+
+  # I_A < epsilon  ->  not identifiable under A
+  identifiability:
+    epsilon_px: 1.0          # the perceptual threshold delta, in pixels
+
+  abstention:
+    enabled: true
+    tau: 0.8                 # confidence threshold used by FPCR and by early stopping
+
+  # D = lg*D_geometry + lf*D_feature + lm*D_motion + lo*D_occlusion
+  # Only the motion and occlusion terms are validated in the preliminary codebase.
+  distance:
+    lambda_motion: 1.0       # pixels
+    lambda_occlusion: 4.0    # px-equivalents per landmark whose visibility disagrees
+    lambda_geometry: 0.0     # metres -- UNVALIDATED at this stage, off by default
+    lambda_feature: 0.0      # NOT IMPLEMENTED; a non-zero value is rejected
+
+# Delta C + epsilon -- action-execution noise (generalisation study)
+action_noise:
+  enabled: false
+  translation_std: 0.0       # metres
+  rotation_std_deg: 0.0
+
+# Lateral sweep used for resolving-baseline estimation
+mcrb:
+  num_baseline_samples: 41
+  max_baseline: 0.35
+
+metrics:
+  - causal_explanation_accuracy
+  - contact_depth_error
+  - identifiability_auroc
+  - mcrb_error
+  - fpcr
+  - intervention_regret
+
+visualization:
+  ieee: true
+  formats: [pdf, png]
+  dpi: 400
+  column: single

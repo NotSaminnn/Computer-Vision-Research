@@ -1,0 +1,14 @@
+# Conda environment for the Intervene3D preliminary codebase.
+# CPU-only by design; see docs/REPRODUCIBILITY.md for the GPU path.
+name: intervene3d
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy>=1.26
+  - matplotlib>=3.8
+  - pyyaml>=6.0
+  - pytest>=8.0
+  - pip
+  - pip:
+      - SciencePlots>=2.1

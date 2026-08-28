@@ -1,0 +1,82 @@
+# Tiny synthetic benchmark for the smoke test: seconds to generate, CPU-only.
+dataset:
+  name: intervene3d_synth_smoke
+  version: "0.1.0"
+  seed: 12345
+  num_base_scenes: 12
+
+mechanisms: [direct, emissive, reflection]
+
+camera:
+  fx: 240.0
+  fy: 240.0
+  cx: 120.0
+  cy: 90.0
+  width: 240
+  height: 180
+
+scene:
+  interface_distance: [1.2, 2.5]
+  aperture_half_width_frac: [0.45, 1.15]
+  aperture_aspect: [0.60, 0.95]
+  content_fill: 0.85
+  num_content_landmarks: 24
+  content_depth_near: [0.02, 0.80]
+  content_depth_spread: [0.02, 2.50]
+  interface_tilt_deg: 8.0
+  camera_jitter_translation: 0.30
+  camera_jitter_rotation_deg: 6.0
+
+observer_markers:
+  count: 3
+  # Placed so the observer's virtual image lands near the aperture boundary:
+  # some scenes need a large baseline to reveal it, some cannot be resolved at all.
+  rig_offset_lateral: [-1.8, 1.8]
+  rig_offset_vertical: [-0.8, 0.8]
+  jitter: 0.12
+  forward_offset: [-0.10, 0.02]
+
+display:
+  mode: static
+  view_tracked_probability: 0.25
+
+glass:
+  thickness: [0.004, 0.030]
+  refractive_index: [1.45, 1.60]
+
+action_space:
+  translation_steps: [0.05, 0.15, 0.30]
+  rotation_steps_deg: [8.0]
+  enabled_kinds: [translate_x, translate_y, yaw]
+  max_translation: 0.35
+  max_rotation_deg: 15.0
+  include_null: true
+  symmetric: true
+
+identifiability:
+  epsilon_px: 1.0
+  distance:
+    lambda_motion: 1.0
+    lambda_occlusion: 4.0
+    lambda_geometry: 0.0
+    lambda_feature: 0.0
+
+mcrb:
+  num_baseline_samples: 25
+  max_baseline: 0.35
+
+render:
+  enabled: true
+  width: 120
+  height: 90
+  point_radius_px: 2.0
+  preview_limit: 3
+
+splits:
+  train: 0.5
+  val: 0.1667
+  test: 0.3333
+  policy: base_scene
+
+output:
+  root: data/processed

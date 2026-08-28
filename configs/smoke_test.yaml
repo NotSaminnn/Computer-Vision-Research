@@ -1,0 +1,44 @@
+# The mandatory end-to-end smoke test.
+# Tiny, CPU-only, seconds to run, exercises the complete pipeline.
+_base: configs/default.yaml
+
+experiment:
+  name: smoke_test
+  kind: phase1_problem_existence
+  seed: 0
+
+data:
+  synthetic_config: configs/synthetic/smoke.yaml
+  split: test
+
+classifier_epochs: 200
+
+mcrb:
+  num_baseline_samples: 25
+  max_baseline: 0.35
+
+methods:
+  - name: single_frame_classifier
+    kind: classifier
+    classifier: single_frame
+    description: Reference-view-only control; expected to sit at chance.
+
+  - name: passive_multiview_classifier
+    kind: classifier
+    classifier: passive_multiview
+    description: Reference view plus one fixed, unchosen action.
+
+  - name: intervene3d_no_abstention
+    kind: engine
+    selector: max_separability
+    abstention: false
+    description: Forced-choice ablation.
+
+  - name: intervene3d
+    kind: engine
+    selector: max_separability
+    description: Full preliminary method with identifiability-driven abstention.
+
+visualization:
+  formats: [pdf, png]
+  dpi: 200

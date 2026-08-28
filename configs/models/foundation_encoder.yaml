@@ -1,0 +1,12 @@
+# Real geometry foundation encoder -- NOT IMPLEMENTED.
+#
+# Selecting `moge` or `vggt_like` raises NotImplementedError with installation
+# instructions rather than silently degrading, so no run can claim to have used
+# a foundation encoder it did not use.  See docs/DEVELOPMENT_ROADMAP.md, Gate 6,
+# for the verification checklist (repository, licence, checkpoint, compatibility,
+# GPU memory, inference command) that must be completed first.
+model:
+  geometry_encoder:
+    name: moge      # NOT IMPLEMENTED
+  transition:
+    name: analytical

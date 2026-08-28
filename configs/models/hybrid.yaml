@@ -1,0 +1,22 @@
+# Analytical optics + a small learned residual (Gate 7 placeholder).
+# Requires a trained residual model; see docs/DEVELOPMENT_ROADMAP.md.
+model:
+  geometry_encoder:
+    name: mock
+    pixel_noise_std: 0.6
+    depth_noise_rel: 0.02
+  transition:
+    name: hybrid
+  belief:
+    beta: 1.0
+    floor: 1.0e-6
+  identifiability:
+    epsilon_px: 1.0
+  abstention:
+    enabled: true
+    tau: 0.8
+  distance:
+    lambda_motion: 1.0
+    lambda_occlusion: 4.0
+    lambda_geometry: 0.0
+    lambda_feature: 0.0
