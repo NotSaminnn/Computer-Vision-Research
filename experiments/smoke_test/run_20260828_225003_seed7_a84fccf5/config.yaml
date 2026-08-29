@@ -1,0 +1,67 @@
+action_noise:
+  enabled: false
+  rotation_std_deg: 0.0
+  translation_std: 0.0
+classifier_epochs: 200
+data:
+  dataset_dir: null
+  split: test
+  synthetic_config: configs/synthetic/smoke.yaml
+experiment:
+  kind: phase1_problem_existence
+  name: smoke_test
+  root: experiments
+  seed: 7
+mcrb:
+  max_baseline: 0.35
+  num_baseline_samples: 25
+methods:
+- classifier: single_frame
+  description: Reference-view-only control; expected to sit at chance.
+  kind: classifier
+  name: single_frame_classifier
+- classifier: passive_multiview
+  description: Reference view plus one fixed, unchosen action.
+  kind: classifier
+  name: passive_multiview_classifier
+- abstention: false
+  description: Forced-choice ablation.
+  kind: engine
+  name: intervene3d_no_abstention
+  selector: max_separability
+- description: Full preliminary method with identifiability-driven abstention.
+  kind: engine
+  name: intervene3d
+  selector: max_separability
+metrics:
+- causal_explanation_accuracy
+- contact_depth_error
+- identifiability_auroc
+- mcrb_error
+- fpcr
+- intervention_regret
+model:
+  abstention:
+    enabled: true
+    tau: 0.8
+  belief:
+    beta: 1.0
+    floor: 1.0e-06
+  distance:
+    lambda_feature: 0.0
+    lambda_geometry: 0.0
+    lambda_motion: 1.0
+    lambda_occlusion: 4.0
+  geometry_encoder:
+    name: ground_truth
+  identifiability:
+    epsilon_px: 1.0
+  transition:
+    name: analytical
+visualization:
+  column: single
+  dpi: 200
+  formats:
+  - pdf
+  - png
+  ieee: true

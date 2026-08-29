@@ -1,0 +1,37 @@
+data:
+  dataset: transphy3d
+  max_pairs: 2800
+  max_points: 4096
+  provenance:
+    dataset: transphy3d
+    downloaded_utc: '2026-08-28T23:00:17Z'
+    licence: Apache-2.0, as declared on the Hugging Face dataset card
+    repo_id: Daniellesry/TransPhy3D
+    revision: 3b023eb84592efd3de63d40f7738fb4f9b3768f7
+    root: D:\Computer-Vision-Research\data\raw\transphy3d\test
+    url: https://huggingface.co/datasets/Daniellesry/TransPhy3D
+    variant: test
+  stride: 5
+  variant: test
+  verification:
+    checksum_mismatches: []
+    checksums_recomputed: false
+    licence: Apache-2.0, as declared on the Hugging Face dataset card
+    missing: []
+    n_files: 30
+    revision: 3b023eb84592efd3de63d40f7738fb4f9b3768f7
+    verified: true
+experiment:
+  kind: transition_training
+  name: transition_training
+  seed: 0
+model:
+  amp: true
+  batch_size: 8192
+  depth: 3
+  device: auto
+  epochs: 80
+  hidden_dim: 256
+  kind: torch_residual_mlp
+  learning_rate: 0.001
+  weight_decay: 0.0001

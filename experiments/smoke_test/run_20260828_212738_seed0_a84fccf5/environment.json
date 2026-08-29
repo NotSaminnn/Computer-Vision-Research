@@ -1,0 +1,48 @@
+{
+  "cwd": "D:\\Computer-Vision-Research",
+  "environment_variables": {
+    "CUBLAS_WORKSPACE_CONFIG": "",
+    "CUDA_VISIBLE_DEVICES": "",
+    "INTERVENE3D_DATA_ROOT": "",
+    "MKL_NUM_THREADS": "",
+    "MPLBACKEND": "",
+    "NUMEXPR_NUM_THREADS": "",
+    "OMP_NUM_THREADS": "",
+    "OPENBLAS_NUM_THREADS": "",
+    "PYTHONHASHSEED": "0",
+    "VECLIB_MAXIMUM_THREADS": ""
+  },
+  "git": {
+    "branch": "main",
+    "commit": "cfb5082d7d596266fa4a8289e4e2e813b5b5fc28",
+    "describe": "cfb5082",
+    "dirty": false,
+    "dirty_files": [],
+    "remote": "https://github.com/NotSaminnn/Computer-Vision-Research.git"
+  },
+  "hardware": {
+    "cpu_count": 24,
+    "cuda_available": false,
+    "cuda_version": "not applicable (torch not installed)",
+    "gpu": [],
+    "hostname": "DESKTOP-F533K6I",
+    "machine": "AMD64",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+    "torch_version": "not installed"
+  },
+  "os": "Windows",
+  "os_release": "10",
+  "packages": {
+    "PyYAML": "6.0.3",
+    "SciencePlots": "2.2.2",
+    "matplotlib": "3.10.9",
+    "numpy": "2.2.6",
+    "pytest": "9.1.1",
+    "scipy": "not installed",
+    "torch": "not installed"
+  },
+  "python_executable": "D:\\Computer-Vision-Research\\.venv\\Scripts\\python.exe",
+  "python_implementation": "CPython",
+  "python_version": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]"
+}

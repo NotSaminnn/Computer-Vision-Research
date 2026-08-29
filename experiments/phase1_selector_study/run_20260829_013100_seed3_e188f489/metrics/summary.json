@@ -1,0 +1,20 @@
+{
+  "best_cea": [
+    "intervene3d_maxmin_forced",
+    0.7241379310344828
+  ],
+  "chance_level": 0.3333333333333333,
+  "elapsed_seconds": 25.47,
+  "experiment": "phase1_selector_study",
+  "n_eval_scenes": 87,
+  "ordering": null,
+  "resolvable_fraction_eval": 0.632183908045977,
+  "seed": 3,
+  "theory_validation_r2": 0.9073161104310334,
+  "tiers": {
+    "intervention_aware": "intervene3d_sum",
+    "intervention_aware_forced_choice": null,
+    "passive_multiview": "passive_multiview_classifier",
+    "single_frame": null
+  }
+}

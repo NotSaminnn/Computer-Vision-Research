@@ -1,0 +1,105 @@
+action_noise:
+  enabled: false
+  rotation_std_deg: 0.0
+  translation_std: 0.0
+classifier_epochs: 600
+data:
+  dataset_dir: null
+  reseed_with_experiment_seed: true
+  split: test
+  synthetic_config: configs/synthetic/phase1.yaml
+experiment:
+  kind: phase1_problem_existence
+  name: phase1_problem_existence
+  root: experiments
+  seed: 2
+mcrb:
+  max_baseline: 0.35
+  num_baseline_samples: 41
+methods:
+- classifier: single_frame
+  description: Trained softmax classifier over reference-view features only.  Because
+    the causal variants are pixel-identical at C_0, this is expected to sit at chance
+    -- that expectation IS the test of the benchmark's construction.
+  kind: classifier
+  name: single_frame_classifier
+- classifier: passive_multiview
+  description: Same classifier plus the response to one fixed, unchosen action.  It
+    can see parallax, so it can separate a display from a real scene, but it cannot
+    choose the action that would reveal a mirror.
+  kind: classifier
+  name: passive_multiview_classifier
+- description: Hypothesis-conditioned inference, but the action is chosen at random.
+  kind: engine
+  name: random_intervention
+  selector: random
+- description: Always takes the largest allowed translation.
+  kind: engine
+  name: max_baseline_intervention
+  selector: max_baseline
+- description: 'Hypothesis-blind next-best-view proxy: takes the action with the largest
+    predicted change under the MAP hypothesis.  Tests whether causal hypothesis conditioning
+    matters, not any particular published NBV method.'
+  kind: engine
+  name: entropy_nbv
+  selector: entropy_nbv
+- description: Ablation -- the world model forecasts geometry without conditioning
+    on the mechanism.
+  kind: engine
+  name: intervene3d_no_hypothesis_conditioning
+  selector: max_separability
+  transition: no_hypothesis_conditioning
+- abstention: false
+  description: Ablation -- forced choice; isolates the effect of abstention on FPCR.
+  kind: engine
+  name: intervene3d_no_abstention
+  selector: max_separability
+- description: The non-degenerate condition.  With a noisy encoder the model no longer
+    shares the simulator's exact state, so CEA, AUROC and MCRB error stop being trivially
+    perfect.
+  encoder:
+    depth_noise_rel: 0.02
+    name: mock
+    pixel_noise_std: 0.6
+  kind: engine
+  name: intervene3d_noisy_encoder
+  selector: max_separability
+- description: 'Full preliminary method: analytical hypothesis-conditioned prediction,
+    maximum-separability intervention selection, likelihood belief update and identifiability-driven
+    abstention.'
+  kind: engine
+  name: intervene3d
+  selector: max_separability
+metrics:
+- causal_explanation_accuracy
+- contact_depth_error
+- identifiability_auroc
+- mcrb_error
+- fpcr
+- intervention_regret
+model:
+  abstention:
+    enabled: true
+    tau: 0.45
+  belief:
+    beta: 1.0
+    floor: 1.0e-06
+  distance:
+    lambda_feature: 0.0
+    lambda_geometry: 0.0
+    lambda_motion: 1.0
+    lambda_occlusion: 4.0
+  geometry_encoder:
+    name: ground_truth
+  identifiability:
+    epsilon_px: 1.0
+  transition:
+    name: analytical
+passive_action: null
+visualization:
+  column: single
+  dpi: 400
+  formats:
+  - pdf
+  - png
+  ieee: true

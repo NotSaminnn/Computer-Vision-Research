@@ -1,0 +1,30 @@
+{
+  "best_cea": [
+    "intervene3d_no_abstention",
+    0.7222222222222222
+  ],
+  "chance_level": 0.3333333333333333,
+  "elapsed_seconds": 38.94,
+  "experiment": "phase1_action_noise",
+  "n_eval_scenes": 90,
+  "ordering": {
+    "comparison_basis": "CEA with abstention counted as incorrect; the intervention-aware tier uses the forced-choice variant 'intervene3d_no_abstention' so all three tiers are forced-choice",
+    "hypothesis_supported": true,
+    "intervention_aware_abstention_rate": 0.37777777777777777,
+    "intervention_aware_cea": 0.7222222222222222,
+    "intervention_aware_with_abstention_cea_all": 0.5444444444444444,
+    "intervention_aware_with_abstention_cea_committed": 0.875,
+    "passive_multiview_cea": 0.6444444444444445,
+    "single_frame_cea": 0.3333333333333333,
+    "strictly_increasing": true
+  },
+  "resolvable_fraction_eval": 0.6333333333333333,
+  "seed": 1,
+  "theory_validation_r2": 0.8511929479979206,
+  "tiers": {
+    "intervention_aware": "intervene3d",
+    "intervention_aware_forced_choice": "intervene3d_no_abstention",
+    "passive_multiview": "passive_multiview_classifier",
+    "single_frame": "single_frame_classifier"
+  }
+}

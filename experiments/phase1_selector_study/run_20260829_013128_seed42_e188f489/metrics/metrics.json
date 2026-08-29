@@ -1,0 +1,832 @@
+{
+  "action_noise": {
+    "enabled": false,
+    "rotation_std_deg": 0.0,
+    "translation_std": 0.0
+  },
+  "action_space_size": 33,
+  "chance_level": 0.3333333333333333,
+  "dataset": {
+    "config_hash": "ae814265",
+    "dataset_version": "0.1.0",
+    "format_version": "1.0",
+    "generated_utc": "2026-08-28T21:50:37Z",
+    "identifiability": {
+      "distance": {
+        "lambda_feature": 0.0,
+        "lambda_geometry": 0.0,
+        "lambda_motion": 1.0,
+        "lambda_occlusion": 4.0
+      },
+      "epsilon_px": 1.0
+    },
+    "n_files": 296,
+    "name": "intervene3d_synth_phase1_s42",
+    "root": "data\\processed\\intervene3d_synth_phase1_s42",
+    "seed": 20260870,
+    "splits": {
+      "counts": {
+        "test": 26,
+        "train": 60,
+        "val": 10
+      },
+      "note": "All causal variants of a base scene share its split. Splitting by frame, pose or rendering would leak matched counterfactuals.",
+      "policy": "base_scene",
+      "realised_fractions": {
+        "test": 0.2708333333333333,
+        "train": 0.625,
+        "val": 0.10416666666666667
+      },
+      "requested_fractions": {
+        "test": 0.3333,
+        "train": 0.5,
+        "val": 0.1667
+      },
+      "salt": "intervene3d_synth_phase1_s42"
+    },
+    "statistics": {
+      "by_mechanism": {
+        "direct": {
+          "count": 96,
+          "resolvable_fraction": 0.5416666666666666
+        },
+        "emissive": {
+          "count": 96,
+          "resolvable_fraction": 0.7708333333333334
+        },
+        "reflection": {
+          "count": 96,
+          "resolvable_fraction": 0.6875
+        }
+      },
+      "mcrb_defined_fraction": 0.4722222222222222,
+      "mcrb_median": 0.02192446068693738,
+      "n_base_scenes": 96,
+      "n_scene_variants": 288,
+      "non_resolvable_count": 96,
+      "resolvable_count": 192,
+      "resolvable_fraction": 0.6666666666666666
+    }
+  },
+  "distance_weights": {
+    "lambda_feature": 0.0,
+    "lambda_geometry": 0.0,
+    "lambda_motion": 1.0,
+    "lambda_occlusion": 4.0
+  },
+  "epsilon_px": 1.0,
+  "experiment": "phase1_selector_study",
+  "learned_transition_training": {},
+  "mechanisms": [
+    "direct",
+    "emissive",
+    "reflection"
+  ],
+  "method_details": {
+    "intervene3d_maxmin": {
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "spec": {
+        "abstain_on_low_confidence": false,
+        "abstention": true,
+        "classifier": "single_frame",
+        "description": "argmax over the WEAKEST still-contended pair. A decision needs every contending pair separated, so the binding quantity is the minimum.",
+        "encoder": {
+          "name": "ground_truth"
+        },
+        "fixed_action": null,
+        "hypothesis_conditioning": true,
+        "kind": "engine",
+        "max_steps": 1,
+        "name": "intervene3d_maxmin",
+        "selector": "max_min_separability",
+        "transition": "analytical"
+      }
+    },
+    "intervene3d_maxmin_forced": {
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "spec": {
+        "abstain_on_low_confidence": false,
+        "abstention": false,
+        "classifier": "single_frame",
+        "description": "Forced choice, for a like-for-like CEA comparison with the classifiers.",
+        "encoder": {
+          "name": "ground_truth"
+        },
+        "fixed_action": null,
+        "hypothesis_conditioning": true,
+        "kind": "engine",
+        "max_steps": 1,
+        "name": "intervene3d_maxmin_forced",
+        "selector": "max_min_separability",
+        "transition": "analytical"
+      }
+    },
+    "intervene3d_sum": {
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "spec": {
+        "abstain_on_low_confidence": false,
+        "abstention": true,
+        "classifier": "single_frame",
+        "description": "The published objective, argmax over the belief-weighted SUM of pairwise separabilities. Retained as the ablation the new selector is measured against.",
+        "encoder": {
+          "name": "ground_truth"
+        },
+        "fixed_action": null,
+        "hypothesis_conditioning": true,
+        "kind": "engine",
+        "max_steps": 1,
+        "name": "intervene3d_sum",
+        "selector": "max_separability",
+        "transition": "analytical"
+      }
+    },
+    "max_baseline_intervention": {
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "spec": {
+        "abstain_on_low_confidence": false,
+        "abstention": true,
+        "classifier": "single_frame",
+        "description": "Move as far as allowed. The strongest hypothesis-blind intervention.",
+        "encoder": {
+          "name": "ground_truth"
+        },
+        "fixed_action": null,
+        "hypothesis_conditioning": true,
+        "kind": "engine",
+        "max_steps": 1,
+        "name": "max_baseline_intervention",
+        "selector": "max_baseline",
+        "transition": "analytical"
+      }
+    },
+    "passive_multiview_classifier": {
+      "model": {
+        "final_train_loss": 0.6555913351586309,
+        "fixed_action": "translate_x+0.200m",
+        "labels": [
+          "direct",
+          "emissive",
+          "reflection"
+        ],
+        "n_features": 23,
+        "name": "passive_multiview_classifier",
+        "uses_response": true
+      },
+      "spec": {
+        "abstain_on_low_confidence": false,
+        "abstention": true,
+        "classifier": "passive_multiview",
+        "description": "The strongest non-abstaining baseline; the CEA number to beat.",
+        "encoder": {
+          "name": "ground_truth"
+        },
+        "fixed_action": null,
+        "hypothesis_conditioning": true,
+        "kind": "classifier",
+        "max_steps": 1,
+        "name": "passive_multiview_classifier",
+        "selector": "max_separability",
+        "transition": "analytical"
+      }
+    }
+  },
+  "method_specs": {
+    "intervene3d_maxmin": {
+      "abstain_on_low_confidence": false,
+      "abstention": true,
+      "classifier": "single_frame",
+      "description": "argmax over the WEAKEST still-contended pair. A decision needs every contending pair separated, so the binding quantity is the minimum.",
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "fixed_action": null,
+      "hypothesis_conditioning": true,
+      "kind": "engine",
+      "max_steps": 1,
+      "name": "intervene3d_maxmin",
+      "selector": "max_min_separability",
+      "transition": "analytical"
+    },
+    "intervene3d_maxmin_forced": {
+      "abstain_on_low_confidence": false,
+      "abstention": false,
+      "classifier": "single_frame",
+      "description": "Forced choice, for a like-for-like CEA comparison with the classifiers.",
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "fixed_action": null,
+      "hypothesis_conditioning": true,
+      "kind": "engine",
+      "max_steps": 1,
+      "name": "intervene3d_maxmin_forced",
+      "selector": "max_min_separability",
+      "transition": "analytical"
+    },
+    "intervene3d_sum": {
+      "abstain_on_low_confidence": false,
+      "abstention": true,
+      "classifier": "single_frame",
+      "description": "The published objective, argmax over the belief-weighted SUM of pairwise separabilities. Retained as the ablation the new selector is measured against.",
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "fixed_action": null,
+      "hypothesis_conditioning": true,
+      "kind": "engine",
+      "max_steps": 1,
+      "name": "intervene3d_sum",
+      "selector": "max_separability",
+      "transition": "analytical"
+    },
+    "max_baseline_intervention": {
+      "abstain_on_low_confidence": false,
+      "abstention": true,
+      "classifier": "single_frame",
+      "description": "Move as far as allowed. The strongest hypothesis-blind intervention.",
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "fixed_action": null,
+      "hypothesis_conditioning": true,
+      "kind": "engine",
+      "max_steps": 1,
+      "name": "max_baseline_intervention",
+      "selector": "max_baseline",
+      "transition": "analytical"
+    },
+    "passive_multiview_classifier": {
+      "abstain_on_low_confidence": false,
+      "abstention": true,
+      "classifier": "passive_multiview",
+      "description": "The strongest non-abstaining baseline; the CEA number to beat.",
+      "encoder": {
+        "name": "ground_truth"
+      },
+      "fixed_action": null,
+      "hypothesis_conditioning": true,
+      "kind": "classifier",
+      "max_steps": 1,
+      "name": "passive_multiview_classifier",
+      "selector": "max_separability",
+      "transition": "analytical"
+    }
+  },
+  "methods": {
+    "intervene3d_maxmin": {
+      "cea": {
+        "abstention_rate": 0.38461538461538464,
+        "by_mechanism": {
+          "direct": {
+            "abstention_rate": 0.4230769230769231,
+            "cea_all": 0.5769230769230769,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "emissive": {
+            "abstention_rate": 0.3076923076923077,
+            "cea_all": 0.6923076923076923,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "reflection": {
+            "abstention_rate": 0.4230769230769231,
+            "cea_all": 0.5769230769230769,
+            "cea_committed": 1.0,
+            "n": 26
+          }
+        },
+        "cea_all": 0.6153846153846154,
+        "cea_committed": 1.0,
+        "n": 78
+      },
+      "confusion_labels": [
+        "direct",
+        "emissive",
+        "reflection",
+        "abstain"
+      ],
+      "confusion_matrix": [
+        [
+          15,
+          0,
+          0,
+          11
+        ],
+        [
+          0,
+          18,
+          0,
+          8
+        ],
+        [
+          0,
+          0,
+          15,
+          11
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "contact_depth": {
+        "abs_rel_contact": 0.10766707809908276,
+        "n_scored": 78,
+        "rmse_contact": 0.1798742807941078
+      },
+      "fpcr": {
+        "confident_rate_on_identifiable": 0.8727272727272727,
+        "fpcr": 0.0,
+        "n_non_identifiable": 23,
+        "note": "abstained samples are not counted as confidently certain",
+        "sweep": {
+          "0.40": 0.0,
+          "0.50": 0.0,
+          "0.60": 0.0,
+          "0.70": 0.0,
+          "0.80": 0.0,
+          "0.90": 0.0
+        },
+        "tau": 0.45
+      },
+      "identifiability": {
+        "fn": 7.0,
+        "fp": 0.0,
+        "identifiability_auroc": 0.9363636363636364,
+        "n": 78,
+        "n_non_resolvable": 23,
+        "n_resolvable": 55,
+        "resolvability_accuracy": 0.9102564102564102,
+        "resolvability_f1": 0.9320388349514563,
+        "resolvability_precision": 1.0,
+        "resolvability_recall": 0.8727272727272727,
+        "tn": 23.0,
+        "tp": 48.0
+      },
+      "intervention": {
+        "motion_cost": 0.18269230769230776,
+        "normalised_regret": 0.24183596959722126
+      },
+      "mcrb": {
+        "mae": 0.003290023931149435,
+        "n_scored": 39,
+        "note": "predicted from the model's own separability sweep"
+      },
+      "n": 78
+    },
+    "intervene3d_maxmin_forced": {
+      "cea": {
+        "abstention_rate": 0.0,
+        "by_mechanism": {
+          "direct": {
+            "abstention_rate": 0.0,
+            "cea_all": 1.0,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "emissive": {
+            "abstention_rate": 0.0,
+            "cea_all": 0.8846153846153846,
+            "cea_committed": 0.8846153846153846,
+            "n": 26
+          },
+          "reflection": {
+            "abstention_rate": 0.0,
+            "cea_all": 0.5769230769230769,
+            "cea_committed": 0.5769230769230769,
+            "n": 26
+          }
+        },
+        "cea_all": 0.8205128205128205,
+        "cea_committed": 0.8205128205128205,
+        "n": 78
+      },
+      "confusion_labels": [
+        "direct",
+        "emissive",
+        "reflection",
+        "abstain"
+      ],
+      "confusion_matrix": [
+        [
+          26,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          23,
+          0,
+          0
+        ],
+        [
+          11,
+          0,
+          15,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "contact_depth": {
+        "abs_rel_contact": 0.10766707809908276,
+        "n_scored": 78,
+        "rmse_contact": 0.1798742807941078
+      },
+      "fpcr": {
+        "confident_rate_on_identifiable": 0.9454545454545454,
+        "fpcr": 0.6086956521739131,
+        "n_non_identifiable": 23,
+        "note": "abstained samples are not counted as confidently certain",
+        "sweep": {
+          "0.40": 0.6086956521739131,
+          "0.50": 0.0,
+          "0.60": 0.0,
+          "0.70": 0.0,
+          "0.80": 0.0,
+          "0.90": 0.0
+        },
+        "tau": 0.45
+      },
+      "identifiability": {
+        "fn": 7.0,
+        "fp": 0.0,
+        "identifiability_auroc": 0.9363636363636364,
+        "n": 78,
+        "n_non_resolvable": 23,
+        "n_resolvable": 55,
+        "resolvability_accuracy": 0.9102564102564102,
+        "resolvability_f1": 0.9320388349514563,
+        "resolvability_precision": 1.0,
+        "resolvability_recall": 0.8727272727272727,
+        "tn": 23.0,
+        "tp": 48.0
+      },
+      "intervention": {
+        "motion_cost": 0.18269230769230776,
+        "normalised_regret": 0.24183596959722126
+      },
+      "mcrb": {
+        "mae": 0.003290023931149435,
+        "n_scored": 39,
+        "note": "predicted from the model's own separability sweep"
+      },
+      "n": 78
+    },
+    "intervene3d_sum": {
+      "cea": {
+        "abstention_rate": 0.2948717948717949,
+        "by_mechanism": {
+          "direct": {
+            "abstention_rate": 0.4230769230769231,
+            "cea_all": 0.5769230769230769,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "emissive": {
+            "abstention_rate": 0.11538461538461539,
+            "cea_all": 0.8846153846153846,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "reflection": {
+            "abstention_rate": 0.34615384615384615,
+            "cea_all": 0.3076923076923077,
+            "cea_committed": 0.47058823529411764,
+            "n": 26
+          }
+        },
+        "cea_all": 0.5897435897435898,
+        "cea_committed": 0.8363636363636363,
+        "n": 78
+      },
+      "confusion_labels": [
+        "direct",
+        "emissive",
+        "reflection",
+        "abstain"
+      ],
+      "confusion_matrix": [
+        [
+          15,
+          0,
+          0,
+          11
+        ],
+        [
+          0,
+          23,
+          0,
+          3
+        ],
+        [
+          9,
+          0,
+          8,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "contact_depth": {
+        "abs_rel_contact": 0.15441476776550664,
+        "n_scored": 78,
+        "rmse_contact": 0.27321587882958603
+      },
+      "fpcr": {
+        "confident_rate_on_identifiable": 1.0,
+        "fpcr": 0.0,
+        "n_non_identifiable": 23,
+        "note": "abstained samples are not counted as confidently certain",
+        "sweep": {
+          "0.40": 0.0,
+          "0.50": 0.0,
+          "0.60": 0.0,
+          "0.70": 0.0,
+          "0.80": 0.0,
+          "0.90": 0.0
+        },
+        "tau": 0.45
+      },
+      "identifiability": {
+        "fn": 0.0,
+        "fp": 0.0,
+        "identifiability_auroc": 1.0,
+        "n": 78,
+        "n_non_resolvable": 23,
+        "n_resolvable": 55,
+        "resolvability_accuracy": 1.0,
+        "resolvability_f1": 1.0,
+        "resolvability_precision": 1.0,
+        "resolvability_recall": 1.0,
+        "tn": 23.0,
+        "tp": 55.0
+      },
+      "intervention": {
+        "motion_cost": 0.275,
+        "normalised_regret": 0.2862975272102648
+      },
+      "mcrb": {
+        "mae": 1.2454424955730923e-18,
+        "n_scored": 39,
+        "note": "predicted from the model's own separability sweep"
+      },
+      "n": 78
+    },
+    "max_baseline_intervention": {
+      "cea": {
+        "abstention_rate": 0.3333333333333333,
+        "by_mechanism": {
+          "direct": {
+            "abstention_rate": 0.4230769230769231,
+            "cea_all": 0.5769230769230769,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "emissive": {
+            "abstention_rate": 0.15384615384615385,
+            "cea_all": 0.8461538461538461,
+            "cea_committed": 1.0,
+            "n": 26
+          },
+          "reflection": {
+            "abstention_rate": 0.4230769230769231,
+            "cea_all": 0.2692307692307692,
+            "cea_committed": 0.4666666666666667,
+            "n": 26
+          }
+        },
+        "cea_all": 0.5641025641025641,
+        "cea_committed": 0.8461538461538461,
+        "n": 78
+      },
+      "confusion_labels": [
+        "direct",
+        "emissive",
+        "reflection",
+        "abstain"
+      ],
+      "confusion_matrix": [
+        [
+          15,
+          0,
+          0,
+          11
+        ],
+        [
+          0,
+          22,
+          0,
+          4
+        ],
+        [
+          8,
+          0,
+          7,
+          11
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "contact_depth": {
+        "abs_rel_contact": 0.15649326570136546,
+        "n_scored": 78,
+        "rmse_contact": 0.2731135253472243
+      },
+      "fpcr": {
+        "confident_rate_on_identifiable": 0.9454545454545454,
+        "fpcr": 0.0,
+        "n_non_identifiable": 23,
+        "note": "abstained samples are not counted as confidently certain",
+        "sweep": {
+          "0.40": 0.0,
+          "0.50": 0.0,
+          "0.60": 0.0,
+          "0.70": 0.0,
+          "0.80": 0.0,
+          "0.90": 0.0
+        },
+        "tau": 0.45
+      },
+      "identifiability": {
+        "fn": 3.0,
+        "fp": 0.0,
+        "identifiability_auroc": 0.9727272727272728,
+        "n": 78,
+        "n_non_resolvable": 23,
+        "n_resolvable": 55,
+        "resolvability_accuracy": 0.9615384615384616,
+        "resolvability_f1": 0.9719626168224299,
+        "resolvability_precision": 1.0,
+        "resolvability_recall": 0.9454545454545454,
+        "tn": 23.0,
+        "tp": 52.0
+      },
+      "intervention": {
+        "motion_cost": 0.30000000000000004,
+        "normalised_regret": 0.35895401125108495
+      },
+      "mcrb": {
+        "mae": 0.003290023931149435,
+        "n_scored": 39,
+        "note": "predicted from the model's own separability sweep"
+      },
+      "n": 78
+    },
+    "passive_multiview_classifier": {
+      "cea": {
+        "abstention_rate": 0.0,
+        "by_mechanism": {
+          "direct": {
+            "abstention_rate": 0.0,
+            "cea_all": 0.9230769230769231,
+            "cea_committed": 0.9230769230769231,
+            "n": 26
+          },
+          "emissive": {
+            "abstention_rate": 0.0,
+            "cea_all": 0.8461538461538461,
+            "cea_committed": 0.8461538461538461,
+            "n": 26
+          },
+          "reflection": {
+            "abstention_rate": 0.0,
+            "cea_all": 0.23076923076923078,
+            "cea_committed": 0.23076923076923078,
+            "n": 26
+          }
+        },
+        "cea_all": 0.6666666666666666,
+        "cea_committed": 0.6666666666666666,
+        "n": 78
+      },
+      "confusion_labels": [
+        "direct",
+        "emissive",
+        "reflection",
+        "abstain"
+      ],
+      "confusion_matrix": [
+        [
+          24,
+          2,
+          0,
+          0
+        ],
+        [
+          4,
+          22,
+          0,
+          0
+        ],
+        [
+          20,
+          0,
+          6,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "contact_depth": {
+        "abs_rel_contact": NaN,
+        "n_scored": 0,
+        "rmse_contact": NaN
+      },
+      "fpcr": {
+        "confident_rate_on_identifiable": 0.9636363636363636,
+        "fpcr": 0.8260869565217391,
+        "n_non_identifiable": 23,
+        "note": "abstained samples are not counted as confidently certain",
+        "sweep": {
+          "0.40": 1.0,
+          "0.50": 0.34782608695652173,
+          "0.60": 0.0,
+          "0.70": 0.0,
+          "0.80": 0.0,
+          "0.90": 0.0
+        },
+        "tau": 0.45
+      },
+      "identifiability": {
+        "fn": 0.0,
+        "fp": 23.0,
+        "identifiability_auroc": 0.857707509881423,
+        "n": 78,
+        "n_non_resolvable": 23,
+        "n_resolvable": 55,
+        "resolvability_accuracy": 0.7051282051282052,
+        "resolvability_f1": 0.8270676691729323,
+        "resolvability_precision": 0.7051282051282052,
+        "resolvability_recall": 1.0,
+        "tn": 0.0,
+        "tp": 55.0
+      },
+      "intervention": {
+        "motion_cost": 0.19999999999999993,
+        "normalised_regret": NaN
+      },
+      "mcrb": {
+        "mae": NaN,
+        "n_scored": 0,
+        "note": "NOT SCORED: this method does not predict a resolving baseline"
+      },
+      "n": 78
+    }
+  },
+  "n_eval_base_scenes": 26,
+  "n_eval_scenes": 78,
+  "n_train_scenes": 180,
+  "passive_action": "translate_x+0.200m",
+  "resolvable_fraction_eval": 0.7051282051282052,
+  "seed": 42,
+  "split": "test",
+  "style": {
+    "matplotlib": "3.10.9",
+    "note": "SciencePlots' IEEE style with no-latex (no LaTeX installation required)",
+    "scienceplots": true,
+    "styles": [
+      "science",
+      "ieee",
+      "no-latex"
+    ],
+    "usetex": false
+  },
+  "tau": 0.45,
+  "theory_validation": {
+    "intercept": 1.8120655093762408,
+    "measurement": "homography-compensated lateral resolving baseline",
+    "n": 18,
+    "r_squared": 0.843585642654997,
+    "slope": 0.14413944516276178,
+    "status": "scored"
+  }
+}

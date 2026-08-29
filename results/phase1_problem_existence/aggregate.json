@@ -1,0 +1,3359 @@
+{
+  "aggregate": {
+    "entropy_nbv": {
+      "cea.abstention_rate": {
+        "ci95": 0.07748375134876032,
+        "max": 0.5057471264367817,
+        "mean": 0.4559907346006484,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.04870128934554388
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.08771286538846276,
+        "max": 0.5172413793103449,
+        "mean": 0.461642075596817,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.055130650778417827
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.08771286538846271,
+        "max": 0.59375,
+        "mean": 0.538357924403183,
+        "min": 0.4827586206896552,
+        "n": 4,
+        "std": 0.05513065077841779
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.08771286538846276,
+        "max": 0.5172413793103449,
+        "mean": 0.461642075596817,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.055130650778417827
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.08771286538846271,
+        "max": 0.59375,
+        "mean": 0.538357924403183,
+        "min": 0.4827586206896552,
+        "n": 4,
+        "std": 0.05513065077841779
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.05719456863482286,
+        "max": 0.4827586206896552,
+        "mean": 0.44468805260831124,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.035948817495174645
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.026091666100326438,
+        "max": 0.06666666666666667,
+        "mean": 0.0505277409372237,
+        "min": 0.034482758620689655,
+        "n": 4,
+        "std": 0.016399538717992733
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.04632715160752228,
+        "max": 0.125,
+        "mean": 0.09089912280701753,
+        "min": 0.06666666666666667,
+        "n": 4,
+        "std": 0.029118259967015888
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.06059350836772708,
+        "max": 0.4166666666666667,
+        "mean": 0.37574786324786325,
+        "min": 0.3333333333333333,
+        "n": 4,
+        "std": 0.03808517182132438
+      },
+      "cea.cea_committed": {
+        "ci95": 0.018690010016506664,
+        "max": 0.7017543859649122,
+        "mean": 0.6901785133545019,
+        "min": 0.6744186046511628,
+        "n": 4,
+        "std": 0.011747335019803058
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.042620373790348,
+        "max": 0.25762505854861956,
+        "mean": 0.22863276704604962,
+        "min": 0.1945345715413857,
+        "n": 4,
+        "std": 0.026788418472877436
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.09166749544008508,
+        "max": 0.46554075357780733,
+        "mean": 0.4106339800922362,
+        "min": 0.33988829979224083,
+        "n": 4,
+        "std": 0.05761627620369898
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.04668437209542819,
+        "max": 0.08695652173913043,
+        "mean": 0.057464808265723595,
+        "min": 0.01818181818181818,
+        "n": 4,
+        "std": 0.029342785729370324
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 1.523266528440334,
+        "max": 12.0,
+        "mean": 11.25,
+        "min": 10.0,
+        "n": 4,
+        "std": 0.9574271077563381
+      },
+      "identifiability.fp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.01534961353892301,
+        "max": 0.9130434782608695,
+        "mean": 0.9041380625476736,
+        "min": 0.8909090909090909,
+        "n": 4,
+        "std": 0.0096477772086254
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.010891435555582548,
+        "max": 0.8777777777777778,
+        "mean": 0.8716604037724727,
+        "min": 0.8620689655172413,
+        "n": 4,
+        "std": 0.0068456540261361085
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.018891251027033516,
+        "max": 0.9047619047619047,
+        "mean": 0.8938792021663033,
+        "min": 0.8775510204081634,
+        "n": 4,
+        "std": 0.011873822141441557
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.03069922707784602,
+        "max": 0.8260869565217391,
+        "mean": 0.8082761250953471,
+        "min": 0.7818181818181819,
+        "n": 4,
+        "std": 0.0192955544172508
+      },
+      "identifiability.tn": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.tp": {
+        "ci95": 10.009822155429802,
+        "max": 57.0,
+        "mean": 47.75,
+        "min": 43.0,
+        "n": 4,
+        "std": 6.2915286960589585
+      },
+      "intervention.motion_cost": {
+        "ci95": 0.005835501000066408,
+        "max": 0.09460210182041572,
+        "mean": 0.08910037240489113,
+        "min": 0.08726646259971627,
+        "n": 4,
+        "std": 0.0036678196103497223
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.07329254058754318,
+        "max": 0.6979166666666662,
+        "mean": 0.6535119793201685,
+        "min": 0.607407407407407,
+        "n": 4,
+        "std": 0.046066964542767555
+      },
+      "mcrb.mae": {
+        "ci95": 0.002997408468719189,
+        "max": 0.004259517873757333,
+        "mean": 0.002039018884207937,
+        "min": 2.710505431213761e-19,
+        "n": 4,
+        "std": 0.0018839776673282144
+      },
+      "mcrb.n_scored": {
+        "ci95": 4.683777179442535,
+        "max": 39.0,
+        "mean": 36.0,
+        "min": 32.0,
+        "n": 4,
+        "std": 2.943920288775949
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "intervene3d": {
+      "cea.abstention_rate": {
+        "ci95": 0.0732723354584438,
+        "max": 0.367816091954023,
+        "mean": 0.3276511383731211,
+        "min": 0.28125,
+        "n": 4,
+        "std": 0.04605426490159887
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.08771286538846276,
+        "max": 0.5172413793103449,
+        "mean": 0.461642075596817,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.055130650778417827
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.08771286538846271,
+        "max": 0.59375,
+        "mean": 0.538357924403183,
+        "min": 0.4827586206896552,
+        "n": 4,
+        "std": 0.05513065077841779
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.1371779649729935,
+        "max": 0.3103448275862069,
+        "mean": 0.20382819407603892,
+        "min": 0.11538461538461539,
+        "n": 4,
+        "std": 0.08622122248459681
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.13717796497299348,
+        "max": 0.8846153846153846,
+        "mean": 0.7961718059239611,
+        "min": 0.6896551724137931,
+        "n": 4,
+        "std": 0.08622122248459678
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.0728287826981379,
+        "max": 0.36666666666666664,
+        "mean": 0.31748314544650746,
+        "min": 0.27586206896551724,
+        "n": 4,
+        "std": 0.04577547624018725
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.12048702713448367,
+        "max": 0.43333333333333335,
+        "mean": 0.3590171861184792,
+        "min": 0.28125,
+        "n": 4,
+        "std": 0.07573037532022858
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.2017956972550689,
+        "max": 0.6842105263157895,
+        "mean": 0.5293829202161413,
+        "min": 0.391304347826087,
+        "n": 4,
+        "std": 0.12683576194536073
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.040995787930081205,
+        "max": 0.5897435897435898,
+        "mean": 0.5645156388152077,
+        "min": 0.5287356321839081,
+        "n": 4,
+        "std": 0.025767308566990072
+      },
+      "cea.cea_committed": {
+        "ci95": 0.06402098284839398,
+        "max": 0.8947368421052632,
+        "mean": 0.8411413910269746,
+        "min": 0.7971014492753623,
+        "n": 4,
+        "std": 0.04023946124977623
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.026056512242985847,
+        "max": 0.19115115118765436,
+        "mean": 0.1784646458932175,
+        "min": 0.15441476776550664,
+        "n": 4,
+        "std": 0.016377443270261374
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.04334592029162773,
+        "max": 0.33515718097401914,
+        "mean": 0.31268142502719526,
+        "min": 0.27321587882958603,
+        "n": 4,
+        "std": 0.02724445021472516
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tn": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.tp": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "intervention.motion_cost": {
+        "ci95": 0.024161127560438905,
+        "max": 0.2765625,
+        "mean": 0.2628618893678161,
+        "min": 0.2465517241379311,
+        "n": 4,
+        "std": 0.015186126687893717
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.10384143252404673,
+        "max": 0.3154502418014717,
+        "mean": 0.2478961972533798,
+        "min": 0.17116703993457325,
+        "n": 4,
+        "std": 0.06526802798494452
+      },
+      "mcrb.mae": {
+        "ci95": 0.00171457317005681,
+        "max": 0.0021553402514856196,
+        "mean": 0.0005388350628714053,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0010776701257428096
+      },
+      "mcrb.n_scored": {
+        "ci95": 3.5278130501298772,
+        "max": 39.0,
+        "mean": 37.25,
+        "min": 34.0,
+        "n": 4,
+        "std": 2.217355782608345
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "intervene3d_no_abstention": {
+      "cea.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.13717796497299348,
+        "max": 0.8846153846153846,
+        "mean": 0.7961718059239611,
+        "min": 0.6896551724137931,
+        "n": 4,
+        "std": 0.08622122248459678
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.13717796497299348,
+        "max": 0.8846153846153846,
+        "mean": 0.7961718059239611,
+        "min": 0.6896551724137931,
+        "n": 4,
+        "std": 0.08622122248459678
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.12048702713448367,
+        "max": 0.43333333333333335,
+        "mean": 0.3590171861184792,
+        "min": 0.28125,
+        "n": 4,
+        "std": 0.07573037532022858
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.12048702713448367,
+        "max": 0.43333333333333335,
+        "mean": 0.3590171861184792,
+        "min": 0.28125,
+        "n": 4,
+        "std": 0.07573037532022858
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.025570466439482662,
+        "max": 0.7333333333333333,
+        "mean": 0.7183963306808134,
+        "min": 0.7011494252873564,
+        "n": 4,
+        "std": 0.016071946222176406
+      },
+      "cea.cea_committed": {
+        "ci95": 0.025570466439482662,
+        "max": 0.7333333333333333,
+        "mean": 0.7183963306808134,
+        "min": 0.7011494252873564,
+        "n": 4,
+        "std": 0.016071946222176406
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.026056512242985847,
+        "max": 0.19115115118765436,
+        "mean": 0.1784646458932175,
+        "min": 0.15441476776550664,
+        "n": 4,
+        "std": 0.016377443270261374
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.04334592029162773,
+        "max": 0.33515718097401914,
+        "mean": 0.31268142502719526,
+        "min": 0.27321587882958603,
+        "n": 4,
+        "std": 0.02724445021472516
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.11536645339551507,
+        "max": 0.8888888888888888,
+        "mean": 0.8245567083882301,
+        "min": 0.7272727272727273,
+        "n": 4,
+        "std": 0.07251191288215907
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.11536645339551507,
+        "max": 0.8888888888888888,
+        "mean": 0.8245567083882301,
+        "min": 0.7272727272727273,
+        "n": 4,
+        "std": 0.07251191288215907
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tn": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.tp": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "intervention.motion_cost": {
+        "ci95": 0.024161127560438905,
+        "max": 0.2765625,
+        "mean": 0.2628618893678161,
+        "min": 0.2465517241379311,
+        "n": 4,
+        "std": 0.015186126687893717
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.10384143252404673,
+        "max": 0.3154502418014717,
+        "mean": 0.2478961972533798,
+        "min": 0.17116703993457325,
+        "n": 4,
+        "std": 0.06526802798494452
+      },
+      "mcrb.mae": {
+        "ci95": 0.00171457317005681,
+        "max": 0.0021553402514856196,
+        "mean": 0.0005388350628714053,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0010776701257428096
+      },
+      "mcrb.n_scored": {
+        "ci95": 3.5278130501298772,
+        "max": 39.0,
+        "mean": 37.25,
+        "min": 34.0,
+        "n": 4,
+        "std": 2.217355782608345
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "intervene3d_no_hypothesis_conditioning": {
+      "cea.abstention_rate": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.cea_committed": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.03690065681253407,
+        "max": 0.4044427277054096,
+        "mean": 0.3862391746633739,
+        "min": 0.3524458637594517,
+        "n": 4,
+        "std": 0.023193373232265287
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.1024207941616848,
+        "max": 0.7909507557007427,
+        "mean": 0.7087512176944599,
+        "min": 0.634170869525394,
+        "n": 4,
+        "std": 0.06437510632412621
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.fp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.0,
+        "max": 0.5,
+        "mean": 0.5,
+        "min": 0.5,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.0732723354584438,
+        "max": 0.367816091954023,
+        "mean": 0.3276511383731211,
+        "min": 0.28125,
+        "n": 4,
+        "std": 0.04605426490159887
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tn": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.tp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "intervention.motion_cost": {
+        "ci95": 9.013942788405144e-18,
+        "max": 0.049999999999999996,
+        "mean": 0.04999999999999999,
+        "min": 0.04999999999999998,
+        "n": 4,
+        "std": 5.665583147960493e-18
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.055304427365319396,
+        "max": 0.6559253501126653,
+        "mean": 0.6174059525572164,
+        "min": 0.5769136523591638,
+        "n": 4,
+        "std": 0.03476079658411024
+      },
+      "mcrb.mae": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "mcrb.n_scored": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "intervene3d_noisy_encoder": {
+      "cea.abstention_rate": {
+        "ci95": 0.09050006224974351,
+        "max": 0.3793103448275862,
+        "mean": 0.32411444518125554,
+        "min": 0.2692307692307692,
+        "n": 4,
+        "std": 0.05688250298538247
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.10551174704853913,
+        "max": 0.5172413793103449,
+        "mean": 0.45202669098143233,
+        "min": 0.38461538461538464,
+        "n": 4,
+        "std": 0.06631787998022573
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.08771286538846271,
+        "max": 0.59375,
+        "mean": 0.538357924403183,
+        "min": 0.4827586206896552,
+        "n": 4,
+        "std": 0.05513065077841779
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.04971875,
+        "max": 1.0,
+        "mean": 0.984375,
+        "min": 0.9375,
+        "n": 4,
+        "std": 0.03125
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.160525692053997,
+        "max": 0.3448275862068966,
+        "mean": 0.21244888373121132,
+        "min": 0.11538461538461539,
+        "n": 4,
+        "std": 0.10089609808547895
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.16052569205399697,
+        "max": 0.8846153846153846,
+        "mean": 0.7875511162687887,
+        "min": 0.6551724137931034,
+        "n": 4,
+        "std": 0.10089609808547893
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.06617623955852055,
+        "max": 0.36666666666666664,
+        "mean": 0.3078677608311229,
+        "min": 0.27586206896551724,
+        "n": 4,
+        "std": 0.04159411663011976
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.13705645241220368,
+        "max": 0.43333333333333335,
+        "mean": 0.3494018015030946,
+        "min": 0.2692307692307692,
+        "n": 4,
+        "std": 0.08614484752495517
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.23032895073728743,
+        "max": 0.6842105263157895,
+        "mean": 0.5089580836148342,
+        "min": 0.3888888888888889,
+        "n": 4,
+        "std": 0.14476992503914987
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.04420768800677389,
+        "max": 0.5769230769230769,
+        "mean": 0.5584369473916887,
+        "min": 0.5172413793103449,
+        "n": 4,
+        "std": 0.027786101827010617
+      },
+      "cea.cea_committed": {
+        "ci95": 0.0764094131575026,
+        "max": 0.8947368421052632,
+        "mean": 0.8286613272311213,
+        "min": 0.7894736842105263,
+        "n": 4,
+        "std": 0.04802602964016506
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.02244378162759813,
+        "max": 0.19704951627621184,
+        "mean": 0.18527098336976222,
+        "min": 0.16478293348519532,
+        "n": 4,
+        "std": 0.014106713782274124
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.03772686903189647,
+        "max": 0.35680729937720235,
+        "mean": 0.33550112226653406,
+        "min": 0.30193712170067993,
+        "n": 4,
+        "std": 0.02371267695279476
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.014463636363636368,
+        "max": 1.0,
+        "mean": 0.9954545454545455,
+        "min": 0.9818181818181818,
+        "n": 4,
+        "std": 0.009090909090909094
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.06917391304347825,
+        "max": 0.08695652173913043,
+        "mean": 0.021739130434782608,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.043478260869565216
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 0.7955,
+        "max": 1.0,
+        "mean": 0.25,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.5
+      },
+      "identifiability.fp": {
+        "ci95": 1.591,
+        "max": 2.0,
+        "mean": 0.5,
+        "min": 0.0,
+        "n": 4,
+        "std": 1.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.04154363259382731,
+        "max": 1.0,
+        "mean": 0.9840909090909091,
+        "min": 0.9454545454545454,
+        "n": 4,
+        "std": 0.02611164839335469
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.019373276664804453,
+        "max": 1.0,
+        "mean": 0.9907161803713528,
+        "min": 0.9743589743589743,
+        "n": 4,
+        "std": 0.01217679237259865
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.013635982708277341,
+        "max": 1.0,
+        "mean": 0.9932421363040629,
+        "min": 0.9821428571428572,
+        "n": 4,
+        "std": 0.008570699376667091
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.027912280701754385,
+        "max": 1.0,
+        "mean": 0.9912280701754386,
+        "min": 0.9649122807017544,
+        "n": 4,
+        "std": 0.017543859649122806
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.014463636363636368,
+        "max": 1.0,
+        "mean": 0.9954545454545455,
+        "min": 0.9818181818181818,
+        "n": 4,
+        "std": 0.009090909090909094
+      },
+      "identifiability.tn": {
+        "ci95": 8.7505,
+        "max": 33.0,
+        "mean": 28.25,
+        "min": 21.0,
+        "n": 4,
+        "std": 5.5
+      },
+      "identifiability.tp": {
+        "ci95": 11.051439193607319,
+        "max": 69.0,
+        "mean": 58.75,
+        "min": 54.0,
+        "n": 4,
+        "std": 6.946221994724902
+      },
+      "intervention.motion_cost": {
+        "ci95": 0.02578360439874762,
+        "max": 0.28141025641025647,
+        "mean": 0.2655869391025641,
+        "min": 0.25000000000000006,
+        "n": 4,
+        "std": 0.0162059109985843
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.09819936952040781,
+        "max": 0.31588623484331374,
+        "mean": 0.2560246453618406,
+        "min": 0.17990646027877813,
+        "n": 4,
+        "std": 0.06172179102476921
+      },
+      "mcrb.mae": {
+        "ci95": 0.004378334807345599,
+        "max": 0.0054598858292379095,
+        "mean": 0.002474244047136319,
+        "min": 9.985703149932538e-05,
+        "n": 4,
+        "std": 0.002751938910965178
+      },
+      "mcrb.n_scored": {
+        "ci95": 3.5278130501298772,
+        "max": 39.0,
+        "mean": 37.25,
+        "min": 34.0,
+        "n": 4,
+        "std": 2.217355782608345
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "max_baseline_intervention": {
+      "cea.abstention_rate": {
+        "ci95": 0.07658784051531971,
+        "max": 0.42528735632183906,
+        "mean": 0.367606561302682,
+        "min": 0.3229166666666667,
+        "n": 4,
+        "std": 0.0481381775709112
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.08771286538846276,
+        "max": 0.5172413793103449,
+        "mean": 0.461642075596817,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.055130650778417827
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.08771286538846271,
+        "max": 0.59375,
+        "mean": 0.538357924403183,
+        "min": 0.4827586206896552,
+        "n": 4,
+        "std": 0.05513065077841779
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.11837871421129509,
+        "max": 0.3103448275862069,
+        "mean": 0.2134435786914235,
+        "min": 0.15384615384615385,
+        "n": 4,
+        "std": 0.07440522577705537
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.11837871421129505,
+        "max": 0.8461538461538461,
+        "mean": 0.7865564213085765,
+        "min": 0.6896551724137931,
+        "n": 4,
+        "std": 0.07440522577705534
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.02811123747190105,
+        "max": 0.4482758620689655,
+        "mean": 0.4277340296198055,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.017668911044563827
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.08421939971539844,
+        "max": 0.2692307692307692,
+        "mean": 0.23338168656056588,
+        "min": 0.15625,
+        "n": 4,
+        "std": 0.05293488354204805
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.1569638223850833,
+        "max": 0.47058823529411764,
+        "mean": 0.4094781991744066,
+        "min": 0.2631578947368421,
+        "n": 4,
+        "std": 0.09865733650853759
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.06178655825346067,
+        "max": 0.5641025641025641,
+        "mean": 0.5194320107574417,
+        "min": 0.47126436781609193,
+        "n": 4,
+        "std": 0.03883504604240143
+      },
+      "cea.cea_committed": {
+        "ci95": 0.042997677157825494,
+        "max": 0.8461538461538461,
+        "mean": 0.8217832167832168,
+        "min": 0.7846153846153846,
+        "n": 4,
+        "std": 0.02702556703823098
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.04430015415097275,
+        "max": 0.2186192761254147,
+        "mean": 0.19744424235325853,
+        "min": 0.15649326570136546,
+        "n": 4,
+        "std": 0.027844220082321024
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.08910840650351282,
+        "max": 0.3933607935835119,
+        "mean": 0.3553688183729279,
+        "min": 0.2731135253472243,
+        "n": 4,
+        "std": 0.05600779792804074
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.03684931278603972,
+        "max": 0.9649122807017544,
+        "mean": 0.9403716801886138,
+        "min": 0.9090909090909091,
+        "n": 4,
+        "std": 0.023161101688271353
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 2.053972167938667,
+        "max": 5.0,
+        "mean": 3.5,
+        "min": 2.0,
+        "n": 4,
+        "std": 1.2909944487358056
+      },
+      "identifiability.fp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.0184246563930198,
+        "max": 0.9824561403508771,
+        "mean": 0.9701858400943069,
+        "min": 0.9545454545454546,
+        "n": 4,
+        "std": 0.011580550844135637
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.022990384071871747,
+        "max": 0.9777777777777777,
+        "mean": 0.9600445770704391,
+        "min": 0.9425287356321839,
+        "n": 4,
+        "std": 0.014450272829586266
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.01967796022441522,
+        "max": 0.9821428571428572,
+        "mean": 0.9691589200193957,
+        "min": 0.9523809523809523,
+        "n": 4,
+        "std": 0.012368296809814721
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.03684931278603972,
+        "max": 0.9649122807017544,
+        "mean": 0.9403716801886138,
+        "min": 0.9090909090909091,
+        "n": 4,
+        "std": 0.023161101688271353
+      },
+      "identifiability.tn": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.tp": {
+        "ci95": 10.593400036500714,
+        "max": 65.0,
+        "mean": 55.5,
+        "min": 50.0,
+        "n": 4,
+        "std": 6.658328118479393
+      },
+      "intervention.motion_cost": {
+        "ci95": 8.83182416089312e-17,
+        "max": 0.30000000000000004,
+        "mean": 0.3,
+        "min": 0.29999999999999993,
+        "n": 4,
+        "std": 5.551115123125783e-17
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.07293486004850715,
+        "max": 0.42352489408661126,
+        "mean": 0.3596356998146798,
+        "min": 0.3174343101264794,
+        "n": 4,
+        "std": 0.04584214962194038
+      },
+      "mcrb.mae": {
+        "ci95": 0.002907510903672388,
+        "max": 0.004254271819795169,
+        "mean": 0.0024394721104148906,
+        "min": 2.5510639352600105e-19,
+        "n": 4,
+        "std": 0.0018274738552309165
+      },
+      "mcrb.n_scored": {
+        "ci95": 3.279930525178849,
+        "max": 39.0,
+        "mean": 36.75,
+        "min": 34.0,
+        "n": 4,
+        "std": 2.0615528128088303
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "passive_multiview_classifier": {
+      "cea.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.18900220273757218,
+        "max": 0.9230769230769231,
+        "mean": 0.7729746905393458,
+        "min": 0.6666666666666666,
+        "n": 4,
+        "std": 0.11879459631525592
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.18900220273757218,
+        "max": 0.9230769230769231,
+        "mean": 0.7729746905393458,
+        "min": 0.6666666666666666,
+        "n": 4,
+        "std": 0.11879459631525592
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.11837871421129505,
+        "max": 0.8461538461538461,
+        "mean": 0.7865564213085765,
+        "min": 0.6896551724137931,
+        "n": 4,
+        "std": 0.07440522577705534
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.11837871421129505,
+        "max": 0.8461538461538461,
+        "mean": 0.7865564213085765,
+        "min": 0.6896551724137931,
+        "n": 4,
+        "std": 0.07440522577705534
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.18176631344492888,
+        "max": 0.5,
+        "mean": 0.3384035145888594,
+        "min": 0.23076923076923078,
+        "n": 4,
+        "std": 0.11424658293207346
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.18176631344492888,
+        "max": 0.5,
+        "mean": 0.3384035145888594,
+        "min": 0.23076923076923078,
+        "n": 4,
+        "std": 0.11424658293207346
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.07504142146752547,
+        "max": 0.6666666666666666,
+        "mean": 0.6326448754789272,
+        "min": 0.5632183908045977,
+        "n": 4,
+        "std": 0.047166198282542725
+      },
+      "cea.cea_committed": {
+        "ci95": 0.07504142146752547,
+        "max": 0.6666666666666666,
+        "mean": 0.6326448754789272,
+        "min": 0.5632183908045977,
+        "n": 4,
+        "std": 0.047166198282542725
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "contact_depth.n_scored": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.0816344814940219,
+        "max": 0.9636363636363636,
+        "mean": 0.9078912696761666,
+        "min": 0.8421052631578947,
+        "n": 4,
+        "std": 0.051310170643634134
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.20781076315904906,
+        "max": 0.9393939393939394,
+        "mean": 0.8369142054604012,
+        "min": 0.65625,
+        "n": 4,
+        "std": 0.13061644447457516
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.14915625,
+        "max": 1.0,
+        "mean": 0.953125,
+        "min": 0.8125,
+        "n": 4,
+        "std": 0.09375
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.20368979264030185,
+        "max": 0.6363636363636364,
+        "mean": 0.5333738197189284,
+        "min": 0.34782608695652173,
+        "n": 4,
+        "std": 0.12802626815858067
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.13121175479650599,
+        "max": 0.18181818181818182,
+        "mean": 0.09811658249158249,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.08247124751508861
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.09800867563835959,
+        "max": 0.14814814814814814,
+        "mean": 0.07538930976430977,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.06160193314793186
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fp": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.13910733233727796,
+        "max": 0.857707509881423,
+        "mean": 0.738435825808299,
+        "min": 0.6560340244550771,
+        "n": 4,
+        "std": 0.0874338983892382
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.07327233545844385,
+        "max": 0.71875,
+        "mean": 0.6723488616268789,
+        "min": 0.632183908045977,
+        "n": 4,
+        "std": 0.0460542649015989
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.052376568639162235,
+        "max": 0.8363636363636363,
+        "mean": 0.8033973492355362,
+        "min": 0.7746478873239436,
+        "n": 4,
+        "std": 0.03292053339985056
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.07327233545844385,
+        "max": 0.71875,
+        "mean": 0.6723488616268789,
+        "min": 0.632183908045977,
+        "n": 4,
+        "std": 0.0460542649015989
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tn": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tp": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "intervention.motion_cost": {
+        "ci95": 3.605577115362058e-17,
+        "max": 0.19999999999999998,
+        "mean": 0.19999999999999996,
+        "min": 0.19999999999999993,
+        "n": 4,
+        "std": 2.2662332591841973e-17
+      },
+      "intervention.normalised_regret": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "mcrb.mae": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "mcrb.n_scored": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "random_intervention": {
+      "cea.abstention_rate": {
+        "ci95": 0.09367276590204991,
+        "max": 0.4827586206896552,
+        "mean": 0.42405503978779846,
+        "min": 0.3717948717948718,
+        "n": 4,
+        "std": 0.058876659900722765
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.08771286538846276,
+        "max": 0.5172413793103449,
+        "mean": 0.461642075596817,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.055130650778417827
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.08771286538846271,
+        "max": 0.59375,
+        "mean": 0.538357924403183,
+        "min": 0.4827586206896552,
+        "n": 4,
+        "std": 0.05513065077841779
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.11058869125828061,
+        "max": 0.41379310344827586,
+        "mean": 0.3488809681697613,
+        "min": 0.2692307692307692,
+        "n": 4,
+        "std": 0.06950891970979296
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.11058869125828061,
+        "max": 0.7307692307692307,
+        "mean": 0.6511190318302387,
+        "min": 0.5862068965517241,
+        "n": 4,
+        "std": 0.06950891970979296
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.08771286538846276,
+        "max": 0.5172413793103449,
+        "mean": 0.461642075596817,
+        "min": 0.40625,
+        "n": 4,
+        "std": 0.055130650778417827
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.07134191431718656,
+        "max": 0.125,
+        "mean": 0.05781940760389036,
+        "min": 0.03333333333333333,
+        "n": 4,
+        "std": 0.04484092666070808
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.11323398904757069,
+        "max": 0.21052631578947367,
+        "mean": 0.1038220551378446,
+        "min": 0.06666666666666667,
+        "n": 4,
+        "std": 0.07117158331085524
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.08026503748689727,
+        "max": 0.46875,
+        "mean": 0.41576545461243736,
+        "min": 0.367816091954023,
+        "n": 4,
+        "std": 0.050449426453109535
+      },
+      "cea.cea_committed": {
+        "ci95": 0.03107270923755464,
+        "max": 0.75,
+        "mean": 0.7209325396825397,
+        "min": 0.7083333333333334,
+        "n": 4,
+        "std": 0.0195303012178219
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": 0.045465721589045535,
+        "max": 0.26041902335486256,
+        "mean": 0.2283381416391097,
+        "min": 0.19912351713280718,
+        "n": 4,
+        "std": 0.028576820609079533
+      },
+      "contact_depth.n_scored": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": 0.0970491695148353,
+        "max": 0.47277569170043027,
+        "mean": 0.4124744858445242,
+        "min": 0.35057166238976917,
+        "n": 4,
+        "std": 0.06099884947506933
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.047541068255952376,
+        "max": 0.6545454545454545,
+        "mean": 0.6204008043824977,
+        "min": 0.5942028985507246,
+        "n": 4,
+        "std": 0.029881249689473525
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 2.7556928348420837,
+        "max": 10.0,
+        "mean": 8.5,
+        "min": 6.0,
+        "n": 4,
+        "std": 1.7320508075688772
+      },
+      "identifiability.fp": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.025253486273939037,
+        "max": 0.9454545454545454,
+        "mean": 0.9275951737050135,
+        "min": 0.9090909090909091,
+        "n": 4,
+        "std": 0.015872712931451313
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.025040917149572232,
+        "max": 0.9230769230769231,
+        "mean": 0.9035960985853227,
+        "min": 0.8850574712643678,
+        "n": 4,
+        "std": 0.01573910568797752
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.029384625680390148,
+        "max": 0.9423076923076923,
+        "mean": 0.9217064911832353,
+        "min": 0.9,
+        "n": 4,
+        "std": 0.018469280754487838
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.050506972547877976,
+        "max": 0.8909090909090909,
+        "mean": 0.8551903474100271,
+        "min": 0.8181818181818182,
+        "n": 4,
+        "std": 0.03174542586290256
+      },
+      "identifiability.tn": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.tp": {
+        "ci95": 10.432884692164482,
+        "max": 60.0,
+        "mean": 50.5,
+        "min": 45.0,
+        "n": 4,
+        "std": 6.557438524302
+      },
+      "intervention.motion_cost": {
+        "ci95": 0.022643180025208366,
+        "max": 0.1559662013807165,
+        "mean": 0.14574917315640484,
+        "min": 0.12487736092549095,
+        "n": 4,
+        "std": 0.014232042756259186
+      },
+      "intervention.normalised_regret": {
+        "ci95": 0.05282668559819804,
+        "max": 0.6037768117278656,
+        "mean": 0.5734871027072483,
+        "min": 0.5264196546499984,
+        "n": 4,
+        "std": 0.03320344789327344
+      },
+      "mcrb.mae": {
+        "ci95": 0.003257259525569259,
+        "max": 0.004259517873757333,
+        "mean": 0.001220112282203074,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.002047303284455851
+      },
+      "mcrb.n_scored": {
+        "ci95": 4.750851388610958,
+        "max": 39.0,
+        "mean": 35.75,
+        "min": 32.0,
+        "n": 4,
+        "std": 2.9860788111948193
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    },
+    "single_frame_classifier": {
+      "cea.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.direct.cea_all": {
+        "ci95": 0.34992493153223286,
+        "max": 0.5,
+        "mean": 0.29094827586206895,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.21994024609191257
+      },
+      "cea.by_mechanism.direct.cea_committed": {
+        "ci95": 0.34992493153223286,
+        "max": 0.5,
+        "mean": 0.29094827586206895,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.21994024609191257
+      },
+      "cea.by_mechanism.direct.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.emissive.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.emissive.cea_all": {
+        "ci95": 0.4054691455108841,
+        "max": 0.6923076923076923,
+        "mean": 0.33545120468611844,
+        "min": 0.13333333333333333,
+        "n": 4,
+        "std": 0.25485175707786556
+      },
+      "cea.by_mechanism.emissive.cea_committed": {
+        "ci95": 0.4054691455108841,
+        "max": 0.6923076923076923,
+        "mean": 0.33545120468611844,
+        "min": 0.13333333333333333,
+        "n": 4,
+        "std": 0.25485175707786556
+      },
+      "cea.by_mechanism.emissive.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.by_mechanism.reflection.abstention_rate": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.by_mechanism.reflection.cea_all": {
+        "ci95": 0.07725449463117148,
+        "max": 0.41379310344827586,
+        "mean": 0.37360051945181255,
+        "min": 0.3076923076923077,
+        "n": 4,
+        "std": 0.04855719335711595
+      },
+      "cea.by_mechanism.reflection.cea_committed": {
+        "ci95": 0.07725449463117148,
+        "max": 0.41379310344827586,
+        "mean": 0.37360051945181255,
+        "min": 0.3076923076923077,
+        "n": 4,
+        "std": 0.04855719335711595
+      },
+      "cea.by_mechanism.reflection.n": {
+        "ci95": 3.9775,
+        "max": 32.0,
+        "mean": 29.25,
+        "min": 26.0,
+        "n": 4,
+        "std": 2.5
+      },
+      "cea.cea_all": {
+        "ci95": 0.0,
+        "max": 0.3333333333333333,
+        "mean": 0.3333333333333333,
+        "min": 0.3333333333333333,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.cea_committed": {
+        "ci95": 0.0,
+        "max": 0.3333333333333333,
+        "mean": 0.3333333333333333,
+        "min": 0.3333333333333333,
+        "n": 4,
+        "std": 0.0
+      },
+      "cea.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "contact_depth.abs_rel_contact": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "contact_depth.n_scored": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "contact_depth.rmse_contact": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "fpcr.confident_rate_on_identifiable": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.fpcr": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.n_non_identifiable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "fpcr.sweep.0.40": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.50": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.60": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.70": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.80": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.sweep.0.90": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "fpcr.tau": {
+        "ci95": 0.0,
+        "max": 0.45,
+        "mean": 0.45,
+        "min": 0.45,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fn": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.fp": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.identifiability_auroc": {
+        "ci95": 0.1180618606017433,
+        "max": 0.5794466403162055,
+        "mean": 0.48659819977039653,
+        "min": 0.39872408293460926,
+        "n": 4,
+        "std": 0.07420607203126543
+      },
+      "identifiability.n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      },
+      "identifiability.n_non_resolvable": {
+        "ci95": 7.391446514947756,
+        "max": 33.0,
+        "mean": 28.75,
+        "min": 23.0,
+        "n": 4,
+        "std": 4.645786621588784
+      },
+      "identifiability.n_resolvable": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "identifiability.resolvability_accuracy": {
+        "ci95": 0.07327233545844385,
+        "max": 0.71875,
+        "mean": 0.6723488616268789,
+        "min": 0.632183908045977,
+        "n": 4,
+        "std": 0.0460542649015989
+      },
+      "identifiability.resolvability_f1": {
+        "ci95": 0.052376568639162235,
+        "max": 0.8363636363636363,
+        "mean": 0.8033973492355362,
+        "min": 0.7746478873239436,
+        "n": 4,
+        "std": 0.03292053339985056
+      },
+      "identifiability.resolvability_precision": {
+        "ci95": 0.07327233545844385,
+        "max": 0.71875,
+        "mean": 0.6723488616268789,
+        "min": 0.632183908045977,
+        "n": 4,
+        "std": 0.0460542649015989
+      },
+      "identifiability.resolvability_recall": {
+        "ci95": 0.0,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tn": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "identifiability.tp": {
+        "ci95": 10.712208237956045,
+        "max": 69.0,
+        "mean": 59.0,
+        "min": 55.0,
+        "n": 4,
+        "std": 6.733003292241386
+      },
+      "intervention.motion_cost": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "intervention.normalised_regret": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "mcrb.mae": {
+        "ci95": NaN,
+        "max": NaN,
+        "mean": NaN,
+        "min": NaN,
+        "n": 0,
+        "std": NaN
+      },
+      "mcrb.n_scored": {
+        "ci95": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "n": 4,
+        "std": 0.0
+      },
+      "n": {
+        "ci95": 11.9325,
+        "max": 96.0,
+        "mean": 87.75,
+        "min": 78.0,
+        "n": 4,
+        "std": 7.5
+      }
+    }
+  },
+  "config_hash": "42bc7de9",
+  "experiment": "phase1_problem_existence",
+  "git_commits": [
+    "cfb5082d7d596266fa4a8289e4e2e813b5b5fc28"
+  ],
+  "n_runs": 4,
+  "note": "mean +/- std with 95% Student-t confidence intervals",
+  "run_ids": [
+    "run_20260828_215014_seed42_42bc7de9",
+    "run_20260828_231633_seed1_42bc7de9",
+    "run_20260828_231735_seed2_42bc7de9",
+    "run_20260828_231839_seed3_42bc7de9"
+  ],
+  "run_paths": [
+    "experiments\\phase1_problem_existence\\run_20260828_215014_seed42_42bc7de9",
+    "experiments\\phase1_problem_existence\\run_20260828_231633_seed1_42bc7de9",
+    "experiments\\phase1_problem_existence\\run_20260828_231735_seed2_42bc7de9",
+    "experiments\\phase1_problem_existence\\run_20260828_231839_seed3_42bc7de9"
+  ],
+  "seeds": [
+    1,
+    2,
+    3,
+    42
+  ]
+}
