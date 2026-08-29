@@ -8,6 +8,23 @@ in this appendix revises a result in Section~\ref{sec:results}; the tables below
 extend those results with the remaining metrics, the per-family breakdown, and the
 analytical component omitted from the main text for space.
 
+\section{Why one image admits several mechanisms}
+\label{sec:supp-concept}
+
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=0.92\linewidth]{figures/fig_concept.pdf}
+\end{center}
+\caption{\textbf{One image, three mechanisms, and what motion reveals.} A real
+corridor, the same corridor painted on a display, and its virtual image in a
+mirror can be arranged to produce identical pixels at the reference view, so no
+single-view method separates them. They differ in the surface a hand would touch,
+shown as the coloured plane in each panel. Executing an action makes their
+predictions diverge, and the size of that divergence is the separability
+$\Delta_{ij}(a)$ of \eqref{eq:separability}.}
+\label{fig:concept}
+\end{figure}
+
 \section{The decision pipeline}
 \label{sec:supp-pipeline}
 
@@ -211,14 +228,45 @@ UniDepth          & $1$ & $66.2\%$ & $0.295$ & $0.692$ \\
 \end{center}
 \end{table}
 
+\section{Learned abstention, summary}
+\label{sec:supp-learned}
+
+The table below is the summary referred to from Section~\ref{sec:res-learned}; the section after it expands the leave-one-model-out column to every held-out checkpoint.
+
+\begin{table}[!ht]
+\caption{\textbf{Learned abstention.} Folds are split by base scene, so frames of
+one scene never span a partition. Success under leave-one-model-out means a
+property of the image was learned rather than of one predictor.}
+\label{tab:supp-learned}
+\begin{center}
+\footnotesize
+\begin{tabular}{lccc}
+\toprule
+\textbf{Policy} & \textbf{Grouped CV} & \textbf{Nested CV} & \textbf{Leave-one-model-out} \\
+\midrule
+\multicolumn{4}{l}{\emph{all 12 checkpoints, 3{,}552 image--model pairs, 68 scenes}} \\
+Strongest single feature    & $0.762$ & --- & $0.764$ \\
+Logistic regression         & $0.787$ & $0.748$ & $0.808$ \\
+\textsc{XGBoost}            & --- & $0.832$ & --- \\
+Histogram gradient boosting & $\mathbf{0.832}$ & $\mathbf{0.834}$ & $\mathbf{0.880}$ ($12/12$) \\
+\midrule
+\multicolumn{4}{l}{\emph{single checkpoint, identical data for all three}} \\
+Strongest single feature    & $0.819$ & --- & --- \\
+Hand-designed features      & $0.858$ & --- & --- \\
+\textbf{Frozen-encoder head} & $\mathbf{0.879}$ & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
 \section{Full leave-one-model-out results}
 \label{sec:supp-lomo}
 
-The leave-one-model-out protocol of Table~\ref{tab:learned} is expanded to every held-out checkpoint below, together with the regularisation sweep for the frozen-encoder head.
+The leave-one-model-out protocol of Table~\ref{tab:supp-learned} is expanded to every held-out checkpoint below, together with the regularisation sweep for the frozen-encoder head.
 
 \begin{table}[!ht]
 \caption{\textbf{Learned abstention in full.} \emph{Upper block:} every held-out
-checkpoint from Table~\ref{tab:learned}. The policy is trained on the other eleven
+checkpoint from Table~\ref{tab:supp-learned}. The policy is trained on the other eleven
 and evaluated on the one named, which it has never seen; it exceeds the strongest
 single feature on all twelve, with a mean margin of $+0.115$ and a minimum of
 $+0.051$. \emph{Lower block:} the frozen-encoder head against regularisation
@@ -312,6 +360,48 @@ DepthPro    & $0.843$ & $0.669$ & $\mathbf{+0.175}$ & $0.842$ & $0.741$ \\
 \end{tabular}}
 \end{center}
 \end{table}
+
+\section{Choosing where to look}
+\label{sec:supp-viewpoint}
+
+Fifty-five non-video scenes offer three or more camera positions of the same
+static content. Video scenes are excluded because their frames differ by what is
+displayed rather than by where the observer stands, so treating them as an action
+set would count a change of stimulus as a change of viewpoint.
+
+\begin{table}[!ht]
+\caption{\textbf{Viewpoint selection on real photographs}, $12$ checkpoints over
+$55$ scenes, lower is better on both columns. Selecting by
+\eqref{eq:evidence-selection}, the viewpoint at which some hypothesis best accounts
+for the observed view, lowers the error inside the ambiguous region by $31.6\%$
+against a random choice and wins on every checkpoint. Error inside the region is
+the primary column because it depends on no other part of the image; the fooled
+rate is reported alongside for continuity with the rest of the paper.}
+\label{tab:supp-viewpoint}
+\begin{center}
+\footnotesize
+\begin{tabular}{lcc}
+\toprule
+\textbf{Viewpoint chosen by} & \textbf{Error inside region} & \textbf{Fooled} \\
+\midrule
+first frame, no choice          & $0.0695$ & $49.2\%$ \\
+uniformly at random             & $0.0610$ & $48.7\%$ \\
+the predictor's own confidence  & $0.0450$ & $47.1\%$ \\
+\textbf{best-explained observation} \eqref{eq:evidence-selection} & $\mathbf{0.0417}$ & $\mathbf{44.1\%}$ \\
+\midrule
+\multicolumn{3}{l}{\emph{ahead of a random choice on $12/12$ checkpoints by error, $9/12$ by fooled rate}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+A note on the comparison with published methods. The benchmark's authors release
+both their data and a trained checkpoint. The datasets carry an explicit
+Apache-2.0 licence and are used here accordingly; the checkpoint carries no licence
+field on its model repository, no \texttt{LICENSE} file on either default branch of
+the source repository, and no licence statement in its README, all checked on
+2026-08-29. A direct comparison against it is therefore deferred until those terms
+are stated, rather than made under unclear ones.
 
 \section{Metric definitions}
 \label{sec:supp-metrics}

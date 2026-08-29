@@ -129,45 +129,42 @@ architecture shows a larger gap still ($0.843$ against $0.669$;
 Table~\ref{tab:supp-layered}). That label shares no machinery with any measure
 defined here.
 
+\subsection{Choosing where to look, on real photographs}
+\label{sec:res-viewpoint}
+
+The benchmark photographs each static scene from several camera positions, and the
+median stereo disparity differs across those frames while the scene itself does
+not, which is what a moved observer produces. Fifty-five scenes therefore offer a
+real action set of three or more viewpoints, and selection can be evaluated on
+photographs rather than in simulation. Applying
+\eqref{eq:evidence-selection}, and measuring the relative error inside the
+ambiguous region so that the outcome depends on no other part of the image,
+choosing the best-explained viewpoint reduces that error by $\mathbf{31.6\%}$
+relative to choosing uniformly at random, and does so on $\mathbf{12}$ of $12$
+checkpoints; the proportion of images on which the predictor is fooled falls from
+$48.7\%$ to $44.1\%$, on $9$ of $12$. Table~\ref{tab:supp-viewpoint} gives the full
+comparison. What is measured is the error at the chosen viewpoint rather than the
+recovery of the mechanism itself, since real images carry no mechanism annotation;
+it is the closest test the data supports.
+
 \subsection{Learned abstention}
 \label{sec:res-learned}
 
 The signals above are hand-designed, so a natural question is whether a learned
 combination does better and whether what it learns is specific to one predictor.
-Table~\ref{tab:learned} answers both. Under leave-one-model-out the policy is
-trained on eleven checkpoints and tested on the twelfth, which it has never seen,
-and it exceeds the strongest single feature on $12$ of $12$. Nested selection moves
-the result by under $0.01$ and two boosted families agree within $0.002$, so the
-figures are not artefacts of tuning. On a single checkpoint, where every method
-sees identical data, a head reading \emph{frozen} encoder features exceeds ten
-hand-designed quantities: evidence of ambiguity is already present in the
-representation and available to be decoded.
+Under leave-one-model-out, a gradient-boosted policy trained on eleven checkpoints
+and tested on the twelfth reaches $\mathbf{0.880}$ against $0.764$ for the
+strongest single feature, ahead on $\mathbf{12}$ of $12$ held-out checkpoints
+(Figure~\ref{fig:transfer}a). Nested selection, choosing hyperparameters on inner
+folds and scoring only on outer folds never seen during selection, moves the result
+by under $0.01$, and \textsc{XGBoost} and histogram boosting agree within $0.002$,
+so the figures are not artefacts of tuning. On a single checkpoint, where every
+method sees identical data, a head reading \emph{frozen} encoder features reaches
+$\mathbf{0.879}$ against $0.858$ for ten hand-designed quantities and $0.819$ for
+the strongest single feature: evidence of ambiguity is already present in the
+representation and available to be decoded. Table~\ref{tab:supp-learned} gives the
+full comparison.
 
-\begin{table}[t]
-\caption{\textbf{Learned abstention.} Folds are split by base scene, so frames of
-one scene never span a partition. Success under leave-one-model-out means a
-property of the image was learned rather than of one predictor.}
-\label{tab:learned}
-\begin{center}
-\footnotesize
-\begin{tabular}{lccc}
-\toprule
-\textbf{Policy} & \textbf{Grouped CV} & \textbf{Nested CV} & \textbf{Leave-one-model-out} \\
-\midrule
-\multicolumn{4}{l}{\emph{all 12 checkpoints, 3{,}552 image--model pairs, 68 scenes}} \\
-Strongest single feature    & $0.762$ & --- & $0.764$ \\
-Logistic regression         & $0.787$ & $0.748$ & $0.808$ \\
-\textsc{XGBoost}            & --- & $0.832$ & --- \\
-Histogram gradient boosting & $\mathbf{0.832}$ & $\mathbf{0.834}$ & $\mathbf{0.880}$ ($12/12$) \\
-\midrule
-\multicolumn{4}{l}{\emph{single checkpoint, identical data for all three}} \\
-Strongest single feature    & $0.819$ & --- & --- \\
-Hand-designed features      & $0.858$ & --- & --- \\
-\textbf{Frozen-encoder head} & $\mathbf{0.879}$ & --- & --- \\
-\bottomrule
-\end{tabular}
-\end{center}
-\end{table}
 
 \begin{figure}[t]
 \begin{center}

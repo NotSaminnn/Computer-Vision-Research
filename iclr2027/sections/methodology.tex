@@ -45,16 +45,18 @@ in advance of acting.
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.92\linewidth]{figures/fig_concept.pdf}
+\includegraphics[width=\linewidth]{figures/fig_system.pdf}
 \end{center}
-\caption{\textbf{One image, three mechanisms, and what motion reveals.} A real
-corridor, the same corridor painted on a display, and its virtual image in a
-mirror can be arranged to produce identical pixels at the reference view, so no
-single-view method separates them. They differ in the surface a hand would touch,
-shown as the coloured plane in each panel. Executing an action makes their
-predictions diverge, and the size of that divergence is the separability
-$\Delta_{ij}(a)$ of \eqref{eq:separability}.}
-\label{fig:concept}
+\caption{\textbf{The method on one real image.} A stereo pair supplies an
+executed action, and the annotated region marks where the surface is ambiguous.
+The encoder's geometry gives $H_D$ directly and, fitted to a plane over the same
+region, $H_E$; the mirror and glass hypotheses enter the same way where the scene
+admits them. Warping the second view under each hypothesis gives the separability
+$\Delta_{DE}$ of \eqref{eq:delta-photometric}, and identifiability
+\eqref{eq:identifiability} is compared against the perceptual threshold. Here it
+falls short, so \eqref{eq:abstain} declines to answer, while the predictor answers
+and is wrong. Depth maps are from a published checkpoint used as released.}
+\label{fig:system}
 \end{figure}
 
 \subsection{Predicting the consequence of an action}
@@ -158,6 +160,30 @@ separated and the binding quantity is therefore the smallest separability rather
 than the sum. This criterion is $T$-optimality from optimal design for model
 discrimination \citep{atkinson1975design,hunter1965experimental}, applied here to
 active visual perception.
+
+\paragraph{Which quantity is available, and when.}
+The two objectives above are stated over hypothesis \emph{pairs}, so they require
+at least two pairs to differ from one another. That holds in the synthetic
+benchmark, where four mechanisms give six pairs and the weakest-pair form is
+therefore the operative criterion. A calibrated stereo pair supports two
+mechanisms and hence a single pair, so on real photographs
+\eqref{eq:sum} and \eqref{eq:maximin} coincide and neither is informative about
+the other. Selection on real data is instead driven by the belief update of
+\eqref{eq:belief}: among the viewpoints an observer could occupy, the one to
+prefer is the one at which some hypothesis best accounts for the view actually
+obtained,
+\begin{equation}
+\label{eq:evidence-selection}
+a^{\star}_{\text{evidence}} \;=\; \arg\min_{a \in \mathcal{A}} \;
+\min_{k} \; e_k(a),
+\end{equation}
+where $e_k(a)$ is the residual of hypothesis $k$ after executing $a$, as defined
+in Section~\ref{sec:belief}. Both rules act on the same belief machinery, one
+through the separability that enters it and the other through the residual that
+leaves it, and each is used where the evidence it needs exists: \eqref{eq:maximin}
+where several pairs contend, \eqref{eq:evidence-selection} where the observation
+itself must arbitrate. Section~\ref{sec:res-learned} reports the second on real
+photographs.
 
 \subsection{Belief update, output, and required baseline}
 \label{sec:belief}
