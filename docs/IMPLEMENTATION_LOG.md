@@ -866,3 +866,90 @@ than absent from it.
 
 **Tests: 261 → 276**, including a real-data guard that fails if reprojection ever
 stops beating the identity warp.
+
+
+---
+
+## 13. Session 4 — 2026-08-29: external evaluation, and what it cost to get an honest number
+
+### 13.1 What was built
+
+| Component | Purpose |
+|---|---|
+| `models/foundation_encoders.py` | Gate 6. First encoder in this repository that reads pixels. Refuses to run without an image rather than falling back to the oracle, and records the checkpoint's licence in the run manifest. |
+| `models/selector.py` — `MaxMinSeparabilitySelector` | Maximises the weakest still-contended pair instead of the belief-weighted sum. |
+| `scripts/evaluate_external.py` | E10. Depth model against real stereo, calibrated outside the illusion and scored inside. |
+| `scripts/evaluate_identifiability.py` | E12. Identifiability against confidence at predicting failure. |
+| `scripts/evaluate_conformal.py` | E13. Split conformal, 400 splits per level, against the same signals. |
+| `configs/experiments/phase2_benchmark_core.yaml`, `phase1_selector_study.yaml` | E4 and E11. |
+
+### 13.2 The measurement that changed the direction of the work
+
+Every committed error the full method made on Phase 1 was a mirror called
+`direct` — 38 of 80. Tracing it: all nine wrong scenes in seed 3 sat at
+`p_max = 0.500` exactly, a perfect posterior tie broken arbitrarily. And at the
+selected action, `Δ(H_D,H_R) = 0.00` in **all eight** cases checked, while
+actions worth 4–12 px-equivalent existed.
+
+The cause is the objective. `argmax_a Σ p_i p_j Δ_ij(a)` is a **sum**, so an
+action separating already-decided pairs can outscore the one separating the
+contended pair. Maximising the weakest contended pair instead takes committed
+accuracy from 0.855 to 1.000 and mirror committed accuracy from 0.529 to 1.000,
+using 36 % less motion.
+
+Recorded in §6 of `LITERATURE_CROSS_RESEARCH.md`: the criterion itself is
+**classical statistics** (T-optimality, Atkinson & Fedorov 1975). The
+contribution is its transfer into active vision plus the measurement of why the
+prevailing objective fails — not the criterion.
+
+### 13.3 What section 12 already covers
+
+The four geometry defects the two reviews caught, and the Gate-7 negative
+result, are recorded in §12.2 and §12.4 and are not repeated here.
+
+### 13.4 External evaluation, and a caveat that generalises
+
+455 real stereo pairs; 296 with ground truth able to arbitrate. Error 1.90×
+worse inside illusions, 65.2 % of images fooled, 100 % of the 95 where a monitor
+fills the frame.
+
+**159 pairs were excluded because their ground truth cannot answer the question.**
+Stereo matching on a display locks onto the displayed content, so the measured
+disparity is not planar where the physical surface is a flat panel. Before
+filtering, one category reported a 1 % failure rate — the exact inverse of the
+truth. Evaluating apparent-versus-physical geometry needs ground truth that is
+itself immune to the illusion.
+
+### 13.5 Two mistakes of mine, recorded
+
+**Environment.** Installing `depth-anything-3` while a seed job held the venv
+stripped numpy's `dist-info`, leaving the package importable but its metadata
+gone, which broke `transformers`' version check. Repaired by writing the metadata
+back rather than reinstalling, so a running agent was not disturbed. The lesson
+is in the timing, not the package: do not install into an environment a job is
+using. Heavy model dependencies now live in a separate `.venv-da3`.
+
+**Unpaired comparison.** The action-noise degradation was first quoted across 11
+clean seeds and 3 noisy ones. Paired properly on the 10 seeds present in both, it
+is **−48.4 % for the generic NBV proxy against −2.3 % here**. Earlier figures of
+"−58 %/−4 %" and "−60.4 %/−7.4 %" came from mismatched sets and must not be used.
+
+### 13.6 Figures
+
+Palette moved from Okabe-Ito to Paul Tol *muted*; hatching replaced by
+lightness separation (light fill, full-strength edge), still greyscale-safe.
+Four defects fixed: an occluding legend, invisible zero-valued bars on a log
+axis, unreadable white annotations on bright colormap cells, and a table on a
+canvas 95 % empty. All have regression tests.
+
+### 13.7 Honest status at the end of this session
+
+**Established:** identifiability beats confidence and conformal-wrapped
+confidence at predicting failure on real data; maximin selection removes every
+committed error across two synthetic benchmarks and four mechanisms; the method
+is robust to execution noise where hypothesis-blind selection is not.
+
+**Not established:** AUROC 0.632 is a modest absolute predictor and the result is
+a contrast, not a strong score. One external dataset, one depth model evaluated
+externally so far, and no comparison against a published method on the same task.
+Every synthetic number still shares forward optics between simulator and model.

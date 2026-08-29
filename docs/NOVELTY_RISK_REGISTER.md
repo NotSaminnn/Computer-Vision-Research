@@ -1,6 +1,6 @@
 # Novelty Risk Register
 
-**Audit date:** 2026-08-28 · **Basis:** `docs/LITERATURE_CROSS_RESEARCH.md`
+**Audit date:** 2026-08-28 · **Revised:** 2026-08-29 · **Basis:** `docs/LITERATURE_CROSS_RESEARCH.md`
 
 Every claim Intervene3D might make, the existing work that threatens it, how much
 they overlap, the evidence, and wording that is safe to use.
@@ -36,6 +36,20 @@ contribution anywhere — paper, README or code comment.
 
 ---
 
+## B2. Claims added on 2026-08-29, with their prior art
+
+| Claim | Nearest existing work | Overlap | Evidence | Safe wording |
+|---|---|---|---|---|
+| **Maximin experiment selection beats the summed information objective for *decisions*** | **T-optimality (Atkinson & Fedorov 1975); Hunter–Reiner (1965); robust T-optimal discriminating designs** | **HIGH as statistics — the criterion is classical. LOW as vision.** | Verified 2026-08-29. Model-discrimination design is a mature sub-field of optimal experimental design, with its own criteria distinct from information gain. | **Do NOT claim the criterion.** Claim the transfer and the measurement: "Active vision selects viewpoints by expected information gain, a sum over hypothesis pairs. We show measurably that this can be maximised by an action leaving the deciding pair unseparated — `Δ(H_D,H_R) = 0.00` on every mirror the system got wrong — and that a model-discrimination criterion from the experimental-design literature fixes it." Cite the statistics as support, not as a competitor. |
+| **Epistemic sufficiency: whether the evidence available to the observer can decide, as distinct from model uncertainty** | Selective prediction / Chow's rule (1970) and its 60-year literature; conformal prediction; aleatoric–epistemic decomposition | **LOW–MEDIUM** | No work found that separates *evidence insufficiency* from *model uncertainty* in a perception setting. The distinction is empirically demonstrated here, not merely asserted: confidence predicts failure at AUROC 0.339 (below chance) while identifiability reaches 0.632 on the same images. | "Uncertainty is conventionally decomposed into aleatoric and epistemic components, both properties of the estimator. We measure a third quantity that is a property of the *(hypotheses, action set, resolution)* triple: whether any available observation can decide. It is reducible only by acting." Qualify as ever. |
+| **Calibration cannot repair a badly-ranking score** | Conformal prediction; selective classification with guarantees | **LOW as a claim, but it is a known property of conformal** stated informally elsewhere | Measured: split conformal on confidence honours coverage at 5/5 levels and still reaches 76.6 % selective risk against a 65.2 % no-abstention baseline. | "Conformal prediction constrains how many predictions are retained, never which. We give a setting where a validly calibrated confidence-based selector is worse than not abstaining." **Do not present this as a flaw in conformal** — it is a flaw in the score, and conformal behaved exactly as specified. |
+| **Ground truth in existing illusion benchmarks can be unable to arbitrate the question** | No direct prior work found | **LOW** | 159 of 455 pairs in a NeurIPS 2025 benchmark have non-planar measured disparity where the physical surface is a flat panel, because stereo matching locks onto displayed content. | "Evaluating apparent-versus-physical geometry requires ground truth that is itself immune to the illusion." State as a methodological caution, not as criticism of the dataset's authors. |
+
+**Standing rule for all four:** the first row's criterion is *not* ours. Any
+sentence implying we invented maximin or minimax experiment design must be cut.
+
+---
+
 ## C. Active risks
 
 ### R1 — "This is just active perception applied to mirror/glass classification." **[HIGHEST]**
@@ -47,8 +61,16 @@ state `X` exists to be estimated. We first ask whether
 The `intervene3d_no_hypothesis_conditioning` ablation makes this concrete: with
 the causal conditioning removed, every pairwise separability is identically zero
 and the system abstains on 100 % of scenes. A generic NBV proxy reaches CEA
-`0.412 ± 0.052` against `0.750 ± 0.040`. **Do not answer "but ours uses a world
+`0.368` against `0.557` (11 seeds). **Do not answer "but ours uses a world
 model."**
+
+*Strengthened 2026-08-29.* The reply is no longer only a distinction. The summed
+information objective — what NBV actually optimises — was measured selecting
+actions that score `Δ(H_D,H_R) = 0.00` on every mirror the system got wrong,
+while actions worth 4–12 px-equivalent were available. Under execution noise the
+hypothesis-blind proxy loses **48.4 %** of its accuracy against **2.3 %** here
+(paired, 10 seeds). That is a measured failure of the standard objective, not a
+claim about ours.
 
 ### R2 — "GIFT already distinguishes physical geometry from reflections." **[HIGH]**
 
@@ -89,7 +111,14 @@ oracle-encoder results are an upper bound. *Mitigation:* stated in every run's
 `summary.md`, in `docs/RESEARCH_SPEC_AUDIT.md` §9, and in the README. The mirror
 and display transitions **are** independently cross-validated (virtual camera;
 plane-induced homography), so the optics are checked even though the renderer is
-not. Real validation is Gate 5.
+not.
+
+*Partly discharged 2026-08-29.* The identifiability claim now has independent
+support: on 296 real stereo pairs from a published benchmark, with a released
+depth checkpoint and nothing tuned, identifiability predicts failure at AUROC
+0.632 against 0.339 for confidence. That does **not** validate the synthetic
+benchmark itself, and every synthetic number in this repository remains subject
+to the shared-optics caveat.
 
 ### R7 — A concurrent CVPR 2027 submission. **[UNQUANTIFIABLE]**
 

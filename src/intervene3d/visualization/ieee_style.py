@@ -43,23 +43,48 @@ IEEE_SINGLE_COLUMN_IN = 3.5
 IEEE_DOUBLE_COLUMN_IN = 7.16
 GOLDEN = 1.618
 
-#: Grayscale-safe categorical palette, ordered by increasing luminance contrast.
-#: Paul Tol's *muted* qualitative scheme.  Chosen over the saturated Okabe-Ito
-#: set it replaced because dense, high-chroma fills read as slide graphics rather
-#: than journal figures; Tol muted keeps the colour-vision-deficiency safety while
-#: sitting far quieter on the page.  Ordered so adjacent series stay separable.
-PALETTE = ("#3D4A52", "#4477AA", "#CC6677", "#117733", "#AA4499", "#88CCEE", "#DDCC77")
+#: ColorBrewer qualitative schemes (Brewer, Harrower & Pennsylvania State
+#: University, https://colorbrewer2.org).  Two schemes, used for two jobs,
+#: because one scheme cannot do both well:
+#:
+#: ``PALETTE`` -- **Dark2**, for lines, markers, edges and any text drawn in a
+#:     series colour.  ColorBrewer flags Dark2 as colour-blind safe and it is
+#:     dark enough to hold contrast against the light page.
+#: ``FILL_PALETTE`` -- **Set3**, for large filled areas.  Set3 is the pastel
+#:     qualitative scheme and reads quietly at bar-sized areas.
+#:
+#: The split is deliberate and worth stating, because Set3 alone would be a
+#: regression: ColorBrewer marks **Set3 as NOT colour-blind safe**, and its
+#: pastels lose contrast against a light ground when used for 1-px lines or
+#: small markers -- exactly the legibility failures an earlier figure pass was
+#: spent fixing.  Pairing a Set3 fill with its Dark2 edge keeps the pastel
+#: surface the scheme is good at while the shape stays readable in greyscale
+#: and under colour-vision deficiency.
+PALETTE = ("#1B9E77", "#D95F02", "#7570B3", "#E7298A", "#66A61E", "#E6AB02", "#A6761D")
+FILL_PALETTE = ("#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072", "#80B1D3", "#FDB462", "#B3DE69")
 MARKERS = ("o", "s", "^", "D", "v", "P", "X")
 LINESTYLES = ("-", "--", "-.", ":", (0, (3, 1, 1, 1)), (0, (5, 2)), (0, (1, 1)))
 
 #: Stable colours for the optical mechanisms, used across every figure.
+#: Stable per-mechanism colours, drawn from Dark2 so they match PALETTE.  These
+#: are identities, not series indices: H_R must be the same colour in every
+#: figure, so they are pinned here rather than taken from the cycle.
 MECHANISM_COLORS = {
-    "direct": "#4477AA",
-    "emissive": "#CC6677",
-    "reflection": "#117733",
-    "transmission": "#AA4499",
-    "mixed": "#DDCC77",
+    "direct": "#7570B3",
+    "emissive": "#D95F02",
+    "reflection": "#1B9E77",
+    "transmission": "#E7298A",
+    "mixed": "#E6AB02",
     "abstain": "#9AA5AC",
+}
+#: Matching Set3 fills, indexed identically, for filled areas of each mechanism.
+MECHANISM_FILLS = {
+    "direct": "#BEBADA",
+    "emissive": "#FDB462",
+    "reflection": "#8DD3C7",
+    "transmission": "#FB8072",
+    "mixed": "#FFFFB3",
+    "abstain": "#D9D9D9",
 }
 MECHANISM_LABELS = {
     "direct": r"$H_D$ direct",
@@ -190,13 +215,19 @@ def tint(colour: str, amount: float = 0.55) -> tuple[float, float, float]:
 
 
 def bar_style(index: int = 0, *, colour: str | None = None, emphasis: bool = False) -> dict[str, Any]:
-    """Fill/edge pair for a bar series: light body, full-strength outline."""
+    """Fill/edge pair for a bar series: Set3 body, Dark2 outline.
+
+    The two ColorBrewer schemes are index-matched, so bar ``i`` is the Set3
+    pastel drawn inside its Dark2 counterpart. Emphasis darkens toward the edge
+    colour rather than lightening further -- on a light page the emphasised bar
+    has to be the *darker* one, or emphasis reads as fading out.
+    """
     base = colour or PALETTE[index % len(PALETTE)]
-    return {
-        "color": tint(base, 0.30 if emphasis else 0.62),
-        "edgecolor": base,
-        "linewidth": 0.7,
-    }
+    if colour is None:
+        body = tint(base, 0.42) if emphasis else FILL_PALETTE[index % len(FILL_PALETTE)]
+    else:
+        body = tint(base, 0.30 if emphasis else 0.62)
+    return {"color": body, "edgecolor": base, "linewidth": 0.7}
 
 
 def series_style(index: int) -> dict[str, Any]:

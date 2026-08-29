@@ -140,3 +140,60 @@ Per the plan's section 39, literature checking is not a one-off. Re-run before:
 - [NBV for reflective objects (arXiv:2202.13263)](https://arxiv.org/abs/2202.13263)
 - [The 3D Mirage (arXiv:2512.15423)](https://arxiv.org/abs/2512.15423) — **newly found, not in the source document**
 - [Towards Robust Monocular Depth in Non-Lambertian Surfaces (arXiv:2408.06083)](https://arxiv.org/abs/2408.06083) — **newly found neighbour of GIFT**
+
+
+---
+
+## 6. Second pass — 2026-08-29
+
+Searches run while preparing the selector and abstention claims. Each entry
+states what was actually confirmed, and what it costs us.
+
+### 6.1 Model-discrimination experiment design — **a field we had missed**
+
+| Finding | Source | Consequence |
+|---|---|---|
+| Optimal design *for discriminating between rival models* is a mature sub-field with its own criteria, distinct from information gain | Hunter & Reiner (1965) — first recorded criterion; Fedorov & Malyutov (1972); Atkinson & Cox (1974); **Atkinson & Fedorov (1975) — T-optimality** | **The maximin criterion is not ours.** It is classical statistics. Claiming it would have been caught. |
+| The Bayesian literature states explicitly that when the goal is deciding *which* model holds, criteria developed for model discrimination are the appropriate ones rather than generic expected information gain | Modern Bayesian Experimental Design (arXiv:2302.14545); optimal Bayesian design for model discrimination via classification (arXiv:1809.05301) | Our finding is a **transfer**, not a discovery. It is still publishable because vision NBV overwhelmingly uses EIG and does not cite this literature — but the framing must be transfer-plus-measurement. |
+| Finding T-optimal designs is hard: the criterion is non-differentiable with nested optimisation, and closed forms exist only for simple cases | Robust T-optimal discriminating designs (Ann. Statist. 41(4)); computing T-optimal designs via nested semi-infinite programming (arXiv:2208.13439) | Supports our use of a discrete, enumerable action set: the hard part of T-optimality is the continuous design space, which we do not have. |
+
+**Verdict:** downgrade the maximin claim from "new criterion" to "criterion
+imported from experimental design, with the first measurement of why the
+prevailing vision objective fails." Cite Atkinson & Fedorov as support.
+
+### 6.2 Selective prediction and abstention
+
+| Finding | Source | Consequence |
+|---|---|---|
+| Selective prediction with a reject option is ~60 years old; Chow's rule is the optimal decision under a cost-sensitive loss given posterior class probabilities | Chow (1970); selective classification for deep networks (arXiv:1705.08500) | **Abstention itself is not novel.** Only the *quantity abstained on* can be. |
+| Conformal prediction supplies finite-sample coverage guarantees for selective prediction | standard | The strongest opponent, and the one we must beat. Now measured — see E13. |
+| Depth estimation and 3-D reconstruction are **not** prominent in the selective-prediction literature | absence noted across searches | Genuine gap, but argued from absence — state it as "we found no work", never as "no work exists". |
+
+### 6.3 Depth foundation models on non-Lambertian surfaces
+
+| Finding | Source | Consequence |
+|---|---|---|
+| Depth Anything V2 is documented as vulnerable to transparent objects and reflections | arXiv:2406.09414; arXiv:2408.06083 | The failure we measure is acknowledged by the field, which strengthens the motivation and weakens any claim to have discovered it. |
+| Fine-tuning approaches for non-Lambertian depth exist and are active | GIFT (arXiv:2608.02068); Costanzino et al., ICCV 2023 (arXiv:2307.15052); `prompt-depth-anything-*-transparent-hf` | **Do not train a model to fix this.** That space is occupied and our thesis is that some cases are unresolvable in principle. Test whether *their* training helps instead. |
+
+### 6.4 Licence facts corrected on inspection
+
+Model cards are not a reliable licence source. Checked against source repositories:
+
+| Model | HF card | Actual | Usable |
+|---|---|---|---|
+| Metric3D | none declared | **BSD 2-Clause** | yes |
+| UniDepth v2 | none declared | **CC BY-NC 4.0** | research only |
+| Depth-Anything-V3 (`DA3-*`) | — | Apache-2.0, except `DA3NESTED-GIANT-*` which is CC BY-NC 4.0 | yes, with care |
+| Depth-Anything-V2 Base/Large | cc-by-nc-4.0 | as stated | research only |
+| VGGT-1B | cc-by-nc-4.0 | as stated | research only |
+| 3D Visual Illusion authors' own model | **none declared** | not determined | **not used** — licence must be confirmed with the authors first |
+
+An earlier note in this session excluded UniDepth for having "no licence". That
+was wrong: the card omits the field, the repository carries CC BY-NC 4.0.
+
+### 6.5 Re-verification obligation
+
+This pass covers work visible up to 2026-08-29 and used web search plus source
+repositories. It is not exhaustive, and the area moves quickly. Re-run these
+queries before any submission.

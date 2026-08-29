@@ -101,7 +101,7 @@ lives only in `InferenceResult.abstained` / `.resolvable`. A regression test
 | Metrics | plan 16 | `metrics/` |
 | Phase 1 experiment | plan 17 | `experiments/phase1.py` |
 | Smoke test | plan 18 | `scripts/run_smoke_test.sh`, `tests/smoke/` |
-| Unit/integration tests | plan 19 | `tests/` (224 tests) |
+| Unit/integration tests | plan 19 | `tests/` (283 tests) |
 | Reproducibility | plan 6, 26, 27 | `reproducibility/` |
 | IEEE visualisation | plan 24 | `visualization/` |
 | Experiment registry | plan 26 | `experiments/registry.jsonl` |
@@ -153,6 +153,18 @@ Only the compensated one is compared with `mcrb_analytic`.
 *Resolution:* the reference-view percept is defined as the *apparent* content
 depth for every mechanism, which is the empirical finding of the NeurIPS 2025
 3D-illusion work (a monocular model sees the depicted corridor, not the screen).
+
+> **Scope correction (2026-08-29).** That finding holds for *emissive and printed*
+> surfaces and must not be stated as a general property of depth models. On
+> LayeredDepth (E15), where the ambiguous surface is real glass, the direction
+> reverses: on the 2,304 point pairs where the two layer definitions disagree,
+> the model follows the *interface* rather than the content 70.5 % of the time.
+> The benchmark's own layer labels still show the ambiguity is real and costly
+> (0.848 vs 0.737 accuracy, 307 k pairs) — what is *not* supported is a fixed
+> direction of error. The defensible claim is commitment under ambiguity, not
+> "models report the depicted scene". Only 49 of 299 images carry a
+> discriminating pair, so this refutes the universal claim without establishing
+> its converse.
 Ground-truth `contact_depth` is the first physical surface along the ray and is
 supervision only, never an input.
 
@@ -203,11 +215,11 @@ audit found no naming collision (`docs/LITERATURE_CROSS_RESEARCH.md`).
 
 | Component | Implementation | Honest status |
 |---|---|---|
-| `GeometryEncoder` | `ground_truth`, `mock` | Real. `moge` / `vggt_like` raise `NotImplementedError` with instructions — they are **NOT IMPLEMENTED**, never silently substituted. |
-| `TransitionModel` | analytical, no-hypothesis-conditioning, hybrid, learned-only | Analytical is the validated path. The learned residual is a small NumPy MLP: real and tested, but a Gate-7 placeholder, not a world model. |
+| `GeometryEncoder` | `ground_truth`, `mock`, `depth_anything_v2` | `moge` / `vggt_like` are still **NOT IMPLEMENTED** — they raise `NotImplementedError` with instructions and are never silently substituted. A real encoder now exists alongside them: `depth_anything_v2` (`models/foundation_encoders.py`) runs a published monocular depth checkpoint through `transformers` and is the encoder used in the external evaluation (E10/E12). It reports **relative inverse depth, not metric depth**, and it raises rather than falling back to the oracle when an observation carries no image — so a synthetic run cannot silently claim it. The Phase 1 and Phase 2 synthetic numbers in this document were **all produced with `ground_truth` or `mock`**; none of them has been re-run with a foundation encoder. |
+| `TransitionModel` | analytical, no-hypothesis-conditioning, hybrid, learned-only | Analytical is the validated path. The NumPy learned residual is real and tested but a placeholder, not a world model — and on the synthetic benchmark its target is identically zero, so `hybrid` is *equal to* `analytical` there and the ablation is uninformative. A PyTorch residual (`models/torch_transition.py`) has since been trained on external rendered sequences; it is **not hypothesis-conditioned**, and it returned a negative result (`docs/DEVELOPMENT_ROADMAP.md` Gate 7). |
 | `SeparabilityEstimator` | deterministic geometry distance | Real. |
 | `BeliefUpdater` | likelihood update | Real, numerically hardened. |
-| `InterventionSelector` | max-separability, entropy-NBV proxy, random, max-baseline, fixed, null | Real. The NBV entry is a deliberately generic *proxy*, not a reimplementation of any published method. |
+| `InterventionSelector` | max-separability (summed), maximin separability, entropy-NBV proxy, random, max-baseline, fixed, null | Real. The NBV entry is a deliberately generic *proxy*, not a reimplementation of any published method. The maximin criterion is standard in the model-discrimination design literature (T-optimality, Hunter–Reiner) and is **not claimed as novel**; what is claimed is the measurement that the summed default fails. |
 | `IdentifiabilityEstimator` | epsilon threshold | Real. |
 
 ---
@@ -217,6 +229,17 @@ audit found no naming collision (`docs/LITERATURE_CROSS_RESEARCH.md`).
 This section exists so that no number in this repository is over-read.
 
 ### Experimentally testable **now**, and tested
+
+*Seed count, stated once.* The numbers quoted below are the **3-seed** readings
+this audit was written against. `results/phase1_problem_existence/aggregate.json`
+now holds **11 seeds** and several values have moved (for example passive
+identifiability AUROC `0.699 → 0.748`, FPCR without abstention `0.810 → 0.831`,
+forced-choice CEA `0.714 → 0.722`). Every *ordering* asserted below still holds in the
+11-seed means, but the exact figures do not, and the per-seed statements
+("strictly increasing in each of the three seeds", the three MCRB `R²` values)
+have **not** been re-verified across all 11 — treat them as unverified beyond the
+original three. Take `results/` as authoritative and the numbers here as the
+reading of record at the time of the audit.
 
 - **Appearance matching.** The variants are pixel-identical at `C_0`. Verified
   exactly (deviation `0.000e+00`), so a single-frame classifier is at chance
@@ -254,8 +277,24 @@ This section exists so that no number in this repository is over-read.
   comparison restricted to successful resolutions is Phase 4 work.
 - **`H_M` mixed optics.** Implemented but unvalidated; excluded from Phase 1.
 - **Interface-parameter estimation.** Assumed known (A6).
-- **Everything involving external datasets.** None were downloaded; see
-  `docs/DATASET_MATRIX.md`.
+- **Everything involving external datasets** *(revised 2026-08-29)*. Four
+  datasets, eight variants, ~57 GB have since been acquired, checksum-verified
+  against publisher SHA-256 and pinned to immutable revisions, and three external
+  evaluations have been run (`docs/EXPERIMENT_PLAN.md` E10, E12, E13), all on the
+  same dataset. What that
+  changes and what it does not:
+  - it **does** give a first measurement on real photographs with a published
+    encoder, outside this repository's own simulator;
+  - it does **not** supply resolvability labels or matched counterfactuals, so it
+    cannot substitute for Intervene3D-Bench, and no CEA, FPCR, regret or MCRB
+    number in this document has an external counterpart;
+  - the external identifiability result (AUROC `0.632` ours vs `0.339`
+    confidence) is a **contrast on a modest absolute score**, on a single dataset
+    with a single checkpoint, at one seed. It is not a replacement for the
+    synthetic AUROC and it is not a multi-seed result.
+  - `LayeredDepth`, `LayeredDepth-Syn` and the TransPhy3D splits are acquired and
+    readable but have **not** been used for any reported evaluation of this
+    system; TransPhy3D has been used only for the Gate-7 training run.
 
 ---
 

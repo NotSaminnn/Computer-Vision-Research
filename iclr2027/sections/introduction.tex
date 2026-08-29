@@ -1,0 +1,95 @@
+\section{Introduction}
+\label{sec:introduction}
+
+A corridor viewed through an open doorway, the same corridor reflected in a
+planar mirror, and a photograph of it displayed on a screen can be arranged to
+produce an identical image. The three scenes differ in the surface a hand would
+touch, which is empty air in the first case, a pane of glass in the second and a
+rigid panel in the third, yet at a single viewpoint the light reaching the sensor
+is the same. The physical explanation of the observed geometry is therefore not
+determined by the image, and any answer produced from that image alone is
+selected by a prior rather than by evidence.
+
+This distinction carries practical weight wherever perception is coupled to
+action. A service robot must separate a doorway from its reflection before a path
+is committed, an assistive system is expected to report the surface in front of a
+user rather than the scene depicted on it, and an augmented-reality device places
+content on a panel rather than inside the room that panel shows. In each case the
+cost of an error is set by physical contact, so the quantity of interest is the
+geometry of the first real surface along the ray, and the failure of interest is a
+confident report of geometry that is not present.
+
+\paragraph{From accurate depth to identifiable depth.}
+Monocular depth estimation now recovers relative geometry reliably across diverse
+scenes, and large pre-trained predictors transfer to unfamiliar imagery with
+little adaptation. Several complementary lines of work extend perception to
+exactly the configurations described above. Multi-layer and order-aware
+formulations represent more than one surface along a ray, so that a transparent
+interface and the scene behind it are both retained. Dedicated detectors recover
+mirrors and glass as first-class scene elements. Active and next-best-view
+perception treats observer motion as a resource to be allocated toward informative
+viewpoints. Uncertainty estimation supplies a scalar that accompanies each
+prediction, selective prediction converts such a scalar into a decision to answer
+or to defer, and split conformal prediction supplies finite-sample guarantees on
+how often deferral occurs.
+
+Each of these establishes a capability on which the present work depends, and
+together they address what the depth is, which surfaces are present, where the
+camera should move next, and how certain a prediction is. The matched
+configurations above raise a further question, which is the subject of this paper:
+is the physical explanation of this visual geometry recoverable at all from the
+observations that this observer is able to make?
+
+\paragraph{Why this is a distinct question.}
+Accuracy is a property of a prediction and uncertainty is a property of a
+predictor, whereas identifiability is a property of the triple formed by the
+competing physical explanations, the actions available to the observer, and the
+resolution at which differences become perceptible. A view-tracked display
+observed within its aperture is geometrically indistinguishable from the scene it
+depicts, and a static planar mirror reflecting a static room produces content
+parallax matching that of a real room seen through an opening of the same shape.
+In both cases the answer is not merely difficult to obtain, but absent from the
+available evidence. Enlarging a model or collecting further images from the same
+viewpoint leaves the situation unchanged, whereas a suitable change of viewpoint
+resolves it immediately. Identifiability is defined here relative to an action
+set for this reason, and the label ``not identifiable'' is treated as a statement
+about that triple rather than as a further physical hypothesis. The framing
+yields a prediction that can be tested independently of architecture: where the
+evidence cannot decide, a scalar confidence has no mechanism by which to register
+the absence of evidence, because the same image remains consistent with every
+hypothesis.
+
+\paragraph{Contributions.}
+\begin{enumerate}\itemsep2pt
+\item \textbf{Action-set identifiability as a decision rule.} Separability between
+two image-formation hypotheses is defined as the distance between the consequences
+they predict for an intervention, and identifiability as the best such separability
+attainable over an available action set. Falling below a perceptual threshold
+licenses abstention, which turns recoverability into an explicit and computable
+precondition for answering.
+
+\item \textbf{A matched-counterfactual benchmark whose premise is measured rather
+than assumed.} Competing mechanisms are pixel-identical at the reference view to a
+maximum deviation of order $10^{-14}$~px, so chance-level single-view performance
+is a verified property of the construction. Cases that no permitted action
+resolves are included by design, which makes correct abstention a scorable outcome.
+
+\item \textbf{A weakest-pair criterion for selecting the intervention.} Actions
+are chosen to maximise the smallest separability among hypothesis pairs still in
+contention, rather than a belief-weighted sum over all pairs. The criterion is
+$T$-optimality from optimal design for model discrimination
+\citep{atkinson1975design,hunter1965experimental}, applied here to active visual
+perception and compared against the summed objective on this problem class.
+
+\item \textbf{A protocol for real photographs, and the ground-truth admissibility
+criterion it requires.} Calibrated stereo is treated as a one-element action set,
+predictions are calibrated outside the ambiguous region and scored inside it, and
+images whose reference measurement cannot arbitrate the question are identified
+and excluded.
+
+\item \textbf{Evidence across model families, and a decodable signal.} Behaviour
+is characterised over published checkpoints spanning several architecture families,
+with trivial baselines reported alongside the proposed measures, and a policy
+fitted on features pooled from a frozen encoder transfers to held-out
+architectures.
+\end{enumerate}

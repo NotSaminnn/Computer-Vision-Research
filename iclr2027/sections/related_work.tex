@@ -1,0 +1,62 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Depth on mirrors, glass and displays.}
+Mirrors are recovered as first-class scene elements with dedicated instance masks
+and plane annotations, enabling depth to be refined on surfaces where standard
+reconstruction fails \citep{mirror3d2021}, and transparency is modelled by
+decomposing radiance into interface, transmitted and reflected components
+\citep{glint2026}. Benchmarks quantify the difficulty directly, covering specular
+and transparent surfaces with dense annotation \citep{booster2023}, large-scale
+transparent objects \citep{clearpose2022}, and simulation-to-real depth
+restoration for such materials \citep{dreds2022}. These establish that the
+surfaces studied here are recognised as difficult and that recovering their
+geometry is an active target. The present work takes a step back from recovering
+the geometry and asks first whether the mechanism producing an appearance is
+recoverable from the observations available.
+
+\paragraph{Multi-layer and order-aware geometry.}
+Representing more than one surface along a ray is well established. Ordinal
+multi-layer benchmarks supply relations for both the first surface and the scene
+behind it, together with real and synthetic training data
+\citep{layereddepth2025}; self-determined grouping formulates transparency as
+unordered events along a ray \citep{seegroup2026}; and steerable predictors
+condition on a focus distance to select which layer is returned
+\citep{depthfocus2026}. This line supplies the representational capacity that the
+present formulation assumes, and one such benchmark is used here as an independent
+evaluation set whose annotations share no machinery with the measures defined in
+Section~\ref{sec:method}.
+
+\paragraph{Apparent versus physical geometry.}
+That predictors report depicted rather than physical structure is documented at
+scale by a benchmark spanning illusion categories including printed pictures,
+screens and mirrors \citep{illusion2025}. The distinction between apparent and
+physical geometry is therefore taken as established. What is added here is a
+criterion determining when that distinction is decidable from the observations an
+observer can obtain, together with an explicit abstention when it is not, and a
+benchmark constructed so that such undecidable cases are present and scorable.
+
+\paragraph{Active perception and experimental design.}
+Selecting viewpoints to maximise expected information is long established in
+active and next-best-view perception, where the objective is typically a
+belief-weighted sum over competing possibilities. The question posed here is
+complementary: rather than which view is most informative, it asks whether any
+view within a bounded action set is informative enough to license a commitment.
+The criterion used for that purpose is not new. Designing experiments to
+discriminate between rival models is a mature area of statistics, in which the
+maximin criterion of \eqref{eq:maximin} is known as $T$-optimality
+\citep{atkinson1975design,hunter1965experimental}; its role here is the transfer
+of that criterion into active visual perception.
+
+\paragraph{Causal identifiability, selective and conformal prediction.}
+Identifiability under temporal interventions is established in causal
+representation learning \citep{citris2022}; that interventional framing is
+borrowed and applied to the narrower question of which optical mechanism produced
+an image, with the action set playing the role of the intervention family.
+Deferring on uncertain inputs follows Chow's rule \citep{chow1970}, and split
+conformal prediction supplies distribution-free, finite-sample coverage guarantees
+\citep{vovk2005,lei2018}. Those guarantees constrain how many predictions are
+retained rather than which ones, so a calibrated procedure inherits the ranking of
+the score it wraps. The abstention rule used here is derived instead from a
+geometric condition on the available evidence, and conformal prediction is retained
+as a baseline against which that condition is compared.

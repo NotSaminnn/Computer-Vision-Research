@@ -1,0 +1,86 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2027_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+
+\title{Can the Camera Tell? \\ Action-Set Identifiability and Principled
+Abstention for Physical 3D Geometry}
+
+% Authors must not appear in the submitted version. They should be hidden
+% as long as the \iclrfinalcopy macro remains commented out below.
+% Non-anonymous submissions will be rejected without review.
+\author{Anonymous authors \\ Paper under double-blind review}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+% The paper is float-heavy and the LaTeX defaults leave wide bands of white
+% above and below every float; these lengths tighten that without touching
+% the ICLR type area.
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{7pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+\setlength{\abovedisplayskip}{5pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{5pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{3pt}
+\setlength{\belowdisplayshortskip}{3pt}
+\renewcommand{\arraystretch}{1.02}
+% Allow floats to fill more of a page before LaTeX defers them to a page of
+% their own, which is what strands figures among blank space.
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.75}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.85}
+
+%\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+A corridor seen through a doorway, the same corridor reflected in a mirror, and a
+photograph of it shown on a screen can produce the same image. The three differ in
+what a hand would touch, so a depth predictor answering from one viewpoint is
+guessing between them rather than measuring. This paper asks a prior question:
+given the camera motions an observer can actually perform, is the physical
+explanation recoverable at all? The separability of two explanations is defined as
+how differently they predict the scene will look after a given motion, and a scene
+is called identifiable when some available motion separates every explanation
+still in play. When none does, the system reports that instead of answering. A
+benchmark is built in which competing explanations are pixel-identical at the
+starting view, so chance-level single-view accuracy becomes a measured property of
+the data rather than an assumption, and in which some scenes are unresolvable by
+design, making correct abstention something that can be scored. On real
+photographs a calibrated stereo pair supplies one known camera motion, and a check
+is introduced that discards images whose reference depth cannot settle the question
+being asked. Across published depth models spanning several architectures, the
+proposed measures are reported alongside deliberately trivial baselines, and a
+small model reading a frozen encoder's features is shown to predict when that
+encoder will be wrong, including on architectures it was never trained on.
+\end{abstract}
+
+\input{sections/introduction.tex}
+\input{sections/related_work.tex}
+\input{sections/methodology.tex}
+\input{sections/results.tex}
+
+
+
+\clearpage
+\bibliography{iclr2027_conference}
+\bibliographystyle{iclr2027_conference}
+
+\input{sections/supplementary.tex}
+
+\end{document}

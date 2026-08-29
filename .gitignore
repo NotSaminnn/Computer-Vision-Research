@@ -39,3 +39,22 @@ figures/*
 .DS_Store
 .idea/
 .vscode/
+
+# Isolated environments for model families whose dependencies conflict with the
+# main venv (installing them there once corrupted numpy mid-run).
+.venv-da3/
+.venv-ml/
+.venv-models/
+
+# Vendored third-party model code, cloned by setup rather than committed.
+third_party/
+
+# LaTeX build products
+*.aux
+*.bbl
+*.blg
+*.out
+*.synctex.gz
+iclr2027/main.log
+iclr2027/_*.tex
+iclr2027/rm_list.txt

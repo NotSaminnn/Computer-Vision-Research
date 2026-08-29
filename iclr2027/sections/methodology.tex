@@ -1,0 +1,327 @@
+\section{Method}
+\label{sec:method}
+
+The method maintains a set of competing physical explanations for an observed
+image, predicts what each implies after a candidate camera motion, measures how
+far those predictions diverge, and answers only when some available motion is
+guaranteed to separate every explanation still in contention.
+
+\subsection{Hypotheses and the action set}
+\label{sec:formulation}
+
+Let $I_0$ be an image captured at a reference pose $C_0$, and $F_0 = E(I_0)$ the
+geometry a perception encoder $E$ reports for it, represented as landmarks
+carrying image coordinates, depths and visibility flags. Instead of returning
+$F_0$ alone, a family of image-formation hypotheses is maintained: $H_D$ asserts
+the structure is physically present, $H_E$ that it is depicted on a flat emissive
+panel, $H_R$ that it is a virtual image in a planar mirror, and $H_T$ that it is
+seen through a planar transparent slab. These four are chosen because they occur
+in ordinary indoor environments and each places the first touchable surface in a
+different location, which is what a contact-based cost function distinguishes.
+
+The hypotheses are matched by construction, meaning they produce pixel-identical
+observations at $C_0$. Matching isolates the effect of interest: were they to
+differ in appearance at the reference view, a single-view predictor could separate
+them from that difference, and any later gain from moving the camera could not be
+attributed to the motion.
+
+The observer acts. An action $a \in SE(3)$ is a rigid camera motion applied as an
+explicit intervention,
+\begin{equation}
+\label{eq:intervention}
+\mathrm{do}\!\left(C_1 = C_0 \cdot a\right),
+\end{equation}
+where $C_0$ is the reference pose, $C_1$ the resulting pose, and $\cdot$ denotes
+composition of rigid transforms. The $\mathrm{do}(\cdot)$ notation replaces
+conditioning because the viewpoint is chosen rather than encountered, so the
+evidence obtained is attributable to the action. Actions come from a bounded,
+enumerable set $\mathcal{A}$ of translations and small rotations under a fixed
+motion budget, giving $|\mathcal{A}| = 33$ here; the budget is modest because the
+setting is a device making a small corrective movement rather than one
+repositioning freely. Finiteness is what allows identifiability to be evaluated by
+enumeration before any motion is executed, which is what makes abstention possible
+in advance of acting.
+
+
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=0.92\linewidth]{figures/fig_concept.pdf}
+\end{center}
+\caption{\textbf{One image, three mechanisms, and what motion reveals.} A real
+corridor, the same corridor painted on a display, and its virtual image in a
+mirror can be arranged to produce identical pixels at the reference view, so no
+single-view method separates them. They differ in the surface a hand would touch,
+shown as the coloured plane in each panel. Executing an action makes their
+predictions diverge, and the size of that divergence is the separability
+$\Delta_{ij}(a)$ of \eqref{eq:separability}.}
+\label{fig:concept}
+\end{figure}
+
+\subsection{Predicting the consequence of an action}
+\label{sec:transition}
+
+Each hypothesis maps current geometry and a candidate action to a predicted
+observation,
+\begin{equation}
+\label{eq:transition}
+\hat{F}^{\,k,a} \;=\; W\!\left(F_t,\, H_k,\, a\right),
+\end{equation}
+where $F_t$ is the geometry estimated at time $t$, $H_k$ the $k$-th hypothesis,
+$a$ the candidate action, and $\hat{F}^{\,k,a}$ the landmark set $H_k$ predicts
+after executing $a$. The transition $W$ applies one shared projection routine to
+every hypothesis and differs only in the world each asserts: a panel paints content
+on the screen plane, so that content gains no differential parallax; a mirror
+preserves the parallax of virtual structure while adding moving virtual images of
+observer-attached markers; a slab displaces content along the optical axis. The
+projection is shared rather than implemented per hypothesis so that any difference
+between predictions is attributable to the mechanism and not to how each was
+rendered.
+
+\subsection{Separability, identifiability, and abstention}
+\label{sec:separability}
+
+Pairwise separability is the distance between the consequences two hypotheses
+predict for the same action,
+\begin{equation}
+\label{eq:separability}
+\Delta_{ij}(a) \;=\; D\!\left(\hat{F}^{\,i,a},\, \hat{F}^{\,j,a}\right),
+\end{equation}
+where $i$ and $j$ index two hypotheses and $D$ is a composite distance,
+\begin{equation}
+\label{eq:distance}
+D \;=\; \lambda_m D_{\text{motion}} + \lambda_o D_{\text{occlusion}}
+      + \lambda_g D_{\text{geometry}} + \lambda_f D_{\text{feature}} .
+\end{equation}
+In~\eqref{eq:distance}, $D_{\text{motion}}$ is the root-mean-square image-space
+displacement between the two predicted landmark sets over jointly visible
+landmarks, in pixels; $D_{\text{occlusion}}$ is the number of landmarks whose
+predicted visibility differs; $D_{\text{geometry}}$ is the root-mean-square
+three-dimensional distance between back-projected landmarks, in metres;
+$D_{\text{feature}}$ is reserved for a learned feature distance; and $\lambda_m$,
+$\lambda_o$, $\lambda_g$, $\lambda_f$ weight these terms. Throughout,
+$\lambda_m = 1$ and $\lambda_g = \lambda_f = 0$, placing $D$ in pixels so the
+threshold below is a perceptual displacement threshold in the same units; the
+geometry term is dropped as largely redundant with the motion term once the
+projection is shared. The occlusion term counts rather than takes a fraction, since a fraction would
+be diluted by the landmark count and whether a decisive cue cleared the
+threshold would then depend on how densely a scene was sampled; its weight is
+set so one unambiguous appearance or disappearance clears it, frequently the
+only cue a mirror offers.
+
+The quantity of interest is the best separability the action set can achieve,
+\begin{equation}
+\label{eq:identifiability}
+\mathcal{I}_{\mathcal{A}}\!\left(H_i, H_j\right)
+\;=\; \max_{a \in \mathcal{A}} \; \Delta_{ij}(a),
+\end{equation}
+so a pair counts as separable if any single permitted motion would distinguish it.
+The pipeline these pieces form is drawn in Figure~\ref{fig:pipeline}. The system abstains when
+\begin{equation}
+\label{eq:abstain}
+\min_{(i,j)} \; \mathcal{I}_{\mathcal{A}}\!\left(H_i, H_j\right) \;<\; \epsilon ,
+\end{equation}
+the minimum running over pairs still in contention, with $\epsilon$ the perceptual
+threshold. The order matters: a maximum over actions nested inside a minimum over
+pairs licenses an answer only if some action separates every undecided pair, and
+separating most is insufficient because the pair left unseparated is exactly where
+an error would be made. The threshold is fixed at $\epsilon = 1.0$~px and is not
+tuned, being a property of the sensor and the perceptual criterion; altering it
+changes what ``identifiable'' denotes and relabels the benchmark rather than
+improving performance on it. The headline real-data measure is rank-based and so
+invariant to it.
+
+\subsection{Choosing the intervention}
+\label{sec:selection}
+
+Two objectives are compared. The first is the summed objective standard in active
+perception,
+\begin{equation}
+\label{eq:sum}
+a^{\star}_{\text{sum}} \;=\; \arg\max_{a \in \mathcal{A}}
+\;\sum_{i<j} p_i\, p_j\, \Delta_{ij}(a),
+\end{equation}
+where $p_i$ and $p_j$ are posterior probabilities, so still-plausible pairs
+contribute more than decided ones. Such a sum can be maximised by an action separating pairs not in contention
+while leaving the deciding pair unseparated, since a large term compensates for
+a zero one. The second objective
+replaces the sum with the weakest contending pair,
+\begin{equation}
+\label{eq:maximin}
+a^{\star}_{\text{maximin}} \;=\; \arg\max_{a \in \mathcal{A}}
+\;\min_{(i,j) \in \mathcal{C}} \; w_{ij}\, \Delta_{ij}(a),
+\end{equation}
+where $\mathcal{C}$ collects pairs whose joint posterior mass has not collapsed and
+$w_{ij}$ weights a pair by that mass; decided pairs are excluded rather than
+down-weighted so the objective tracks only what remains undecided. The form follows
+from the abstention rule, since a decision requires every contending pair to be
+separated and the binding quantity is therefore the smallest separability rather
+than the sum. This criterion is $T$-optimality from optimal design for model
+discrimination \citep{atkinson1975design,hunter1965experimental}, applied here to
+active visual perception.
+
+\subsection{Belief update, output, and required baseline}
+\label{sec:belief}
+
+After the selected action is executed and $O'$ observed, each hypothesis has
+residual $e_k = D(\hat{F}^{\,k,a^\star}, E(O'))$ under the same
+distance~\eqref{eq:distance}, so prediction error and separability share a scale.
+Belief is updated multiplicatively,
+\begin{equation}
+\label{eq:belief}
+p_{t+1}(H_k) \;\propto\; \exp\!\left(-\beta\, e_k\right)\, p_t(H_k),
+\end{equation}
+where $p_t(H_k)$ is the prior mass on hypothesis $k$, $e_k$ its residual in pixels,
+and $\beta$ converts error into log-likelihood; $\beta = 1.0$ makes a one-pixel
+error cost one nat, tying the update to the same perceptual scale as $\epsilon$. A
+floor on each posterior prevents one unlucky observation from permanently
+eliminating a hypothesis that later evidence would support. The system then names
+the mechanism and reports its contact geometry, the depth of the first physical
+surface along each ray, which is the glass for a mirror and the panel for a
+display, since that is the quantity determining the cost of an error. Commitment is
+withheld when the posterior maximum does not exceed $\tau = 0.45$, set just below
+the $0.5$ tie a forced choice over a two-way ambiguity produces so that such a
+choice counts as false certainty rather than caution; a sweep over
+$\tau \in \{0.40, \dots, 0.90\}$ is recorded so the value is never load-bearing.
+
+\subsection{Benchmark and metrics}
+\label{sec:benchmark}
+
+Each base scene is instantiated under every mechanism with content adjusted so the
+reference views coincide, and the maximum reference-view deviation is of order
+$10^{-14}$~px, which is numerical precision. Chance-level single-view performance
+is therefore a verified property of the benchmark rather than an assumption
+carried into the results. Configurations that no permitted action resolves, namely
+view-tracked displays observed within their aperture and mirrors whose geometry
+mimics an opening, are included deliberately: without them abstention cannot be
+scored, and a method that never abstains would be indistinguishable from one that
+abstains correctly. Splits are formed by base scene rather than by variant, so
+variants of one scene never span partitions.
+
+Four quantities are reported. Causal explanation accuracy (CEA) is
+$P(\hat{H} = H^\star)$ with abstention counted as an error, and committed accuracy
+is $P(\hat{H} = H^\star \mid \text{answered})$; the first penalises excessive
+caution and the second rewards it, so together they expose the trade between
+answering and being right. False physical certainty (FPCR) is
+$P(\max_k p(H_k) > \tau \mid y_{\mathrm{id}} = 0)$, measured only on cases no
+permitted action resolves, and is what abstention exists to reduce. Normalised
+regret compares the chosen action's utility against the best available.
+
+\subsection{Protocol for real photographs}
+\label{sec:real-protocol}
+
+A calibrated rectified stereo pair supplies exactly one executed action with known
+parameters, the baseline translation between the cameras, so real data is the case
+$|\mathcal{A}| = 1$ and \eqref{eq:identifiability} reduces to the separability of
+that action. Five elements prevent the measurement from absorbing the effect under
+study.
+
+\textbf{Calibration outside, scoring inside.} A monocular predictor returns
+relative inverse depth, defined up to unknown scale $s$ and shift $t$, which are
+fitted by least squares against reference disparity on the non-ambiguous region
+and applied inside it, giving the disparity predicted under $H_D$,
+\begin{equation}
+\label{eq:align}
+d_{D} \;=\; s\,\hat{p} + t ,
+\end{equation}
+with $\hat{p}$ the raw prediction. Determining the two free parameters where the
+predictor performs well prevents them from absorbing the discrepancy in the region
+under study, which is what makes this a test rather than a curve fit.
+
+\textbf{Both hypotheses come from the predictor's own estimate.} The disparity
+under $H_E$ is the least-squares plane through $d_D$ over the ambiguous region,
+fitted to the prediction and never to the reference. Fitting to the reference would
+place ground truth inside a quantity that must be computable at test time, and
+since admissibility below selects regions whose reference is already near-planar,
+that plane would collapse onto the reference and $\Delta$ would silently become a
+measure of predictor error rather than of separability.
+
+\textbf{Separability is measured photometrically.} The right image is warped into
+the left frame under each hypothesis using the rectified-stereo relation that
+column $x$ with disparity $d$ corresponds to column $x - d$ in the other view,
+\begin{equation}
+\label{eq:warp}
+R_{k}(x, y) \;=\; I_{\text{right}}\!\left(x - d_{k}(x,y),\; y\right),
+\qquad k \in \{D, E\},
+\end{equation}
+and separability is the median absolute difference between the two warps inside
+the region,
+\begin{equation}
+\label{eq:delta-photometric}
+\Delta_{DE} \;=\; \operatorname{median}\left|R_{D} - R_{E}\right| .
+\end{equation}
+Both terms of~\eqref{eq:delta-photometric} warp the same photograph rather than
+comparing against the opposite view, so illumination, sensor noise and
+rectification error appear in both and cancel. Intensity units are deliberate: a
+disparity disagreement is visible only where the image carries structure to reveal
+it, so on a featureless region two hypotheses predict different geometry and
+identical pixels, and the scene is unidentifiable at any baseline.
+
+\textbf{Ground truth is admitted only when it can arbitrate.} A printed sheet or
+display panel is flat, so reference disparity inside the region should be planar.
+Where it is not, stereo matching has locked onto displayed content rather than the
+panel and cannot settle whether the predictor reported the panel or the depicted
+scene. An image is retained only when a plane fitted to reference disparity inside
+the region attains $R^2 \geq 0.90$, and the number excluded is reported, being
+itself a finding about the evaluation data.
+
+\textbf{Failure is defined without reference to any signal under test.} A
+predictor is recorded as fooled when its relative error inside the region exceeds
+its error outside, a label mentioning neither confidence nor identifiability, so
+neither can be fitted to it. Three quantities requiring no model and no theory are
+reported alongside $\Delta_{DE}$: the fraction of the frame the region occupies,
+the local horizontal image gradient, and the raw disagreement $|d_D - d_E|$ before
+photometric weighting. A proposed measure unable to outperform these has not
+earned its complexity, and reporting them is what makes that visible. All AUROC
+values use the convention that a larger score indicates greater likelihood of
+error, so a value below $0.5$ appears as anti-correlation rather than being
+concealed by inverting the score.
+
+A second dataset supplies ordinal relations between point pairs rather than dense
+depth, in two parallel sets: one ordering by the depth of the first surface along
+the ray, one ignoring transparency. Pairs appearing in both with opposite order
+are the discriminating cases, since only there do the two readings predict
+oppositely. Its per-point layer index, authored independently of this work, serves
+as an external label of ambiguity sharing no machinery with the measures above.
+
+\subsection{Learned abstention and models evaluated}
+\label{sec:learned}
+
+Two policies are evaluated, both leaving the depth predictor frozen and fitting
+only a small model on top, since the predictor's behaviour is the object of study
+and updating it would change what is measured. The first uses the hand-designed
+quantities above as features. The second pools the network's own frozen intermediate features over the
+ambiguous region, keeping the difference between the pooled representation
+inside and outside it together with the within-region spread; the contrast is
+used because a representation encoding ambiguity should differ inside the region
+relative to its surroundings, whereas an absolute vector would largely encode
+which scene is viewed.
+
+Three families of classifier are fitted so that the result does not rest on one
+inductive bias: $L_2$-regularised logistic regression on standardised features,
+histogram gradient boosting, and \textsc{XGBoost}. The boosted models are
+constrained to depth $3$ with a minimum of $40$ samples per leaf, because a few
+thousand rows over fewer than a hundred scenes will otherwise be memorised, and
+the logistic head applied to the pooled encoder features is strongly regularised
+because its feature vector is far wider than the sample count. Reporting all three
+also makes the comparison auditable: agreement between families indicates that the
+measured quantity is a property of the data rather than of the optimiser.
+
+Three protocol choices make these interpretable. Folds are split by base scene,
+because the benchmarks photograph one scene from several viewpoints and a random
+split would place near-duplicates on both sides and report memorisation as
+transfer. Leave-one-model-out trains on all checkpoints but one and tests on the held-out
+one, asking whether failure is predictable as a property of the image rather
+than of one network. Hyperparameter selection is nested, with settings chosen on
+inner folds and scored only on outer folds unseen during selection, since a
+single-level sweep reporting its own best score would be optimistically biased
+by more than the margin claimed. The region-occupancy baseline is retained as
+an input feature rather than removed, so a policy relying chiefly on it is
+revealed by permutation importance instead of flattered by its exclusion.
+
+Published checkpoints are used as released, spanning several architecture families
+and roughly two orders of magnitude in parameter count, with nothing trained or
+tuned on any evaluation set. One implementation detail affects correctness: the
+output attribute conventionally named \texttt{predicted\_depth} carries metric
+depth in some families and inverse depth in others, so each checkpoint's
+convention is verified against reference stereo disparity before use, an inverted
+convention exchanging near for far while still producing plausible numbers.
