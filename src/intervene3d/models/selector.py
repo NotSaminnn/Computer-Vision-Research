@@ -63,6 +63,56 @@ class MaxSeparabilitySelector:
 
 
 @dataclass
+class MaxMinSeparabilitySelector:
+    r"""``a* = argmax_a min_{i<j : p_i p_j > delta} Delta_ij(a)``.
+
+    The belief-weighted **sum** used by :class:`MaxSeparabilitySelector` can be
+    maximised by an action that separates pairs which are not actually in
+    contention, while leaving the deciding pair at zero. Measured on the Phase 1
+    benchmark: on every mirror scene the system got wrong, the selected action
+    scored ``Delta(H_D, H_R) = 0.00`` exactly, though an action worth 4-12 px-eq
+    existed. The posterior then settled at a perfect 0.500 tie and argmax broke
+    it arbitrarily toward ``H_D``.
+
+    A decision requires *every* contending pair to be separated, so the quantity
+    to maximise is the **weakest** one -- a maximin criterion rather than a sum.
+    Pairs whose joint posterior mass has already collapsed are excluded, so the
+    objective tracks what is still genuinely undecided.
+    """
+
+    estimator: GeometrySeparabilityEstimator
+    allow_null: bool = False
+    mass_floor: float = 1e-3
+    name: str = "max_min_separability"
+
+    def select(
+        self,
+        state: GeometryFeature,
+        hypotheses: HypothesisSet,
+        actions: ActionSpace,
+        beliefs: np.ndarray,
+        *,
+        markers_cam: np.ndarray | None = None,
+    ) -> tuple[Action, np.ndarray]:
+        sep = self.estimator.pairwise_over_actions(state, hypotheses, actions, markers_cam=markers_cam)
+        p = np.asarray(beliefs, dtype=np.float64)
+        n = len(hypotheses)
+        iu, ju = np.triu_indices(n, 1)
+        mass = p[iu] * p[ju]
+        live = mass > self.mass_floor
+        if not np.any(live):
+            # Nothing is contended any more; fall back to the summed objective
+            # rather than maximising over an empty set.
+            utility = _pair_weighted_utility(sep, p)
+        else:
+            # The weakest contending pair, weighted so a nearly-settled pair does
+            # not dominate a wide-open one.
+            w = mass[live] / mass[live].max()
+            utility = np.min(sep[:, iu[live], ju[live]] * w[None, :], axis=1)
+        return _argmax_action(actions, utility, self.allow_null), utility
+
+
+@dataclass
 class EntropyNBVSelector:
     """Hypothesis-blind "largest predicted change" next-best-view proxy."""
 
@@ -198,6 +248,8 @@ def build_selector(
     """Factory used by the baseline / ablation framework."""
     if name == "max_separability":
         return MaxSeparabilitySelector(estimator, allow_null=allow_null)
+    if name == "max_min_separability":
+        return MaxMinSeparabilitySelector(estimator, allow_null=allow_null)
     if name == "entropy_nbv":
         return EntropyNBVSelector(estimator, allow_null=allow_null)
     if name == "random":

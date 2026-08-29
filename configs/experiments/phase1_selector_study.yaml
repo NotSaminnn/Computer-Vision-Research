@@ -1,0 +1,43 @@
+# Selector study: does maximising the WEAKEST contending pair beat maximising
+# the belief-weighted sum?
+#
+# Motivated by a measurement, not a hunch. On the Phase 1 benchmark every mirror
+# scene the full method got wrong had `Delta(H_D, H_R) = 0.00` at the action it
+# chose, while an action worth 4-12 px-equivalent existed. The posterior then sat
+# at a perfect 0.500 tie and argmax broke it toward H_D. A summed objective can
+# be maximised by separating pairs that are not in contention.
+_base: configs/experiments/phase1_problem_existence.yaml
+
+experiment:
+  name: phase1_selector_study
+
+methods:
+  - name: passive_multiview_classifier
+    kind: classifier
+    classifier: passive_multiview
+    description: The strongest non-abstaining baseline; the CEA number to beat.
+
+  - name: max_baseline_intervention
+    kind: engine
+    selector: max_baseline
+    description: Move as far as allowed. The strongest hypothesis-blind intervention.
+
+  - name: intervene3d_sum
+    kind: engine
+    selector: max_separability
+    description: >-
+      The published objective, argmax over the belief-weighted SUM of pairwise
+      separabilities. Retained as the ablation the new selector is measured against.
+
+  - name: intervene3d_maxmin
+    kind: engine
+    selector: max_min_separability
+    description: >-
+      argmax over the WEAKEST still-contended pair. A decision needs every
+      contending pair separated, so the binding quantity is the minimum.
+
+  - name: intervene3d_maxmin_forced
+    kind: engine
+    selector: max_min_separability
+    abstention: false
+    description: Forced choice, for a like-for-like CEA comparison with the classifiers.

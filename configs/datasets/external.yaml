@@ -1,20 +1,45 @@
 # External dataset registry.
 #
 # STATUS VOCABULARY (research-integrity rules, plan section 29):
-#   verified            -- the official source page was fetched and the stated
-#                          facts were confirmed on 2026-08-28.
+#   verified            -- the stated facts were confirmed against the primary
+#                          source (2026-08-28 project pages; 2026-08-29 re-check
+#                          against the Hugging Face dataset API).
 #   ACCESS UNVERIFIED   -- the paper is real and cited correctly, but the download
 #                          mechanism, licence or terms were NOT confirmed here.
 #   manual              -- a human must accept terms / obtain credentials.  The
 #                          tooling will never attempt an automated download.
 #
-# NOTHING in this file is downloaded automatically.  `scripts/download_datasets.sh`
-# prints instructions and refuses to fetch any dataset whose licence or download
-# permission is not `verified`.  See docs/DATASET_MATRIX.md for the full matrix.
+# Nothing here is downloaded WITHOUT being asked for, and nothing is downloaded
+# at all unless BOTH `licence_status: verified` and
+# `automated_download_permitted: true` are recorded below.  Entries that satisfy
+# both also carry a `fetch:` block naming the exact remote repository, revision
+# and file patterns; `scripts/download_datasets.sh --dataset <key>` then reports
+# the byte count and asks for confirmation before transferring anything.
+# Everything else prints acquisition instructions and refuses.
+# See docs/DATASET_MATRIX.md for the full matrix.
+#
+# `fetch:` schema
+#   kind            -- backend; only `huggingface` is implemented
+#   repo_id/repo_type/revision
+#   default_variant -- used when --variant is omitted
+#   variants        -- name -> {allow_patterns, subdir, approx_size_gb}
+#                      Datasets publish splits of wildly different size, so the
+#                      variant is how a 0.75 GB sample stays separable from a
+#                      ~1.5 TB training set.  A variant is declared ONLY for data
+#                      the dataset card actually declares and that is useful
+#                      here -- see the layereddepth note about its undeclared
+#                      stray `data/train-*.parquet`.
 
-registry_version: "1.0"
+registry_version: "1.1"
 verified_on: "2026-08-28"
+reverified_on: "2026-08-29"
 verification_method: "web search + official page fetch; see docs/LITERATURE_CROSS_RESEARCH.md"
+reverification_method: >-
+  2026-08-29: licence, gating and file sizes re-read directly from the Hugging Face
+  dataset API (/api/datasets/<id> and /tree/main?recursive=true) and from the
+  official GitHub READMEs.  Sizes below are measured byte counts from that listing,
+  not estimates.  Four entries moved from `ACCESS UNVERIFIED` to `verified` as a
+  result; the rest are unchanged.
 
 datasets:
 
@@ -24,22 +49,109 @@ datasets:
     arxiv: "2503.11633"
     official_repo: "https://github.com/princeton-vl/LayeredDepth"
     paper_page: "https://openaccess.thecvf.com/content/ICCV2025/html/Wen_Seeing_and_Seeing_Through_the_Glass_Real_and_Synthetic_Data_ICCV_2025_paper.html"
+    data_page: "https://huggingface.co/datasets/princeton-vl/LayeredDepth"
     status: verified
-    licence: "benchmark data stated as CC0 on the official repository"
+    # 2026-08-29: /api/datasets/princeton-vl/LayeredDepth reports
+    # cardData.license = "cc0-1.0", gated = false, private = false.
+    licence: "CC0-1.0 (public domain dedication), as declared on the Hugging Face dataset card"
     licence_status: verified
-    automated_download_permitted: unknown      # repo confirmed; exact asset URLs not fetched here
-    download_mechanism: manual
-    approx_size_gb: null
+    automated_download_permitted: true
+    download_mechanism: huggingface
+    approx_size_gb: 19.27
     authentication_required: false
-    contents: "1,500 real images with multi-layer depth annotations (~14.2M relative-depth tuples); 15,300 synthetic images from a procedural generator (LayeredDepth-Syn, built on Infinigen Indoor)"
+    contents: >-
+      1,500 real images with multi-layer depth annotations.  The dataset card
+      declares exactly two splits: validation 300 examples / 4.13 GB (image.png +
+      tuples.json, carrying layer_all and layer_first pair/triplet/quad ordinal
+      relations with an is_real flag) and test 1,200 examples / 15.15 GB (images
+      only -- labels withheld for the evaluation server at
+      https://layereddepth.cs.princeton.edu, three submissions per user per seven
+      days).  NOTE: the repository also holds an undeclared
+      data/train-00000-of-00001.parquet with 10 examples and no tuples.json; it is
+      not referenced by the dataset card's configs and is NOT a training split, so
+      no variant below exposes it.
     intervene3d_role: "external test: does the model preserve interface vs behind-glass depth instead of collapsing them?"
     priority: 5
-    expected_layout: "data/raw/layereddepth/{real,synthetic}/..."
+    expected_layout: "data/raw/layereddepth/{validation,test}/..."
+    fetch:
+      kind: huggingface
+      repo_id: princeton-vl/LayeredDepth
+      repo_type: dataset
+      revision: main
+      default_variant: validation
+      variants:
+        # The only split with ground truth attached, hence the only one that
+        # supports a metric computed on this machine.
+        validation:
+          allow_patterns: ["data/validation-*.parquet", "README.md"]
+          subdir: validation
+          approx_size_gb: 4.13
+        # Images only.  Scoring requires submitting predictions to the authors'
+        # server, so this is of no use for a local metric.
+        test:
+          allow_patterns: ["data/test-*.parquet", "README.md"]
+          subdir: test
+          approx_size_gb: 15.15
+        all:
+          allow_patterns: ["data/validation-*.parquet", "data/test-*.parquet", "README.md"]
+          subdir: all
+          approx_size_gb: 19.27
     instructions: |
-      1. Read the licence and usage terms at https://github.com/princeton-vl/LayeredDepth
-      2. Follow the repository's own download instructions.
-      3. Place the result under data/raw/layereddepth/ and run
-         python scripts/validate_datasets.py --dataset layereddepth
+      Licence CC0-1.0, public and ungated on the Hugging Face Hub.
+        bash scripts/download_datasets.sh --dataset layereddepth --variant validation --yes
+      Variants: validation (4.13 GB, 300 examples WITH ground truth),
+      test (15.15 GB, 1,200 examples, images only), all (19.27 GB).
+      Test-split labels are withheld; scoring goes through
+      https://layereddepth.cs.princeton.edu, so only `validation` supports a
+      locally computed metric.
+      Reading the parquet needs a reader: pip install "pyarrow>=15".
+
+  layereddepth_syn:
+    title: "LayeredDepth-Syn (synthetic multi-layer depth, Infinigen Indoor)"
+    venue: "ICCV 2025"
+    arxiv: "2503.11633"
+    official_repo: "https://github.com/princeton-vl/LayeredDepth"
+    data_page: "https://huggingface.co/datasets/princeton-vl/LayeredDepth-Syn"
+    status: verified
+    # Separate entry because the licence differs from the benchmark repo:
+    # 2026-08-29, /api/datasets/princeton-vl/LayeredDepth-Syn reports
+    # cardData.license = "bsd-3-clause", gated = false.
+    licence: "BSD-3-Clause, as declared on the Hugging Face dataset card (NOT CC0 -- that covers the benchmark repo only)"
+    licence_status: verified
+    automated_download_permitted: true
+    download_mechanism: huggingface
+    approx_size_gb: 24.75
+    authentication_required: false
+    contents: >-
+      15,300 procedurally generated indoor images with multi-layer depth ground
+      truth (train 14,800 / validation 500 examples), produced by an
+      Infinigen-based generator with a custom Blender multi-layer patch.  Each
+      example carries image.png plus depth_1..depth_8.png -- eight ray-ordered
+      depth layers, which is exactly the multi-layer structure the direct /
+      transmission hypotheses argue about.  Parquet: train 23.95 GB,
+      validation 0.80 GB.
+    intervene3d_role: "optional pretraining source with TRUE multi-layer depth ground truth (unlike the 3D Visual Illusion virtual split, whose depth is a model prediction)"
+    priority: 4
+    expected_layout: "data/raw/layereddepth_syn/{train,validation}/..."
+    fetch:
+      kind: huggingface
+      repo_id: princeton-vl/LayeredDepth-Syn
+      repo_type: dataset
+      revision: main
+      default_variant: validation
+      variants:
+        validation:
+          allow_patterns: ["data/validation-*.parquet", "README.md"]
+          subdir: validation
+          approx_size_gb: 0.80
+        train:
+          allow_patterns: ["data/train-*.parquet", "README.md"]
+          subdir: train
+          approx_size_gb: 23.95
+    instructions: |
+      BSD-3-Clause, public and ungated on the Hugging Face Hub.
+        bash scripts/download_datasets.sh --dataset layereddepth_syn --variant validation
+      Attribution and the BSD notice must be preserved in anything redistributed.
 
   transphy3d:
     title: "TransPhy3D (Diffusion Knows Transparency)"
@@ -48,40 +160,114 @@ datasets:
     official_repo: "https://daniellli.github.io/projects/DKT/"
     data_page: "https://huggingface.co/datasets/Daniellesry/TransPhy3D"
     status: verified
-    licence: "not stated on the pages consulted"
-    licence_status: ACCESS UNVERIFIED
-    automated_download_permitted: false
-    download_mechanism: manual
-    approx_size_gb: null
-    authentication_required: unknown
-    contents: "~11,000 Blender/Cycles video sequences (~1.32M frames) of transparent/reflective scenes with RGB, metric depth, normals and camera calibration"
-    intervene3d_role: "pretraining source for the hypothesis-conditioned transition model"
+    # 2026-08-29: /api/datasets/Daniellesry/TransPhy3D reports
+    # cardData.license = "apache-2.0", gated = false, private = false.
+    licence: "Apache-2.0, as declared on the Hugging Face dataset card"
+    licence_status: verified
+    automated_download_permitted: true
+    download_mechanism: huggingface
+    approx_size_gb: 1400          # ORDER OF MAGNITUDE, not measured: 11,149 shards
+    authentication_required: false
+    contents: >-
+      ~11,000 Blender/Cycles video sequences (~1.32M frames) of
+      transparent/reflective scenes.  Published as ~11,149 per-scene .tar shards
+      (WebDataset layout) under parametric_train/{training,test}/; the first 994
+      shards alone measure 141 GB, so the full set is of order 1.5 TB -- do NOT
+      fetch it whole.  Inspected 2026-08-29: one shard holds 120 frames, each
+      carrying <id>.image.png, <id>.depth.png + <id>.depth.json (a max_depth
+      scale factor), <id>.normal.png and <id>.metadata.json with per-frame 4x4
+      camera extrinsics and normalised 3x3 intrinsics.  Reading it needs
+      `webdataset` (see the repo's load_demo.py) or plain tarfile.
+    intervene3d_role: >-
+      Pretraining source for the hypothesis-conditioned transition model
+      (Gate 7); not needed by Phase 1.  Its per-frame camera extrinsics make it
+      the closest external analogue of the intervention setting -- these are
+      sequences with genuine observer motion over transparent and reflective
+      geometry, so a pair (frame_t, frame_t+k) is a real (F_t, a) observation.
+      The camera path is the renderer's, not chosen by any agent, so it supplies
+      the transition model rather than the selector.
     priority: 5
-    expected_layout: "data/raw/transphy3d/sequences/..."
+    expected_layout: "data/raw/transphy3d/..."
+    fetch:
+      kind: huggingface
+      repo_id: Daniellesry/TransPhy3D
+      repo_type: dataset
+      revision: main
+      default_variant: sample
+      variants:
+        # Enough to inspect the format and write a loader; nothing more.
+        sample:
+          allow_patterns: ["parametric_train/test/1[0-4]_materials.*.tar", "README.md", "load_demo.py"]
+          subdir: sample
+          approx_size_gb: 0.75
+        test:
+          allow_patterns: ["parametric_train/test/*.tar", "README.md", "load_demo.py"]
+          subdir: test
+          approx_size_gb: 4.12
     instructions: |
-      A Hugging Face dataset page exists (Daniellesry/TransPhy3D) but its licence
-      was NOT confirmed.  Read the dataset card, accept any terms, then download
-      with the huggingface-cli and place the result under data/raw/transphy3d/.
+      Apache-2.0, public and ungated on the Hugging Face Hub.
+        bash scripts/download_datasets.sh --dataset transphy3d --variant sample
+      Only `sample` (0.75 GB) and `test` (4.12 GB) are wired up.  The training
+      split is of order 1.5 TB and is intentionally not fetchable through this
+      tool; mirror it yourself with `huggingface-cli download` if Gate 7 needs it.
 
   visual_illusion_3d:
     title: "3D Visual Illusion Depth Estimation"
     venue: "NeurIPS 2025"
     arxiv: "2505.13061"
     official_repo: "https://github.com/YaoChengTang/3D-Visual-Illusion-Depth-Estimation"
+    data_page: "https://huggingface.co/datasets/AdamYao/3D_Visual_Illusion_Depth_Estimation_Real"
     status: verified
-    licence: "not stated on the pages consulted"
-    licence_status: ACCESS UNVERIFIED
-    automated_download_permitted: false
-    download_mechanism: manual
-    approx_size_gb: null
-    authentication_required: unknown
-    contents: "~3,000 scenes / ~200k images (reported: 178,912 train + 617 test frames) across five illusion categories: inpainting, picture, replay (screens), holography, mirror"
-    intervene3d_role: "external test of apparent-vs-physical geometry; the closest existing analogue of our display and mirror variants"
+    # 2026-08-29: both AdamYao/3D_Visual_Illusion_Depth_Estimation and
+    # ..._Real report cardData.license = "apache-2.0", gated = false.
+    licence: "Apache-2.0, as declared on both Hugging Face dataset cards"
+    licence_status: verified
+    automated_download_permitted: true
+    download_mechanism: huggingface
+    approx_size_gb: 463.62
+    authentication_required: false
+    contents: >-
+      ~3,000 scenes / ~200k images across five illusion categories: inpainting,
+      picture, replay (screens), holography, mirror.  Split across two Hub repos:
+      RealData (8.10 GB, `real.tar.gz`, 6,611 files) carries the evaluation data:
+      test/ holds 455 rectified stereo pairs as left/*.png, right/*.png,
+      disp/*.pfm and mask/*.jpg, with calib/{L515_calib,ZED_calib,L515_ZEDleft}.yaml
+      giving intrinsics, distortion and the L515-to-ZED-left extrinsic; raw and
+      rectified captures sit under Dataset/, Dataset_new_structure/, Dataset_rect/
+      and SAM/ over the categories PaperOnTable, PosterAndObject, video and
+      video_monitor.  Inspected 2026-08-29 -- the disparity comes from a ZED
+      stereo rig cross-calibrated to the L515, not from the L515 alone; VirtualData (455.52 GB, split tar.gz archives) carries the
+      178,912 training frames whose `depth` files are DepthAnythingV2 monocular
+      PREDICTIONS rescaled by the provided scale_factors*.csv -- NOT ground truth.
+    intervene3d_role: "external test of apparent-vs-physical geometry; the closest existing analogue of our display and mirror variants. Use RealData only: the virtual split's depth is a model prediction, so training on it would import another model's errors as labels."
     priority: 5
-    expected_layout: "data/raw/visual_illusion_3d/{train,test}/..."
+    expected_layout: "data/raw/visual_illusion_3d/{real,virtual}/..."
+    fetch:
+      kind: huggingface
+      repo_id: AdamYao/3D_Visual_Illusion_Depth_Estimation_Real
+      repo_type: dataset
+      revision: main
+      default_variant: real
+      variants:
+        # The only variant with real ground truth, and the only one of sane size.
+        real:
+          allow_patterns: ["real.tar.gz", "README.md"]
+          subdir: real
+          approx_size_gb: 8.10
+        scale_factors:
+          repo_id: AdamYao/3D_Visual_Illusion_Depth_Estimation
+          allow_patterns: ["scale_factors*.csv", "README.md"]
+          subdir: virtual_meta
+          approx_size_gb: 0.03
     instructions: |
-      Follow the download instructions in the official GitHub repository and
-      place the data under data/raw/visual_illusion_3d/.
+      Apache-2.0, public and ungated on the Hugging Face Hub.
+        bash scripts/download_datasets.sh --dataset visual_illusion_3d --variant real --yes
+      The 455 GB VirtualData training split is deliberately NOT wired up: its
+      depth maps are DepthAnythingV2 predictions, not ground truth.  Fetch it by
+      hand from
+      https://huggingface.co/datasets/AdamYao/3D_Visual_Illusion_Depth_Estimation
+      if you specifically need it, and read the repository's note about
+      scale_factors.csv / scale_factors_2.csv first.
 
   mirror3d:
     title: "Mirror3D: Depth Refinement for Mirror Surfaces"
@@ -112,17 +298,25 @@ datasets:
     arxiv: "2203.03890"
     official_repo: "https://github.com/opipari/ClearPose"
     status: verified
-    licence: "not stated on the pages consulted"
-    licence_status: ACCESS UNVERIFIED
-    automated_download_permitted: false
+    # 2026-08-29: the repository README states "Licensed under MIT License".
+    # The data itself is distributed through a Dropbox folder, which exposes no
+    # stable per-file URL or checksum, so it cannot be fetched reproducibly.
+    licence: "MIT, as stated in the official repository README"
+    licence_status: verified
+    automated_download_permitted: false      # licence is fine; the host is not automatable
     download_mechanism: manual
     approx_size_gb: null
-    authentication_required: unknown
+    authentication_required: false
     contents: "350k+ real RGB-D frames, ~5M instance annotations, 63 transparent household objects, captured with a RealSense L515"
     intervene3d_role: "external test of contact depth on real transparent objects"
     priority: 4
     expected_layout: "data/raw/clearpose/..."
-    instructions: "Follow the download instructions at https://github.com/opipari/ClearPose"
+    instructions: |
+      MIT-licensed, but distributed via a Dropbox folder linked from
+      https://github.com/opipari/ClearPose -- Dropbox share links are not stable
+      or checksummable, so this tool will not fetch it.  Download by hand, place
+      under data/raw/clearpose/, then run
+        python scripts/validate_datasets.py --dataset clearpose
 
   dreds:
     title: "DREDS + STD"

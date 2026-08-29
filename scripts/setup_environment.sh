@@ -15,6 +15,17 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 VENV_DIR="${VENV_DIR:-.venv}"
+# POSIX venvs put the interpreter in bin/, Windows venvs (incl. Git Bash / MSYS)
+# in Scripts/.  Resolve the layout once, after the venv exists.
+venv_python() {
+  if [ -x "$1/bin/python" ]; then printf '%s/bin/python' "$1"
+  elif [ -x "$1/Scripts/python.exe" ]; then printf '%s/Scripts/python.exe' "$1"
+  else printf '%s/bin/python' "$1"; fi
+}
+case "$(uname -s 2>/dev/null || echo unknown)" in
+  MINGW*|MSYS*|CYGWIN*) VENV_BIN="Scripts" ;;
+  *)                    VENV_BIN="bin" ;;
+esac
 WITH_GPU=0
 CHECK_ONLY=0
 for arg in "$@"; do
@@ -34,16 +45,19 @@ if [ "$CHECK_ONLY" -eq 0 ]; then
   log "Creating the Python environment in $VENV_DIR"
   if command -v uv >/dev/null 2>&1; then
     uv venv "$VENV_DIR" >/dev/null
-    PY="$VENV_DIR/bin/python"
+    PY="$(venv_python "$VENV_DIR")"
     log "Installing dependencies with uv"
     uv pip install --python "$PY" -r requirements-dev.txt >/dev/null
     [ "$WITH_GPU" -eq 1 ] && uv pip install --python "$PY" -r requirements-gpu.txt >/dev/null
     uv pip install --python "$PY" -e . >/dev/null
   else
-    BASE_PY="${PYTHON:-python3}"
-    command -v "$BASE_PY" >/dev/null || fail "no python3 found; set PYTHON=/path/to/python3"
+    BASE_PY="${PYTHON:-}"
+    if [ -z "$BASE_PY" ]; then
+      if command -v python3 >/dev/null 2>&1; then BASE_PY="python3"; else BASE_PY="python"; fi
+    fi
+    command -v "$BASE_PY" >/dev/null || fail "no Python 3 found; set PYTHON=/path/to/python"
     "$BASE_PY" -m venv "$VENV_DIR"
-    PY="$VENV_DIR/bin/python"
+    PY="$(venv_python "$VENV_DIR")"
     log "Installing dependencies with pip (install 'uv' for a much faster path)"
     "$PY" -m pip install --upgrade pip >/dev/null
     "$PY" -m pip install -r requirements-dev.txt >/dev/null
@@ -51,7 +65,8 @@ if [ "$CHECK_ONLY" -eq 0 ]; then
     "$PY" -m pip install -e . >/dev/null
   fi
 else
-  PY="${PYTHON:-python3}"
+  PY="${PYTHON:-$(venv_python "$VENV_DIR")}"
+  [ -x "$PY" ] || PY="${PYTHON:-python3}"
   log "Check-only mode: using $PY"
 fi
 
@@ -159,17 +174,22 @@ print(f"  action-set identifiability: {np.round(I[np.triu_indices(len(hyps), 1)]
 print("  [ok]   analytical optics and identifiability behave as expected")
 PYVALIDATE
 
-cat <<'DONE'
+if [ "$VENV_BIN" = "Scripts" ]; then
+  ACTIVATE="source $VENV_DIR/Scripts/activate   (PowerShell: .\\$VENV_DIR\\Scripts\\Activate.ps1)"
+else
+  ACTIVATE="source $VENV_DIR/bin/activate"
+fi
+cat <<DONE
 
 Environment ready.
 
-  Activate      : source .venv/bin/activate
+  Activate      : $ACTIVATE
   Smoke test    : bash scripts/run_smoke_test.sh
-  Tests         : .venv/bin/python -m pytest tests -q
-  Phase 1       : .venv/bin/python scripts/run_experiment.py \
+  Tests         : $PY -m pytest tests -q
+  Phase 1       : $PY scripts/run_experiment.py \\
                     --config configs/experiments/phase1_problem_existence.yaml --seed 42
 
 CPU-only is fully supported and is the default. Install the GPU extras with
-`bash scripts/setup_environment.sh --gpu` only when integrating a real geometry
+\`bash scripts/setup_environment.sh --gpu\` only when integrating a real geometry
 foundation encoder (see docs/DEVELOPMENT_ROADMAP.md, Gate 6).
 DONE

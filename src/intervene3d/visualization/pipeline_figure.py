@@ -116,10 +116,18 @@ def plot_matched_variant_strip(data: dict[str, Any], stem: Path | str, **kw: Any
                 uv = np.asarray(entry[key]["uv"], dtype=np.float64)
                 vis = np.asarray(entry[key]["visible"], dtype=bool)
                 ch = np.asarray(entry[key]["channel"], dtype=int)
-                for c, colour, marker, size in ((0, "#0072B2", "o", 4), (1, "#7f7f7f", "s", 7), (2, "#D55E00", "*", 24)):
+                # Colour here encodes the CHANNEL, not the mechanism -- the
+                # mechanism is the column. Without the legend added below, that
+                # encoding is invisible to a reader.
+                for c, colour, marker, size, name in (
+                    (0, "#0072B2", "o", 4, "scene content"),
+                    (1, "#7f7f7f", "s", 7, "interface frame"),
+                    (2, "#D55E00", "*", 24, "observer markers"),
+                ):
                     m = (ch == c) & vis
                     if np.any(m):
-                        ax.scatter(uv[m, 0], uv[m, 1], s=size, c=colour, marker=marker, linewidths=0)
+                        ax.scatter(uv[m, 0], uv[m, 1], s=size, c=colour, marker=marker,
+                                   linewidths=0, label=name if (row == 0 and col == 0) else None)
                 ax.set_xlim(0, width)
                 ax.set_ylim(height, 0)
                 ax.set_aspect("equal")
@@ -131,4 +139,8 @@ def plot_matched_variant_strip(data: dict[str, Any], stem: Path | str, **kw: Any
                 if col == 0:
                     ax.set_ylabel(tag, fontsize=6.2)
         fig.suptitle("Identical at the reference view; separated by one controlled intervention", fontsize=7)
+        handles, labels = axes[0, 0].get_legend_handles_labels()
+        if handles:
+            fig.legend(handles, labels, loc="lower center", ncol=len(handles), fontsize=6,
+                       frameon=False, bbox_to_anchor=(0.5, -0.02))
         return save_figure(fig, stem, **kw)

@@ -1,0 +1,36 @@
+# E4 -- Phase 2 benchmark core. Adds H_T (planar glass) to the hypothesis family.
+#
+# Chance is 0.25 here, not 0.333. Transmission is expected to be the hardest
+# mechanism: the paraxial axial shift d(1 - 1/n) is millimetric, so H_T should be
+# separable from H_D only at large baselines, giving a graded ambiguity ladder
+# rather than the sharp resolvable/unresolvable split of Phase 1.
+_base: configs/experiments/phase1_problem_existence.yaml
+
+experiment:
+  name: phase2_benchmark_core
+
+data:
+  synthetic_config: configs/synthetic/benchmark_core.yaml
+  split: test
+  reseed_with_experiment_seed: true
+
+methods:
+  - name: single_frame_classifier
+    kind: classifier
+    classifier: single_frame
+  - name: passive_multiview_classifier
+    kind: classifier
+    classifier: passive_multiview
+  - name: max_baseline_intervention
+    kind: engine
+    selector: max_baseline
+  - name: intervene3d_sum
+    kind: engine
+    selector: max_separability
+  - name: intervene3d_maxmin
+    kind: engine
+    selector: max_min_separability
+  - name: intervene3d_maxmin_forced
+    kind: engine
+    selector: max_min_separability
+    abstention: false

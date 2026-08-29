@@ -23,6 +23,18 @@ That is expected and fine. The preliminary pipeline, the smoke test and the
 Phase 1 experiment are pure NumPy and CPU-only. `environment.txt` will record
 `torch: not installed`, which is a correct record, not a warning.
 
+**Windows: `.venv/bin/python: No such file or directory`**
+A Windows virtualenv puts the interpreter in `.venv/Scripts/python.exe`. The
+scripts and the `Makefile` detect this themselves, so run them unchanged from Git
+Bash. If you are typing a command out of the docs by hand, substitute
+`.venv/Scripts/python.exe`, or set `PYTHON=` once. `python3` also does not exist
+on a stock Windows install — `setup_environment.sh` falls back to `python`.
+
+**Windows: `PytestCacheWarning: could not create cache path ... Access is denied`**
+Harmless, and the tests still pass. It happens when the repository directory
+denies the rename pytest uses to create `.pytest_cache`. Silence it with
+`python -m pytest tests -q -p no:cacheprovider`.
+
 ---
 
 ## Configuration
@@ -123,16 +135,45 @@ method, `ε` is probably too large — check `model.identifiability.epsilon_px`.
 
 ## Datasets
 
-**`scripts/download_datasets.sh` refuses to download anything**
-By design. Automated download requires **both** a verified licence and verified
-download permission in `configs/datasets/external.yaml`. As of the 2026-08-28
-audit no registered dataset meets that bar, so the script prints acquisition
-instructions instead. No external dataset is needed for the smoke test or Phase 1.
+**`automated download : REFUSED`**
+By design. A fetch requires **both** a verified licence and
+`automated_download_permitted: true` in `configs/datasets/external.yaml`, plus a
+`fetch:` block naming the remote repository. Four of the fourteen entries qualify
+(2026-08-29); the rest print acquisition instructions. No external dataset is
+needed for the smoke test or Phase 1.
+
+**`HELD: N GB exceeds the 1.0 GB confirmation threshold`**
+Also by design — nothing large is transferred without an explicit `--yes`. The
+message prints the exact command to re-run. Use `--dry-run` first to see the file
+list and byte total without transferring.
+
+**`insufficient free space: X GB available, Y GB needed`**
+The fetcher refuses below the transfer size + 10 % headroom. Pick a smaller
+`--variant` (`bash scripts/download_datasets.sh --dataset <key> --dry-run` lists
+them with sizes) or free space.
+
+**`checksum mismatch for <file>`**
+The bytes received do not match the publisher's own SHA-256 (Hugging Face
+`lfs.oid`), so the file was deleted rather than kept. Re-run; the transfer resumes
+rather than restarting. Persistent mismatches mean the upstream file changed —
+compare `revision_resolved` in `manifest.json` against the current `main`.
+
+**A download stalls on a single large file**
+Some variants are one large tarball. Raise `--workers`: spare workers are spread
+across byte ranges of the same file. `--workers 8` gives 8 segments on a
+single-file variant.
 
 **`ACCESS UNVERIFIED` next to a dataset**
 Means the download mechanism, licence or terms were not confirmed during the
 audit. It does **not** mean the dataset is unavailable. Verify it yourself and
-update the registry.
+update the registry — and check the *machine-readable* source first
+(`/api/datasets/<id>` for a Hugging Face entry), which is what the 2026-08-29
+re-verification found the 2026-08-28 audit had missed.
+
+**A verified licence but `Auto-download: no`**
+Not a contradiction. ClearPose (MIT) and DREDS (CC BY-NC 4.0) are freely usable
+but are hosted where no stable, checksummable URL exists, so an automated fetch
+could not be reproducible. Permission is about mechanism as much as licence.
 
 ---
 

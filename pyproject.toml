@@ -26,6 +26,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6", "pre-commit>=3.7"]
 gpu = ["torch>=2.3", "torchvision>=0.18"]
+# Only needed to READ the external datasets, which ship as parquet. Acquisition
+# itself (scripts/download_datasets.sh) is pure standard library.
+data = ["pyarrow>=15", "Pillow>=10"]
 
 [project.scripts]
 intervene3d-experiment = "intervene3d.experiments.runner:main"

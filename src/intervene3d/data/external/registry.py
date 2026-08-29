@@ -63,7 +63,22 @@ class ExternalDataset:
 
     @property
     def local_root(self) -> Path:
-        return repo_root() / str(self.payload.get("expected_layout", f"data/raw/{self.key}/")).split("{")[0].rstrip("/")
+        """Where this dataset lives on disk.
+
+        ``expected_layout`` is written for humans and carries two kinds of
+        placeholder: a brace alternation naming the subdirectories
+        (``.../{train,test}/...``) and a trailing ``...`` meaning "and whatever
+        the dataset puts below here". Both are documentation, not path
+        components -- keeping either would create a directory literally named
+        ``...``.
+        """
+        layout = str(self.payload.get("expected_layout") or f"data/raw/{self.key}/")
+        parts: list[str] = []
+        for part in layout.split("{")[0].split("/"):
+            if not part or set(part) == {"."}:  # "", ".", "..."
+                continue
+            parts.append(part)
+        return repo_root().joinpath(*parts) if parts else repo_root() / "data" / "raw" / self.key
 
     def instructions(self) -> str:
         return str(self.payload.get("instructions", "No instructions recorded.")).rstrip()
@@ -154,14 +169,28 @@ def validate_external_dataset(dataset: ExternalDataset) -> dict[str, Any]:
         }
     files = [p for p in root.rglob("*") if p.is_file()]
     total_bytes = sum(p.stat().st_size for p in files)
-    manifest_path = root / "manifest.json"
-    checksum_status = "no manifest.json -- run the dataset's own preparation step"
-    if manifest_path.exists():
+    # A dataset may be acquired one variant at a time, each into its own
+    # subdirectory with its own manifest, so look for all of them.
+    manifests = sorted(root.rglob("manifest.json"))
+    if not manifests:
+        checksum_status = "no manifest.json -- run the dataset's own preparation step"
+    else:
         from intervene3d.utils.io import load_json
 
-        recorded = load_json(manifest_path).get("files", {})
-        bad = [rel for rel, dig in recorded.items() if not (root / rel).exists() or sha256_file(root / rel) != dig]
-        checksum_status = "all checksums match" if not bad else f"{len(bad)} checksum mismatches: {bad[:5]}"
+        checked = 0
+        bad: list[str] = []
+        for manifest_path in manifests:
+            base = manifest_path.parent
+            for rel, dig in (load_json(manifest_path).get("files") or {}).items():
+                checked += 1
+                target = base / rel
+                if not target.exists() or sha256_file(target) != dig:
+                    bad.append(str(target.relative_to(root)))
+        checksum_status = (
+            f"all {checked} checksums match"
+            if not bad
+            else f"{len(bad)}/{checked} checksum mismatches: {bad[:5]}"
+        )
     return {
         "dataset": dataset.key,
         "present": True,
@@ -169,5 +198,6 @@ def validate_external_dataset(dataset: ExternalDataset) -> dict[str, Any]:
         "root": str(root),
         "n_files": len(files),
         "size_gb": round(total_bytes / (1 << 30), 4),
+        "variants": [str(m.parent.relative_to(root)) for m in manifests],
         "checksums": checksum_status,
     }

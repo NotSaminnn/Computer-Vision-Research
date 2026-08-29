@@ -195,7 +195,7 @@ no-abstention sweep reads `0.727` and the passive classifier `1.000`, against
 | no hypothesis conditioning | **RUN** | CEA 0.000, abstains on everything |
 | no abstention | **RUN** | FPCR 0.810 vs 0.000 |
 | RGB instead of geometry features | NOT IMPLEMENTED | needs `D_feature` |
-| learned-only transition | IMPLEMENTED, NOT RUN | needs a training stage |
+| learned-only transition | IMPLEMENTED, training stage IMPLEMENTED (`experiments/learned.py`), NOT RUN | **On the synthetic benchmark the `hybrid` residual target is identically zero, so `hybrid` is EQUAL to `analytical`. This ablation is uninformative there and must not be reported from synthetic data.** |
 | analytical-only transition | **RUN** (the default) | — |
 | no matched-counterfactual training | NOT IMPLEMENTED | needs an unmatched generator variant |
 | noisy camera actions | IMPLEMENTED, NOT RUN | `action_noise.enabled: true` |
@@ -204,8 +204,10 @@ no-abstention sweep reads `0.727` and the passive classifier `1.000`, against
 
 ## E10 — External benchmark evaluation · **NOT RUN**
 
-No external dataset has been downloaded. See `docs/DATASET_MATRIX.md`.
-Gate 5 work.
+Four external datasets (seven variants, ~57 GB) have been acquired and
+checksum-verified against publisher SHA-256 with pinned upstream revisions, and
+`intervene3d.data.external.loaders` reads all four formats. **None has entered any
+reported result.** See `docs/DATASET_MATRIX.md` §5.1.
 
 ---
 

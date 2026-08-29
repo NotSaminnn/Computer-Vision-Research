@@ -22,7 +22,12 @@ cd "$REPO_ROOT"
 
 PY="${PYTHON:-}"
 if [ -z "$PY" ]; then
-  if [ -x ".venv/bin/python" ]; then PY=".venv/bin/python"; else PY="python3"; fi
+  # POSIX venvs put the interpreter in bin/, Windows venvs in Scripts/.
+  if   [ -x ".venv/bin/python" ];        then PY=".venv/bin/python"
+  elif [ -x ".venv/Scripts/python.exe" ]; then PY=".venv/Scripts/python.exe"
+  elif command -v python3 >/dev/null 2>&1; then PY="python3"
+  else PY="python"
+  fi
 fi
 
 SYNTH_CONFIG="configs/synthetic/smoke.yaml"

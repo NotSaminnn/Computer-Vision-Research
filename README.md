@@ -103,7 +103,7 @@ inspectable — it is not hidden inside a network. Full detail in
 ├── scripts/          setup, download, validate, generate, smoke test, run, aggregate, figures
 ├── src/intervene3d/  config data geometry optics hypotheses interventions
 │                     models inference metrics experiments visualization reproducibility
-├── tests/            unit (11 files) · integration · smoke   — 224 tests
+├── tests/            unit (13 files) · integration · smoke   — 276 tests
 ├── data/             raw/ interim/ processed/ manifests/
 ├── experiments/      ONE top-level directory; one immutable directory per run
 ├── results/          cross-seed aggregates
@@ -117,8 +117,12 @@ inspectable — it is not hidden inside a network. Full detail in
 
 ```bash
 bash scripts/setup_environment.sh          # creates .venv, installs, verifies
-source .venv/bin/activate
+source .venv/bin/activate                  # Windows: source .venv/Scripts/activate
 ```
+
+The script detects the venv layout, so it works from Git Bash on Windows as well
+as on POSIX; `make` and the other scripts find the right interpreter by
+themselves. Override it anywhere with `PYTHON=/path/to/python`.
 
 CPU-only, and that is the fully supported path — the preliminary pipeline needs
 only NumPy, Matplotlib, PyYAML and SciencePlots. PyTorch is **optional** and is
@@ -204,7 +208,7 @@ CEA of 0.333 with a *committed* accuracy of 1.000 is the abstention mechanism
 working, not a failure.
 </details>
 
-Tests: `.venv/bin/python -m pytest tests -q` → **224 passed** in ~9 s.
+Tests: `make test` (or `.venv/bin/python -m pytest tests -q`) → **276 passed** in ~35 s.
 
 ---
 
@@ -241,17 +245,36 @@ can never straddle a split.
 ## Dataset acquisition
 
 ```bash
-python scripts/validate_datasets.py --list       # registry with status and licence
-bash   scripts/download_datasets.sh --dataset transphy3d
-python scripts/validate_datasets.py --all
+python scripts/validate_datasets.py --list                            # status, licence, local presence
+bash   scripts/download_datasets.sh --dataset layereddepth --dry-run  # list files + exact byte count
+bash   scripts/download_datasets.sh --dataset layereddepth --variant validation --yes
+python scripts/validate_datasets.py --all                             # verify checksums
 ```
 
-Thirteen external datasets are registered with verified paper citations, licence
-status and acquisition instructions. **None is downloaded automatically**, and
-none is required here. `download_datasets.sh` attempts a download only when both
-the licence and the download permission are recorded as `verified`; as of the
-2026-08-28 audit no dataset meets that bar, so it prints instructions instead.
-See `docs/DATASET_MATRIX.md`.
+Fourteen external datasets are registered with verified paper citations, licence
+status and acquisition instructions. **None is required here** — every result
+below comes from the synthetic benchmark.
+
+A download runs only when the registry records **both** a `verified` licence and
+`automated_download_permitted: true`, and only when the entry carries a `fetch:`
+block naming the exact remote repository. Four entries meet that bar as of the
+2026-08-29 re-verification (LayeredDepth · CC0, LayeredDepth-Syn · BSD-3,
+3D Visual Illusion · Apache-2.0, TransPhy3D · Apache-2.0); the other ten print
+acquisition instructions and refuse. Refusal is the designed behaviour.
+
+Nothing of unknown size is ever transferred: the remote file list and byte total
+are printed first, anything over 1 GB is held until `--yes`, files are verified
+against **the publisher's own** SHA-256, and each variant lands with a
+`manifest.json` pinning the resolved commit SHA — so an external result cites
+`princeton-vl/LayeredDepth@a2aad776…`, not a moving `main`.
+
+Datasets ship splits orders of magnitude apart in size, so `--variant` selects
+one: `layereddepth` alone ranges from a 4.13 GB validation split to a 15.15 GB
+test split whose labels are withheld for a submission server. Reading any of it
+needs `pip install -e ".[data]"` (parquet); acquiring it needs nothing extra. See
+`docs/DATASET_MATRIX.md` for the full matrix and the two traps it documents —
+the 3D Visual Illusion training split's "depth" is a DepthAnythingV2 *prediction*
+rather than ground truth, and LayeredDepth's test split cannot be scored locally.
 
 ---
 
@@ -367,7 +390,12 @@ Read these before quoting any number.
    thickness). A real system would estimate them and that error would propagate.
 4. **The observation model is landmark-based**, not dense.
 5. **`H_M` (mixed optics) is implemented but unvalidated** and excluded from Phase 1.
-6. **No external or real-world data has been used.**
+6. **No external data has entered any reported result.** Four external datasets
+   (seven variants, ~57 GB) are acquired and checksum-verified against publisher
+   SHA-256 with pinned upstream revisions, and loaders exist for all four — but
+   every number in this README comes from the synthetic benchmark. **No real-world
+   photographic data is used anywhere**; the acquired TransPhy3D and LayeredDepth-Syn
+   data is rendered, and only 3D Visual Illusion carries real sensor measurements.
 7. **A static planar mirror is not resolvable by content parallax at all** — a
    correction to the source specification, documented in
    `docs/RESEARCH_SPEC_AUDIT.md` §5 (A2). Mirrors are identifiable here only via

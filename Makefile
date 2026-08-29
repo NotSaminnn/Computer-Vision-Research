@@ -1,6 +1,7 @@
 # Intervene3D -- developer entry points.
 # Every target here is also documented in README.md.
-PY ?= .venv/bin/python
+# POSIX venvs put the interpreter in bin/, Windows venvs in Scripts/.
+PY ?= $(if $(wildcard .venv/Scripts/python.exe),.venv/Scripts/python.exe,.venv/bin/python)
 SEED ?= 42
 
 .PHONY: help setup install smoke test unit integration data experiment aggregate figures validate-datasets clean-pyc lint

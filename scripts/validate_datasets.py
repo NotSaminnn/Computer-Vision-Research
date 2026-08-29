@@ -50,7 +50,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.list:
         print(f"External dataset registry ({registry.path})")
-        print(f"verified on: {registry.payload.get('verified_on')}\n")
+        verified_on = registry.payload.get("verified_on")
+        reverified_on = registry.payload.get("reverified_on")
+        print(f"verified on: {verified_on}" + (f"  (re-verified {reverified_on})" if reverified_on else ""))
+        print()
         for row in registry.summary_rows():
             print(
                 f"  [{row['priority']}/5] {row['key']:20s} {row['status']:18s} "

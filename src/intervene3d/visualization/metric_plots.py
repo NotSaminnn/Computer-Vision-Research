@@ -10,6 +10,7 @@ import numpy as np
 from intervene3d.visualization.export import save_figure
 from intervene3d.visualization.ieee_style import (
     FigureSpec,
+    bar_style,
     ieee_style,
     mechanism_label,
     method_label,
@@ -18,7 +19,13 @@ from intervene3d.visualization.ieee_style import (
 )
 
 
-def _grouped_bar(ax, groups, series, values, errors=None, ylabel="", hatches=("", "//", "..", "xx", "\\\\")):
+def _grouped_bar(ax, groups, series, values, errors=None, ylabel=""):
+    """Grouped bars separated by hue and lightness rather than by hatching.
+
+    Dense hatch fills (``//``, ``xx``) print as moire at journal column width;
+    a light body against a full-strength edge of the same hue separates the
+    series just as well in greyscale and reads far quieter.
+    """
     n_s = len(series)
     width = 0.8 / max(n_s, 1)
     x = np.arange(len(groups))
@@ -27,8 +34,7 @@ def _grouped_bar(ax, groups, series, values, errors=None, ylabel="", hatches=(""
         err = None if errors is None else np.nan_to_num(np.asarray(errors[i], dtype=np.float64))
         row = np.asarray(values[i], dtype=np.float64)
         ax.bar(x + offs, row, width=width, label=name, yerr=err, capsize=1.6,
-               color=series_style(i)["color"], edgecolor="k", linewidth=0.35,
-               hatch=hatches[i % len(hatches)], error_kw={"elinewidth": 0.55})
+               **bar_style(i), error_kw={"elinewidth": 0.55, "ecolor": "#55606A"})
         # A zero-height bar is invisible; say so rather than leave a mystery gap.
         for xi, v in zip(x + offs, row, strict=True):
             if np.isfinite(v) and v <= 1e-9:
@@ -182,12 +188,19 @@ def plot_metric_summary_table(data: dict[str, Any], stem: Path | str, **kw: Any)
     metrics = list(data["metric_names"])
     values = np.asarray(data["values"], dtype=np.float64)  # (methods, metrics)
     with ieee_style():
-        fig, ax = new_figure(FigureSpec("double", 0.30 + 0.06 * len(methods)))
+        # Height follows the ROW COUNT. The previous 0.30 + 0.06*n gave a 6-inch
+        # canvas for a 2-inch table, and `loc="center"` then stranded it in the
+        # middle: 95 % of the image was blank.
+        n_rows = len(methods) + 1
+        fig, ax = new_figure(FigureSpec("double", 0.055 * n_rows + 0.06))
         ax.axis("off")
         cell = [[("n/a" if not np.isfinite(v) else f"{v:.3f}") for v in row] for row in values]
-        table = ax.table(cellText=cell, rowLabels=methods, colLabels=metrics, loc="center", cellLoc="center")
+        table = ax.table(
+            cellText=cell, rowLabels=methods, colLabels=metrics, cellLoc="center",
+            # Fill the axes exactly rather than floating inside it.
+            bbox=[0.0, 0.0, 1.0, 1.0],
+        )
         table.auto_set_font_size(False)
         table.set_fontsize(6)
-        table.scale(1.0, 1.15)
         ax.set_title(data.get("title", "Headline metrics"), fontsize=7)
         return save_figure(fig, stem, **kw)

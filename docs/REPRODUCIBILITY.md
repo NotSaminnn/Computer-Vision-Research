@@ -187,6 +187,14 @@ PyTorch and CUDA if present, the package import, and finally runs a small
 end-to-end validation of the analytical optics and the identifiability
 computation.
 
+**Platform.** The scripts resolve the virtualenv layout themselves — `bin/` on
+POSIX, `Scripts/` on Windows — so `bash scripts/setup_environment.sh`,
+`run_smoke_test.sh`, `download_datasets.sh` and `make` all work from Git Bash on
+Windows without editing anything. Set `PYTHON=/path/to/python` to override.
+Verified on Windows 11 / Python 3.10.11: 276 tests pass, the smoke test passes,
+and the Phase 1 experiment reproduces the benchmark statistics recorded in
+`docs/DATASET_MATRIX.md` §3 (288 variants, 103 non-identifiable).
+
 Pins live in `requirements.txt` (runtime), `requirements-dev.txt` (tests, lint)
 and `requirements-gpu.txt` (optional). Every run archives a full frozen
 environment listing regardless.
@@ -197,13 +205,16 @@ environment listing regardless.
 
 ```bash
 bash scripts/setup_environment.sh
-.venv/bin/python scripts/generate_synthetic_data.py --config configs/synthetic/phase1.yaml
+PY=.venv/bin/python                          # Windows: .venv/Scripts/python.exe
+$PY scripts/generate_synthetic_data.py --config configs/synthetic/phase1.yaml
 for s in 1 2 3; do
-  .venv/bin/python scripts/run_experiment.py \
+  $PY scripts/run_experiment.py \
     --config configs/experiments/phase1_problem_existence.yaml --seed $s
 done
-.venv/bin/python scripts/aggregate_results.py --experiment phase1_problem_existence
+$PY scripts/aggregate_results.py --experiment phase1_problem_existence
 ```
+
+`make experiment SEED=1` picks the interpreter for you on either platform.
 
 Note that with `reseed_with_experiment_seed: true`, each seed generates its own
 benchmark (`intervene3d_synth_phase1_s1`, `_s2`, `_s3`) — about 12 s each.

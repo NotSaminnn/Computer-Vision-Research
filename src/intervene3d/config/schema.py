@@ -15,7 +15,15 @@ from intervene3d.config.loader import ConfigError, deep_merge
 VALID_MECHANISMS = ("direct", "reflection", "transmission", "emissive", "mixed")
 VALID_ENCODERS = ("ground_truth", "mock", "moge", "vggt_like")
 VALID_TRANSITIONS = ("analytical", "hybrid", "learned_only", "no_hypothesis_conditioning")
-VALID_SELECTORS = ("max_separability", "entropy_nbv", "random", "max_baseline", "fixed", "null")
+VALID_SELECTORS = (
+    "max_separability",
+    "max_min_separability",
+    "entropy_nbv",
+    "random",
+    "max_baseline",
+    "fixed",
+    "null",
+)
 
 SYNTHETIC_DEFAULTS: dict[str, Any] = {
     "dataset": {"name": "intervene3d_synth", "version": "0.1.0", "seed": 12345, "num_base_scenes": 8},

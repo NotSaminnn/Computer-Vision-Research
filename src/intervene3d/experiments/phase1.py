@@ -33,6 +33,11 @@ from intervene3d.data.dataset import Scene, SyntheticDataset
 from intervene3d.data.synthetic.dataset_writer import generate_dataset
 from intervene3d.data.synthetic.trajectory_generator import mcrb_baseline_sweep
 from intervene3d.data.types import CHANNEL_CONTENT, GeometryFeature, Observation
+from intervene3d.experiments.learned import (
+    BASE_FOR_TRANSITION,
+    required_bases,
+    train_residual_transition,
+)
 from intervene3d.experiments.methods import MethodSpec, build_engine
 from intervene3d.hypotheses.base import HypothesisSet
 from intervene3d.interventions.action_space import ActionSpace
@@ -173,9 +178,10 @@ def evaluate_engine_method(
     lateral_space: ActionSpace,
     action_noise: Mapping[str, Any],
     collect_examples: int = 1,
+    learned_model=None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Run the inference loop over every scene and collect per-scene records."""
-    engine, encoder = build_engine(spec, model_config, seed=seed)
+    engine, encoder = build_engine(spec, model_config, seed=seed, learned_model=learned_model)
     epsilon = engine.identifiability.epsilon
     noise_rng = np.random.default_rng([seed, 991]) if action_noise.get("enabled") else None
 
@@ -571,6 +577,55 @@ def _contact_vs_apparent_data(scenes: Sequence[Scene], *, per_mechanism: int = 4
     return {"scenes": entries, "max_depth": max_depth * 1.05}
 
 
+# ------------------------------------------------- learned transition (Gate 7)
+def _residual_key(spec: MethodSpec) -> str:
+    """The trained-model key a method needs, or ``""`` if it needs none."""
+    base = BASE_FOR_TRANSITION.get(spec.transition)
+    if base is None:
+        return ""
+    return f"{base}:{int(bool(spec.hypothesis_conditioning))}"
+
+
+def _train_learned_transitions(
+    specs: Sequence[MethodSpec],
+    train_scenes: Sequence[Scene],
+    actions: ActionSpace,
+    config: Mapping[str, Any],
+    seed: int,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Train one residual model per (base, conditioning) a method asks for.
+
+    Returns ``({key: model}, {key: report})``.  Both are empty when no method
+    uses a learned transition, so the ordinary analytical run pays nothing.
+    """
+    needed = required_bases(specs)
+    if not needed:
+        return {}, {}
+    if config.get("experiment", {}).get("train_learned_transition") is False:
+        raise ConfigError(
+            "methods request a learned transition ("
+            + ", ".join(sorted({s.transition for s in specs if _residual_key(s)}))
+            + ") but experiment.train_learned_transition is false; "
+            "enable it or drop those methods"
+        )
+    cfg = config.get("learned_transition", {})
+    models: dict[str, Any] = {}
+    reports: dict[str, Any] = {}
+    for key, conditioning in sorted(needed.items()):
+        base = key.split(":")[0]
+        LOGGER.info(
+            "training the %s residual transition on %d train scenes (hypothesis_conditioning=%s)",
+            base, len(train_scenes), conditioning,
+        )
+        model, report = train_residual_transition(
+            train_scenes, actions, base=base, seed=seed, config=cfg,
+            hypothesis_conditioning=conditioning,
+        )
+        models[key] = model
+        reports[key] = report
+    return models, reports
+
+
 # ---------------------------------------------------------------------- driver
 def run(config: Mapping[str, Any], run_dir, seed: int) -> dict[str, Any]:
     """Execute the Phase 1 experiment and write every artefact into ``run_dir``."""
@@ -606,6 +661,13 @@ def run(config: Mapping[str, Any], run_dir, seed: int) -> dict[str, Any]:
     )
 
     specs = [MethodSpec.from_dict(m, config) for m in config["methods"]]
+
+    # Gate 7: any method asking for a learned transition needs a model trained
+    # first, on the TRAIN split only. Nothing runs when no method asks.
+    learned_models, learned_reports = _train_learned_transitions(
+        specs, train_scenes, actions, config, seed
+    )
+
     rows_by_method: dict[str, list[dict[str, Any]]] = {}
     method_details: dict[str, Any] = {}
     examples: dict[str, Any] = {}
@@ -622,6 +684,7 @@ def run(config: Mapping[str, Any], run_dir, seed: int) -> dict[str, Any]:
             rows, detail = evaluate_engine_method(
                 spec, eval_scenes, actions, model_cfg, seed=seed,
                 baselines=baselines, lateral_space=lateral_space, action_noise=action_noise,
+                learned_model=learned_models.get(_residual_key(spec)),
             )
             if detail["examples"] and "primary" not in examples:
                 examples["primary"] = detail["examples"][0]
@@ -638,6 +701,10 @@ def run(config: Mapping[str, Any], run_dir, seed: int) -> dict[str, Any]:
         "epsilon_px": epsilon,
         "tau": tau,
         "chance_level": 1.0 / len(mechanisms),
+        # Empty unless a method requested a learned transition. Recording it
+        # means a hybrid/learned_only result can never be quoted without its
+        # training provenance alongside.
+        "learned_transition_training": learned_reports,
         "mechanisms": mechanisms,
         "n_eval_scenes": len(eval_scenes),
         "n_train_scenes": len(train_scenes),

@@ -91,8 +91,15 @@ def build_transition(spec: MethodSpec, *, learned_model=None):
     if spec.transition in ("hybrid", "learned_only"):
         if learned_model is None:
             raise ValueError(
-                f"method {spec.name!r} requests transition={spec.transition!r} but no trained residual "
-                "model was supplied; set experiment.train_learned_transition: true"
+                f"method {spec.name!r} requests transition={spec.transition!r}, which needs a trained "
+                "residual model, but none was supplied.\n"
+                "The training stage runs automatically when a method requests 'hybrid' or "
+                "'learned_only' and is driven by the optional `learned_transition:` config block "
+                "(epochs, hidden_dim, learning_rate, batch_size, max_actions_per_scene). Set "
+                "`experiment.train_learned_transition: false` to disable it -- in which case this "
+                "method cannot run.\n"
+                "Reaching this error means build_engine() was called directly without a "
+                "learned_model; see intervene3d.experiments.learned.train_residual_transition."
             )
         cls = HybridTransitionModel if spec.transition == "hybrid" else LearnedOnlyTransitionModel
         return cls(learned_model, hypothesis_conditioning=spec.hypothesis_conditioning)

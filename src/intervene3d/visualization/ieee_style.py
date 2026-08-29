@@ -34,7 +34,9 @@ from typing import Any
 import matplotlib
 
 matplotlib.use("Agg", force=False)
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np
 
 #: IEEE column widths in inches.
 IEEE_SINGLE_COLUMN_IN = 3.5
@@ -42,18 +44,22 @@ IEEE_DOUBLE_COLUMN_IN = 7.16
 GOLDEN = 1.618
 
 #: Grayscale-safe categorical palette, ordered by increasing luminance contrast.
-PALETTE = ("#1b1b1b", "#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9", "#E69F00")
+#: Paul Tol's *muted* qualitative scheme.  Chosen over the saturated Okabe-Ito
+#: set it replaced because dense, high-chroma fills read as slide graphics rather
+#: than journal figures; Tol muted keeps the colour-vision-deficiency safety while
+#: sitting far quieter on the page.  Ordered so adjacent series stay separable.
+PALETTE = ("#3D4A52", "#4477AA", "#CC6677", "#117733", "#AA4499", "#88CCEE", "#DDCC77")
 MARKERS = ("o", "s", "^", "D", "v", "P", "X")
 LINESTYLES = ("-", "--", "-.", ":", (0, (3, 1, 1, 1)), (0, (5, 2)), (0, (1, 1)))
 
 #: Stable colours for the optical mechanisms, used across every figure.
 MECHANISM_COLORS = {
-    "direct": "#0072B2",
-    "emissive": "#D55E00",
-    "reflection": "#009E73",
-    "transmission": "#CC79A7",
-    "mixed": "#E69F00",
-    "abstain": "#7f7f7f",
+    "direct": "#4477AA",
+    "emissive": "#CC6677",
+    "reflection": "#117733",
+    "transmission": "#AA4499",
+    "mixed": "#DDCC77",
+    "abstain": "#9AA5AC",
 }
 MECHANISM_LABELS = {
     "direct": r"$H_D$ direct",
@@ -76,8 +82,8 @@ _FALLBACK_RC: dict[str, Any] = {
     "ytick.labelsize": 7,
     "axes.linewidth": 0.6,
     "axes.grid": True,
-    "grid.linewidth": 0.4,
-    "grid.alpha": 0.35,
+    "grid.linewidth": 0.35,
+    "grid.alpha": 0.25,
     "grid.linestyle": "--",
     "lines.linewidth": 1.0,
     "lines.markersize": 3.0,
@@ -167,6 +173,30 @@ def new_figure(
     spec = spec or FigureSpec()
     fig, axes = plt.subplots(nrows, ncols, figsize=spec.size, **subplot_kw)
     return fig, axes
+
+
+
+def tint(colour: str, amount: float = 0.55) -> tuple[float, float, float]:
+    """Mix ``colour`` toward white by ``amount``.
+
+    Bar charts previously separated paired series with dense hatching, which
+    prints as noise at journal scale.  A light tint against the full-strength
+    edge of the same hue separates them by **lightness** instead -- which
+    survives greyscale reproduction just as hatching did, without the texture.
+    """
+    r, g, b = mcolors.to_rgb(colour)
+    a = float(np.clip(amount, 0.0, 1.0))
+    return (r + (1.0 - r) * a, g + (1.0 - g) * a, b + (1.0 - b) * a)
+
+
+def bar_style(index: int = 0, *, colour: str | None = None, emphasis: bool = False) -> dict[str, Any]:
+    """Fill/edge pair for a bar series: light body, full-strength outline."""
+    base = colour or PALETTE[index % len(PALETTE)]
+    return {
+        "color": tint(base, 0.30 if emphasis else 0.62),
+        "edgecolor": base,
+        "linewidth": 0.7,
+    }
 
 
 def series_style(index: int) -> dict[str, Any]:

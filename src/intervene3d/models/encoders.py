@@ -15,6 +15,11 @@ Available names
 ``mock``
     ``ground_truth`` plus configurable pixel / depth noise and random landmark
     dropout, for robustness studies.
+``depth_anything_v2``
+    A real published monocular depth network, run through ``transformers`` on
+    the GPU.  The first encoder here that looks at pixels rather than at the
+    simulator's state.  Needs ``Observation.image`` and refuses without it.  See
+    :mod:`intervene3d.models.foundation_encoders`.
 ``moge`` / ``vggt_like``
     NOT IMPLEMENTED.  These raise with installation instructions rather than
     silently degrading, so a run can never quietly claim to have used a
@@ -142,15 +147,23 @@ def build_geometry_encoder(config: dict[str, Any] | None):
             dropout=float(config.get("dropout", 0.0)),
             seed=int(config.get("seed", 0)),
         )
+    if name in ("depth_anything_v2", "depth_anything"):
+        from intervene3d.models.foundation_encoders import DEFAULT_CHECKPOINT, MonocularDepthEncoder
+
+        return MonocularDepthEncoder(
+            checkpoint=str(config.get("checkpoint", DEFAULT_CHECKPOINT)),
+            device=str(config.get("device", "auto")),
+            align_to_reference=bool(config.get("align_to_reference", False)),
+        )
     if name == "moge":
         return _UnavailableEncoder("moge", _MOGE_INSTRUCTIONS)
     if name == "vggt_like":
         return _UnavailableEncoder("vggt_like", _VGGT_INSTRUCTIONS)
     raise ValueError(
-        f"unknown geometry encoder {name!r}; available: ground_truth, mock, moge (NOT IMPLEMENTED), "
-        "vggt_like (NOT IMPLEMENTED)"
+        f"unknown geometry encoder {name!r}; available: ground_truth, mock, depth_anything_v2, "
+        "moge (NOT IMPLEMENTED), vggt_like (NOT IMPLEMENTED)"
     )
 
 
-AVAILABLE_ENCODERS = ("ground_truth", "mock", "moge", "vggt_like")
+AVAILABLE_ENCODERS = ("ground_truth", "mock", "depth_anything_v2", "moge", "vggt_like")
 IMPLEMENTED_ENCODERS = ("ground_truth", "mock")

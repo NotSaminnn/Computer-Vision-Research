@@ -570,3 +570,299 @@ model, so oracle-encoder AUROC = 1.000 and MAE_MCRB ≈ 0.001 are **degenerate**
 they confirm internal consistency, not generalisation. Interface parameters are
 assumed known. No real imagery has been touched. Those limits are stated in the
 README, in `RESEARCH_SPEC_AUDIT.md` §9, and in every run's `summary.md`.
+
+---
+
+## 11. Session 2 — 2026-08-29: environment on Windows, and real dataset acquisition
+
+A second session, on a different platform (Windows 11, Python 3.10.11, `uv`),
+with two goals: stand the environment up from the clean checkout, and turn the
+external-dataset registry from a documentation artefact into working acquisition.
+
+### 11.1 Environment
+
+`uv venv` + `requirements-dev.txt` + `pip install -e .`, then the repository's own
+verification. Everything passed on the first attempt except the shell scripts'
+interpreter discovery, which assumed `.venv/bin/python`; a Windows virtualenv puts
+it in `.venv/Scripts/python.exe`.
+
+| File | Change |
+|---|---|
+| `scripts/setup_environment.sh` | `venv_python()` resolves either layout; base interpreter falls back to `python` where `python3` does not exist; the closing banner now prints the paths that actually exist on the running platform |
+| `scripts/run_smoke_test.sh`, `scripts/download_datasets.sh` | same discovery order, `PYTHON=` still overrides |
+| `Makefile` | `PY ?=` picks `Scripts/python.exe` when present |
+
+Verified on this machine: **276 tests pass**, `ruff check src scripts tests`
+clean, the 16-step smoke test passes end to end (22 PDF + 22 PNG figures, all
+regenerated from `metrics/figure_data.json` alone), and all three synthetic
+benchmarks regenerate and validate — `phase1` reproducing **288 variants, 103
+non-identifiable (35.8 %)**, matching the figure recorded in session 1.
+
+### 11.2 The registry was under-claiming, and it mattered
+
+Session 1 recorded eight entries as `ACCESS UNVERIFIED` because the project pages
+did not state a licence. That was the correct call given what was checked, but
+the check was aimed at the wrong target: the machine-readable source
+(`/api/datasets/<id>`) states licence and gating explicitly, and the file tree
+endpoint gives exact per-file byte counts. Re-verifying against those:
+
+| Dataset | Recorded 2026-08-28 | Actual, 2026-08-29 |
+|---|---|---|
+| LayeredDepth | licence CC0 `verified`, auto-download `unknown` | `cc0-1.0`, ungated — **fetchable** |
+| LayeredDepth-Syn | not a separate entry | `bsd-3-clause` — a **different licence** from the benchmark repo, so it cannot share a row |
+| 3D Visual Illusion | licence not stated | `apache-2.0`, ungated |
+| TransPhy3D | licence not stated | `apache-2.0`, ungated |
+| ClearPose | licence not stated | **MIT**, per the repository README |
+
+Two findings that would have caused silent damage if the data had simply been
+pulled and used:
+
+1. **3D Visual Illusion's 455 GB training split has no ground-truth depth.** Its
+   `depth` files are DepthAnythingV2 *predictions* rescaled by the provided
+   `scale_factors*.csv`. Training on it would import another model's errors as
+   labels. Only the 8.10 GB RealData split carries true metric disparity
+   (RealSense L515). The registry wires up RealData only.
+2. **LayeredDepth's 15.15 GB test split cannot be scored locally** — labels are
+   withheld for a submission server, three submissions per user per seven days.
+   The 4.13 GB validation split is the one that supports a local metric.
+
+`ClearPose` (MIT) and `DREDS` (CC BY-NC 4.0) stay **manual** despite verified
+licences: both are distributed via hosts that expose no stable, checksummable
+URL, so an automated fetch could not be made reproducible. Permission is about
+mechanism as much as licence, and the registry now separates the two.
+
+### 11.3 `data/external/fetchers.py` — 380 lines, no new dependency
+
+The previous `download_datasets.sh` printed
+`NOT IMPLEMENTED: no registered dataset currently satisfies the automated-download
+condition`. Four now do, so the fetcher was written. Pure standard library —
+adding `huggingface_hub` for four registry entries would have cost the
+"NumPy-only" property for nothing.
+
+Order of operations, enforced in code rather than documented:
+
+1. re-check policy at fetch time (licence `verified` **and** permission `true`);
+2. **list before transferring** — exact file count and byte total printed first;
+3. hold anything over 1 GB until `--yes`, and refuse if free disk < size + 10 %;
+4. transfer, resuming partial files;
+5. verify against **the publisher's own** SHA-256 (Hugging Face `lfs.oid`), so
+   integrity is checked against the source rather than against whatever arrived;
+6. write `manifest.json`: per-file SHA-256, **resolved commit SHA**, source URL,
+   allow-patterns, licence.
+
+Step 6 is what makes an external result reproducible — the manifest pins an
+immutable revision, so a future claim reads
+`princeton-vl/LayeredDepth@a2aad776030144950f8cbc2f12e2903b26316ff8`, not a
+moving `main`.
+
+**Variants.** A dataset can publish splits four orders of magnitude apart
+(`layereddepth`: 0.07 GB → 15.15 GB; `transphy3d`: 0.75 GB → ~1.5 TB). Each entry
+declares named variants and `--variant` selects one. TransPhy3D deliberately
+exposes only `sample` and `test`; its training set is not fetchable through this
+tool at all.
+
+### 11.3.1 Five defects found by running it for real
+
+Only the first two were visible from reading the code; the rest needed an actual
+multi-gigabyte transfer against a live host.
+
+**1. `expand=true` on the tree endpoint caps a page at 50 entries** instead of
+1000, while returning the same `lfs.oid`. On TransPhy3D's 11,149 files that is
+223 round trips for no added information. Removed.
+
+**2. One connection per file saturates nothing when a variant is one large
+tarball.** 3D Visual Illusion ships 8.1 GB as a single file, so `--workers 6` ran
+at one stream. Spare workers are now spread across byte ranges of the same file,
+each range its own resumable `.partN`, with a fallback to single-stream if the
+server ignores `Range`.
+
+**3. `local_root` turned `expected_layout` into a directory named `...`.**
+Pre-existing, and the worst of the five. The property was
+
+```python
+repo_root() / expected_layout.split("{")[0].rstrip("/")
+```
+
+correct for `data/raw/layereddepth/{validation,test}/...` but not for
+`data/raw/transphy3d/...` — with no `{`, the trailing `...` survived as a literal
+path component. **Nine of the fourteen entries were affected** (`transphy3d`,
+`clearpose`, `booster`, `md3k`, `magd`, `mvmd`, `gift_benchmark`, `pdi_dataset`,
+`depthfocus_synth`), and it stayed invisible until something actually wrote to
+one: the fetch reported `downloading to data/raw/transphy3d/.../sample`.
+`local_root` now drops every all-dots component. The regression test asserts that
+no shipped entry resolves to a path containing `...` and that each stays directly
+under `data/raw/`.
+
+**4. A variant could not override its repository.** `plan_fetch` read
+`fetch.repo_id` only, so 3D Visual Illusion's `scale_factors` variant — which
+lives in the *virtual* repo while `real` lives in the *Real* repo — would have
+silently fetched from the wrong one. Per-variant `repo_id` / `repo_type` now win.
+
+**5. The listing had no retry while the transfer did.** TransPhy3D needs ~12
+paginated calls and the Hub closed one: `WinError 10054`. The whole fetch aborted
+on a transient network event, having already passed every policy check. API calls
+now retry five times with exponential backoff — but **not** on 401/403/404, where
+the server has given a definitive answer and retrying would be both useless and
+rude. `_MAX_LIST_PAGES` stops a runaway cursor.
+
+A sixth issue was self-inflicted, and is worth recording as method rather than as
+a defect: the first batch run silently skipped 3D Visual Illusion because
+`external.yaml` was being edited *while* the fetch loop was reading it, so
+`ExternalRegistry()` parsed a half-written file. The failure was invisible because
+the run's `grep` filter matched `DONE|FAILED` but not `could not list the remote
+repository`. Two lessons — do not edit a config a running job reads, and **a
+progress filter that only matches known-good lines cannot tell failure from
+silence**.
+
+### 11.4 Tests
+
+`tests/unit/test_external_datasets.py`, **20 cases**, all offline. The policy is
+the part worth testing, and it must hold without a network:
+
+- refusal on unverified licence, on withheld permission, on a `verified` entry
+  with no `fetch:` block, on an unimplemented backend, on an unknown variant;
+- an invariant over the *shipped* registry — no entry may claim
+  `automated_download_permitted: true` without `licence_status: verified`, and
+  every permitted entry must actually plan;
+- the 1 GB hold;
+- transfer mechanics against a local `Range`-capable HTTP server: segmented
+  reassembly is byte-exact, a half-written segment resumes rather than
+  duplicating, the no-`Range` fallback works, a truncated response is rejected
+  rather than accepted, and a complete file is not re-fetched;
+- manifest checksums detect post-hoc corruption;
+- regressions for all four code defects in §11.3.1 — no shipped entry resolves to
+  a path containing `...`, a per-variant `repo_id` wins over the entry default, a
+  dropped listing request is retried, the retry budget is finite, and a 404 is
+  *not* retried.
+
+Total: **224 → 276 tests.**
+
+### 11.5 What was acquired
+
+~13.8 GB into `data/raw/`, all verified against publisher checksums, all with
+manifests. **None of it has entered any reported result** — every number in
+`EXPERIMENT_PLAN.md` still comes from the synthetic benchmark alone. It is
+staged for Gate 5, not used.
+
+---
+
+## 12. Session 3 — 2026-08-29: Gates 5-7, and a number that would have shipped
+
+### 12.1 What was built
+
+| Gate | Module | State |
+|---|---|---|
+| **5** — external loaders | `data/external/loaders.py` | four formats: LayeredDepth parquet + ordinal `tuples.json`; LayeredDepth-Syn parquet + 8 depth layers; TransPhy3D WebDataset tars + per-frame extrinsics; 3D Visual Illusion `tar.gz` stereo + `.pfm` |
+| **6** — real encoder | `models/foundation_encoders.py` | Depth-Anything-V2-Small (Apache-2.0) on GPU. **24 ms/image, 0.35 GB VRAM, r² = 0.9797** against TransPhy3D depth after scale/shift alignment |
+| **7** — torch training | `models/torch_transition.py`, `scripts/train_transition.py` | residual-vs-rigid-reprojection on frame pairs with known relative pose |
+| — | `experiments/learned.py` | the NumPy training stage `methods.py` had promised via a config key nothing read |
+
+The Base and Large Depth-Anything checkpoints are **CC-BY-NC-4.0**; only Small is
+Apache-2.0, so Small is the default and selecting another records the restriction
+in the run manifest.
+
+### 12.2 Review before running, and what it caught
+
+Two independent reviews ran before the first training: a domain expert on the
+geometry, and an integrity audit on the claims. Both returned **NO-GO**. The
+expert quantified the cost:
+
+| pipeline | rigid baseline | model | reported ratio |
+|---|---|---|---|
+| **as written** | 0.3735 | 0.0697 | **0.187** |
+| both bugs fixed | 0.1255 | 0.0451 | 0.359 |
+
+It would have printed **0.187** — "the learned residual explains 81 % of what
+rigid reprojection cannot" — and the number was an artifact.
+
+**Four defects, each fixed and each now pinned by a test:**
+
+1. **The relative pose was applied inverted.** `iter_pairs` returned
+   `inv(E0) @ E1` and `warp_depth` then applied `inv(T_rel)`. The extrinsics are
+   **camera-from-world**, so the correct point transform is `E1 @ inv(E0)`,
+   applied directly. Two independent proofs: under the correct reading the camera
+   centre height is constant at `0.5753 ± 0.0000 m` (an exact level turntable,
+   3°/frame), and the dominant table-plane normal resolves to
+   `(0, cos 15°, sin 15°)` — the constants that appear in the extrinsics
+   themselves. Under the shipped reading, neither holds. **The shipped warp
+   scored worse than not moving the camera at all**, which is the diagnostic that
+   makes this catchable at all: a wrong pose still trains and still shows a
+   falling loss.
+2. **Intrinsics de-normalised per-axis**, giving `fx = 605.7`, `fy = 454.3` — a
+   4:3 pixel aspect no Blender render has. Both focals normalise by width; only
+   the principal point is per-axis. World-normal spread across frames:
+   `5.92° → 0.13°`.
+3. **`VisualIllusionReader` collapsed 455 samples into 28.** Frame names repeat
+   across 83 scene directories (`frame_0000`…`frame_0027`), and the key was the
+   bare stem. Every emitted sample spliced a left image from one scene onto a
+   right image and disparity from another, and no mask ever attached. Keyed on
+   `scene/frame`: **455 samples, 83 scenes, 455/455 masks**.
+4. **The sequence split leaked 3.06 %.** Group labels were rebuilt positionally
+   from a parallel list, but pairs yielding no rows are skipped, so every label
+   after the first skip shifted. Labels now travel with their rows out of
+   `build_pair_dataset`.
+
+### 12.3 The finding neither review predicted
+
+Occlusion boundaries carry **100.0 %** of the loss: MSE 0.794 on the 17 % of
+pixels with `|z_obs − z_rigid| > 5 cm`, against `2.9 × 10⁻⁵` on the rest — a
+factor of 27,000. On the geometrically consistent pixels, where transparency and
+reflection actually live, the model was **73× worse than predicting zero**, i.e.
+worse than the `H_D` null hypothesis it exists to beat.
+
+Occlusion and optical anomaly both produce large residuals and **no magnitude
+threshold separates them** — gating would delete the signal. So rows are *tagged*
+rather than dropped, and every metric is reported on both subsets separately with
+the pooled figure explicitly labelled `_POOLED`. An occlusion detector can no
+longer masquerade as an optics model.
+
+### 12.4 The first training run
+
+`transphy3d/test`, 11,264,000 samples from 2,750 frame pairs across 25 sequences,
+6 sequences held out, 80 epochs on an RTX 5070 (124 s). Deterministic: a second
+run reproduced it bit-identically.
+
+| subset | rows | ratio vs rigid |
+|---|---|---|
+| pooled | 2,469,888 | 0.719 |
+| **consistent** | 2,416,960 (97.9 %) | **2956.7** |
+| occlusion-affected | 52,928 (2.1 %) | 0.634 |
+
+**The pooled number reads as a 28 % win and is worthless.** The model learned only
+to predict occlusion.
+
+The reason is a property of the data, and it is the most useful thing this run
+produced: target RMS on consistent pixels is `0.00095 1/m` against a 16-bit depth
+quantisation floor of `0.00089 1/m`. **They are the same number — there was
+nothing to learn.** TransPhy3D stores *rendered geometric depth*: Blender writes
+the true surface distance for a transparent object and does not simulate what a
+stereo or ToF sensor reports looking *through* glass. The transparency is in the
+RGB and absent from the depth, and depth is the only channel this model reads.
+
+Consequence for the plan: rendered depth cannot supervise an optical-anomaly
+transition. 3D Visual Illusion Real can — its disparity comes from a physical
+sensor observing mirrors and screens, so the anomaly is in the measurement rather
+than absent from it.
+
+### 12.5 Smaller corrections in the same pass
+
+- `learned.py` pooled an MSE over channels in **different units** (px, px, m);
+  the pixel terms dominated by ~10⁶ so the depth channel was never learned.
+  Now reported per channel.
+- The degenerate-target flag used exact float equality, so a base matching the
+  simulator to rounding rather than bit-for-bit would have slipped through.
+- `_rotvec` silently returned "no rotation" at exactly 180°, reachable at
+  `--stride 60` given the 3°/frame orbit.
+- Depth bit-depth was inferred from pixel *values* rather than dtype — a 16-bit
+  frame with all codes below 256 would have been scaled 257× too large.
+- Corrupt frames (`max_depth == 0`, 5 of 600) were counted anonymously as
+  "skipped"; they are now named.
+- `LayeredDepthSynReader` compacted absent layers, silently renumbering a
+  *ray-ordered* stack. It now records which layer indices are present.
+- Provenance: the run wrote `dataset_manifest.json` saying "NOT RUN — no dataset
+  attached" while having trained on 4 GB of it, and a reproduction command
+  pointing at the wrong script. Both fixed; runs now pin
+  `Daniellesry/TransPhy3D@3b023eb8`.
+
+**Tests: 261 → 276**, including a real-data guard that fails if reprojection ever
+stops beating the identity warp.

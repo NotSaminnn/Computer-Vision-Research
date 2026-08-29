@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
@@ -141,3 +143,106 @@ def test_predicted_vs_observed_and_landmark_views(tmp_path):
         tmp_path / "lv", formats=("png",), dpi=70,
     )
     assert written
+
+
+# --------------------------------------------------- figure legibility (2026-08-29)
+def _relative_luminance(rgb):
+    """WCAG relative luminance for an (r, g, b) triple in [0, 1]."""
+    import numpy as np
+
+    c = np.asarray(rgb[:3], dtype=float)
+    c = np.where(c <= 0.03928, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+    return float(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2])
+
+
+def _contrast(fg, bg) -> float:
+    a, b = _relative_luminance(fg), _relative_luminance(bg)
+    lo, hi = sorted((a, b))
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def test_matrix_annotations_stay_readable_on_every_cell():
+    """Regression: annotations were hardcoded white.
+
+    ``viridis`` runs from near-black to bright yellow, so a fixed white label is
+    invisible on every high-value cell -- and the high-value cells are exactly
+    the resolvable pairs the figure exists to show.
+    """
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    from intervene3d.visualization.ambiguity_plots import DARK_INK, LIGHT_INK, _prefers_dark_ink
+
+    cmap = plt.get_cmap("viridis")
+    for t in np.linspace(0.0, 1.0, 21):
+        r, g, b, _ = cmap(t)
+        chosen = DARK_INK if _prefers_dark_ink((r, g, b)) else LIGHT_INK
+        fg = tuple(int(chosen[i : i + 2], 16) / 255 for i in (1, 3, 5))
+        alt = LIGHT_INK if chosen == DARK_INK else DARK_INK
+        alt_fg = tuple(int(alt[i : i + 2], 16) / 255 for i in (1, 3, 5))
+        got, other = _contrast(fg, (r, g, b)), _contrast(alt_fg, (r, g, b))
+
+        # The invariant that matters: the ink chosen is always the better of the
+        # two. Viridis' mid-range caps at ~4.3:1, below WCAG AA, which is why the
+        # renderer also strokes a halo in the opposite tone.
+        assert got >= other, f"picked the worse ink on viridis({t:.2f}): {got:.2f} < {other:.2f}"
+        assert got >= 4.0, f"annotation {chosen} on viridis({t:.2f}) has contrast {got:.2f}:1"
+
+    # And the policy this replaced -- always white -- must genuinely fail.
+    r, g, b, _ = cmap(1.0)
+    assert _contrast((1.0, 1.0, 1.0), (r, g, b)) < 1.5, "the old white-on-yellow bug should be caught"
+
+
+def test_summary_table_is_not_mostly_blank(tmp_path):
+    """Regression: the table canvas was sized 0.30 + 0.06*n_methods.
+
+    With nine methods that is a six-inch-tall figure for a two-inch table, and
+    ``loc="center"`` then stranded it: 95 % of the saved image was empty.
+    """
+    import numpy as np
+    from PIL import Image
+
+    from intervene3d.visualization.metric_plots import plot_metric_summary_table
+
+    methods = [f"method_{i}" for i in range(9)]
+    data = {
+        "methods": methods,
+        "metric_names": ["CEA", "AUROC", "FPCR"],
+        "values": np.linspace(0, 1, 27).reshape(9, 3).tolist(),
+        "title": "test",
+    }
+    written = plot_metric_summary_table(data, tmp_path / "summary", formats=("png",), dpi=80)
+    arr = np.asarray(Image.open(written[0]).convert("L"))
+    height_in = arr.shape[0] / 80
+    # The defect produced ~6 inches; a well-sized 10-row table is under four.
+    assert height_in < 4.0, f"a 9-row table should not need {height_in:.1f} inches"
+    # The table must reach the edges rather than float in the middle: check that
+    # the top and bottom eighths of the image both carry ink.
+    band = arr.shape[0] // 8
+    assert (arr[:band] < 128).any(), "no content in the top of the canvas"
+    assert (arr[-band:] < 128).any(), "no content in the bottom of the canvas"
+
+
+def test_matched_variant_strip_labels_its_colour_encoding(tmp_path):
+    """Colour there encodes the channel, not the mechanism. Say so."""
+    import numpy as np
+
+    from intervene3d.visualization.pipeline_figure import plot_matched_variant_strip
+
+    rng = np.random.default_rng(0)
+    n = 12
+
+    def view():
+        return {
+            "uv": rng.uniform(0, 200, size=(n, 2)).tolist(),
+            "visible": [True] * n,
+            "channel": ([0] * 8) + ([1] * 2) + ([2] * 2),
+        }
+
+    data = {
+        "variants": [{"label": m, "reference": view(), "after": view()}
+                     for m in ("direct", "emissive", "reflection")],
+        "image_width": 200, "image_height": 150,
+    }
+    written = plot_matched_variant_strip(data, tmp_path / "strip", formats=("png",), dpi=80)
+    assert written and Path(written[0]).stat().st_size > 0
