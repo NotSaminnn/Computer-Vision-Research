@@ -53,27 +53,33 @@ A corridor seen through a doorway, the same corridor reflected in a mirror, and 
 photograph of it shown on a screen can produce the same image. The three differ in
 what a hand would touch, so a depth predictor answering from one viewpoint is
 guessing between them rather than measuring. This paper asks a prior question:
-given the camera motions an observer can actually perform, is the physical
-explanation recoverable at all? The separability of two explanations is defined as
-how differently they predict the scene will look after a given motion, and a scene
-is called identifiable when some available motion separates every explanation
-still in play. When none does, the system reports that instead of answering. A
-benchmark is built in which competing explanations are pixel-identical at the
-starting view, so chance-level single-view accuracy becomes a measured property of
-the data rather than an assumption, and in which some scenes are unresolvable by
-design, making correct abstention something that can be scored. On real
-photographs a calibrated stereo pair supplies one known camera motion, and a check
-is introduced that discards images whose reference depth cannot settle the question
-being asked. Across published depth models spanning several architectures, the
-proposed measures are reported alongside deliberately trivial baselines, and a
-small model reading a frozen encoder's features is shown to predict when that
-encoder will be wrong, including on architectures it was never trained on.
+given the camera motions an observer can perform, is the physical explanation
+recoverable at all? We define the separability of two explanations as how
+differently they predict the scene will look after a given motion, call a scene
+identifiable when some available motion separates every explanation still in play,
+and abstain otherwise. On a benchmark whose competing explanations are
+pixel-identical at the starting view, abstention drives false physical certainty
+from $0.832$ to $0.000$, and choosing interventions on the weakest contending pair
+reaches committed accuracy $1.000$ on all four mechanisms where a belief-weighted
+sum reaches $0.587$ on mirrors. On real photographs we evaluate twelve published
+checkpoints across six architecture families and a $38\times$ parameter range:
+every one is fooled on $59.5$--$78.4\%$ of images, the newest family among the most
+affected, and on every one the model's own confidence scores \emph{below chance} at
+predicting its own failure. Conformal prediction meets its coverage guarantee and
+still cannot repair this, since coverage constrains how many predictions are kept
+and never which. Selecting the viewpoint at which some hypothesis best explains the
+observation cuts error inside the ambiguous region by $31.6\%$ on $12$ of $12$
+checkpoints, and a policy reading a \emph{frozen} encoder's features predicts that
+encoder's failures better than ten hand-designed quantities and transfers to $12$
+of $12$ unseen architectures: the evidence is already in the representation and is
+discarded before the output.
 \end{abstract}
 
 \input{sections/introduction.tex}
 \input{sections/related_work.tex}
 \input{sections/methodology.tex}
 \input{sections/results.tex}
+\input{sections/discussion.tex}
 
 
 

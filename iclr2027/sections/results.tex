@@ -3,7 +3,7 @@
 
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=0.96\linewidth]{figures/fig_qualitative.pdf}
+\includegraphics[width=0.88\linewidth]{figures/fig_qualitative.pdf}
 \end{center}
 \caption{\textbf{Why the decision is needed.} Each row is an image the model gets
 wrong: the reference shows a flat sheet or panel, the model reports the structure
@@ -23,9 +23,7 @@ per seed, so intervals reflect the data-generating process rather than model-sid
 noise. The single-view classifier sits at exactly chance in every seed, confirming
 that the matched construction leaves nothing for a single view to exploit, and the
 ordering single-view $<$ passive $<$ intervention-aware holds strictly in $11/11$
-seeds individually. Abstention is what removes false certainty: the same system
-without it answers confidently on unresolvable scenes at $0.832$ and with it at
-$0.000$, while committed accuracy rises from $0.722$ to $0.855$.
+seeds individually.
 
 \begin{table}[t]
 \caption{\textbf{Phase~1, $11$ seeds, mean $\pm$ std, chance $0.333$.} CEA scores
@@ -155,24 +153,11 @@ combination does better and whether what it learns is specific to one predictor.
 Under leave-one-model-out, a gradient-boosted policy trained on eleven checkpoints
 and tested on the twelfth reaches $\mathbf{0.880}$ against $0.764$ for the
 strongest single feature, ahead on $\mathbf{12}$ of $12$ held-out checkpoints
-(Figure~\ref{fig:transfer}a). Nested selection, choosing hyperparameters on inner
-folds and scoring only on outer folds never seen during selection, moves the result
-by under $0.01$, and \textsc{XGBoost} and histogram boosting agree within $0.002$,
-so the figures are not artefacts of tuning. On a single checkpoint, where every
-method sees identical data, a head reading \emph{frozen} encoder features reaches
-$\mathbf{0.879}$ against $0.858$ for ten hand-designed quantities and $0.819$ for
-the strongest single feature: evidence of ambiguity is already present in the
-representation and available to be decoded. Table~\ref{tab:supp-learned} gives the
-full comparison.
+(Figure~\ref{fig:transfer}). Nested selection moves that by under $0.01$ and two
+boosted families agree within $0.002$, so it is not an artefact of tuning. On a
+single checkpoint, where every method sees identical data, a head reading
+\emph{frozen} encoder features reaches $\mathbf{0.879}$ against $0.858$ for ten
+hand-designed quantities and $0.819$ for the strongest single feature
+(Table~\ref{tab:supp-learned}).
 
 
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=\linewidth]{figures/fig_transfer.pdf}
-\end{center}
-\caption{\textbf{Transfer and stability.} (a) A policy trained on every checkpoint
-but one and evaluated on the checkpoint it has never seen, against the strongest
-single feature on identical folds; the learned policy is ahead on all twelve.
-(b) Change in accuracy when the chosen action is executed imperfectly.}
-\label{fig:transfer}
-\end{figure}

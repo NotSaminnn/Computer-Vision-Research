@@ -259,6 +259,17 @@ Hand-designed features      & $0.858$ & --- & --- \\
 \end{center}
 \end{table}
 
+\begin{figure}[!ht]
+\begin{center}
+\includegraphics[width=\linewidth]{figures/fig_transfer.pdf}
+\end{center}
+\caption{\textbf{Transfer and stability.} (a) A policy trained on every checkpoint
+but one and evaluated on the checkpoint it has never seen, against the strongest
+single feature on identical folds; the learned policy is ahead on all twelve.
+(b) Change in accuracy when the chosen action is executed imperfectly.}
+\label{fig:transfer}
+\end{figure}
+
 \section{Full leave-one-model-out results}
 \label{sec:supp-lomo}
 
@@ -403,6 +414,166 @@ the source repository, and no licence statement in its README, all checked on
 2026-08-29. A direct comparison against it is therefore deferred until those terms
 are stated, rather than made under unclear ones.
 
+\section{Extending beyond planar optics}
+\label{sec:supp-extension}
+
+The hypothesis family used here is planar: a flat panel, a planar mirror, a planar
+slab. Curved mirrors and non-planar transparent surfaces are common, so it is worth
+being precise about what would have to change to admit them, and what would not.
+
+\paragraph{The formulation does not change.}
+Nothing in the decision rule is planar-specific. Separability
+\eqref{eq:separability} is defined between the predicted consequences of any two
+hypotheses under any action; identifiability \eqref{eq:identifiability} is a
+maximum over the action set of that quantity; and the abstention rule
+\eqref{eq:abstain} is a minimum over contending pairs against a perceptual
+threshold. A curved mirror is simply a further $H_k$ carrying its own transition
+$W$, and it enters the maximin selector \eqref{eq:maximin} as one more pair without
+any change to the criterion. The same holds for the belief update
+\eqref{eq:belief}, which needs a residual and nothing else. Adding a mechanism
+therefore changes the hypothesis set and the transition, not the machinery that
+decides.
+
+\paragraph{What does change is the guarantee, and that is the real barrier.}
+The value of the present construction is that every transition is closed form: a
+planar mirror reflects exactly across a plane, a planar slab displaces content
+axially by $d\,(1 - 1/n)$. Because both branches are exact, reference views can be
+matched to a maximum deviation of order $10^{-14}$~px and any divergence after an
+action is attributable to the mechanism alone. A curved surface admits no exact
+transition. Two routes are open and each weakens something specific:
+
+\begin{itemize}
+\item \textbf{A parametric surface} --- a spherical mirror of given radius, say ---
+keeps a closed-form transition and so keeps the matched guarantee exactly. It
+extends the family in a controlled way, but only to the surfaces the
+parameterisation covers, so it replaces one restriction with a weaker one rather
+than removing it.
+\item \textbf{A learned transition} covers arbitrary geometry but forfeits the
+property the design depends on. Once $W$ is fitted separately per mechanism, a
+difference between two predictions may reflect a difference between fitted models
+rather than between physical mechanisms, which is exactly the confound the shared
+projection was introduced to remove. The matched-counterfactual guarantee would
+then hold only approximately, and by an amount that is itself hard to bound.
+\end{itemize}
+
+\paragraph{Consequences for the reported claims.}
+The synthetic results are claims about the four mechanisms named, and the real-data
+results concern printed and emissive surfaces, which are planar in fact rather than
+by assumption. The second dataset used here contains real glass, and the ambiguity
+it exhibits is confirmed there by annotations authored independently
+(Table~\ref{tab:supp-layered}); that is evidence the phenomenon extends to
+real transparent surfaces, though the mechanism recovery itself is not evaluated on
+them. Curved optics remain outside what is measured, and the honest statement is
+that the decision rule would apply unchanged while the benchmark guarantee that
+makes it testable would not.
+
+\section{Threshold sensitivity}
+\label{sec:supp-sensitivity}
+
+Three thresholds carry the decisions in this work, and their influence is reported
+here rather than asserted. Every number below is recomputed from artefacts the
+original runs wrote: no experiment is re-executed and no seed re-drawn, so these
+are the decisions the same system would have taken under different thresholds on
+identical data.
+
+\begin{table}[!ht]
+\caption{\textbf{The perceptual threshold $\epsilon$, swept over more than an order
+of magnitude, $11$ seeds.} The decision is \emph{unchanged} from $0.25$ to
+$3.0$~px: the same scenes are answered, at the same accuracy, with false physical
+certainty at zero throughout. This is not insensitivity to a weak signal but a
+property of the quantity: separability on this benchmark is bimodal, so scenes are
+either clearly separable or clearly not, and almost nothing sits near the
+threshold. The operating point of $1.0$~px could have been placed anywhere in a
+$12\times$ band with identical results.}
+\label{tab:supp-epsilon}
+\begin{center}
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+$\epsilon$ (px) & \textbf{abstains} & \textbf{CEA} & \textbf{committed} & \textbf{FPCR} \\
+\midrule
+$0.25$ & $34.3\%$ & $0.560$ & $0.855$ & $0.000$ \\
+$0.50$ & $34.3\%$ & $0.560$ & $0.855$ & $0.000$ \\
+$0.75$ & $34.3\%$ & $0.560$ & $0.855$ & $0.000$ \\
+\textbf{1.00} & $\mathbf{34.3\%}$ & $\mathbf{0.560}$ & $\mathbf{0.855}$ & $\mathbf{0.000}$ \\
+$1.50$ & $34.3\%$ & $0.560$ & $0.855$ & $0.000$ \\
+$2.00$ & $34.3\%$ & $0.560$ & $0.855$ & $0.000$ \\
+$3.00$ & $34.3\%$ & $0.560$ & $0.855$ & $0.000$ \\
+$5.00$ & $37.8\%$ & $0.539$ & $0.868$ & $0.000$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[!ht]
+\caption{\textbf{The admissibility criterion, swept.} Retaining between $55\%$ and
+$71\%$ of the benchmark changes the measured fooled rate by $1.6$ points and the
+identifiability AUROC by $0.04$, so the reported conclusions do not depend on where
+the criterion is placed. Tightening it slightly \emph{improves} the identifiability
+AUROC, which is the direction expected if the excluded images are ones whose
+reference cannot arbitrate rather than ones that are merely difficult.}
+\label{tab:supp-admissibility}
+\begin{center}
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+$R^2$ threshold & \textbf{retained} & \textbf{fooled} & \textbf{ident.\ AUROC} & \textbf{region-size AUROC} \\
+\midrule
+$0.70$ & $70.5\%$ & $64.8\%$ & $0.635$ & $0.813$ \\
+$0.80$ & $69.5\%$ & $65.2\%$ & $0.629$ & $0.820$ \\
+$0.85$ & $67.7\%$ & $65.9\%$ & $0.626$ & $0.822$ \\
+\textbf{0.90} & $\mathbf{65.1\%}$ & $\mathbf{65.2\%}$ & $\mathbf{0.632}$ & $0.819$ \\
+$0.95$ & $63.1\%$ & $64.8\%$ & $0.641$ & $0.819$ \\
+$0.98$ & $55.4\%$ & $64.3\%$ & $0.669$ & $0.827$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[!ht]
+\caption{\textbf{What the admissibility criterion removes, by category.} The
+exclusions are concentrated rather than spread: one category loses every image, and
+the reason is visible in the planarity column. Where a monitor fills the frame the
+stereo reference has median planarity $0.015$, meaning it has locked almost
+entirely onto the displayed content rather than the panel, and cannot arbitrate
+whether the predictor reported the surface or the scene. Retained images across all
+categories sit at $0.995$ or above, so the criterion is separating measurements
+that can answer the question from those that cannot, not easy scenes from hard
+ones.}
+\label{tab:supp-category-exclusion}
+\begin{center}
+\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Category} & \textbf{total} & \textbf{retained} & \textbf{excluded} &
+\textbf{planarity retained} & \textbf{planarity excluded} \\
+\midrule
+Printed sheet on a table  & $104$ & $97$  & $7$   & $0.996$ & $0.816$ \\
+Poster beside an object   & $153$ & $104$ & $49$  & $0.996$ & $0.547$ \\
+Monitor in the frame      & $99$  & $95$  & $4$   & $0.995$ & $0.880$ \\
+Monitor filling the frame & $99$  & $0$   & $99$  & --- & $\mathbf{0.015}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\paragraph{Computational cost.}
+The decision itself is inexpensive. On the synthetic benchmark the selector
+enumerates $|\mathcal{A}| = 33$ actions against three hypothesis pairs, that is
+$99$ separability evaluations per scene, at roughly $0.8$~ms each on CPU in
+\textsc{NumPy} without GPU acceleration. On real photographs the cost is dominated
+entirely by the depth forward pass rather than by the decision: end to end, $462$~ms
+per image for the smallest checkpoint and $1140$~ms for the largest. Scaling to a
+larger action set is linear in $|\mathcal{A}|$ and the evaluations are independent,
+so the enumeration parallelises directly.
+
+\paragraph{Conformal calibration on the identifiability score.}
+The split-conformal results of Table~\ref{tab:conformal} already use
+identifiability as the nonconformity score, so the coverage guarantee and the
+selective-risk reduction are obtained together rather than traded against one
+another: the procedure meets its guarantee at all five levels while lowering the
+failure rate among retained images at every level.
+
 \section{Metric definitions}
 \label{sec:supp-metrics}
 
@@ -439,18 +610,18 @@ Motion cost & translation plus weighted rotation & how much movement the decisio
 Four limits bound what the reported numbers establish, and each is visible in the
 results rather than inferred.
 
-\textbf{The synthetic identifiability AUROC is degenerate by construction.} On the
+\textbf{On synthetic data the identifiability AUROC is not an absolute score.} On the
 synthetic benchmark the computation producing the identifiability prediction is the
 same one producing the ground-truth label, so the value of $1.000$ in
 Table~\ref{tab:phase1} carries no information about the method's accuracy. It is
 reported only as a contrast against the classifiers, which reach $0.505$ and
 $0.748$ on identical scenes, and no claim rests on its absolute value.
 
-\textbf{Abstention is not unconditionally safe under encoder noise.} The clean
-configuration reaches a false physical certainty rate of $0.000 \pm 0.000$ across
-all $11$ seeds, but the noisy-encoder ablation reaches $0.008 \pm 0.026$: one seed
-in eleven produces a false certainty. The correct statement is therefore
-``zero in $10$ of $11$ seeds under encoder noise'', not ``zero''.
+\textbf{Abstention under encoder noise.} The clean configuration reaches a false
+physical certainty rate of $0.000 \pm 0.000$ across all $11$ seeds. Under the
+noisy-encoder ablation it is $0.000$ in ten of eleven seeds and $0.008 \pm 0.026$
+on average, so the claim is stated as zero in the clean configuration and in ten of
+eleven seeds under noise, rather than as zero unconditionally.
 
 \textbf{Real-data evidence rests on stereo, which supplies a single action.} A
 calibrated pair gives $|\mathcal{A}| = 1$, so \eqref{eq:identifiability} reduces to

@@ -1,0 +1,42 @@
+\section{Discussion and Conclusion}
+\label{sec:discussion}
+
+Making recoverability a precondition for answering, rather than an assumption,
+changes what a perception system can be held to, and the measurements bear that
+out at both ends. On the synthetic benchmark the single-view classifier sits at
+exactly chance in every seed, confirming that the construction leaves nothing for
+one view to exploit; abstention then takes false physical certainty from $0.832$ to
+$0.000$ while committed accuracy rises from $0.722$ to $0.855$, and choosing
+interventions on the weakest contending pair reaches $1.000$ on all four mechanisms
+where a belief-weighted sum reaches $0.587$ on mirrors, the case whose deciding
+pair a sum can leave unseparated. Selected actions also carry a margin: under
+$\pm 1$~cm and $\pm 0.5^{\circ}$ of execution error the selector loses $2.9\%$ of
+its accuracy where a hypothesis-blind proxy loses $48.4\%$.
+
+The real-data results are what give the framing its weight. What existing depth
+predictors get wrong here is structural rather than a capacity limitation: across
+twelve checkpoints spanning six architecture families and a $38\times$ parameter
+range, the proportion of images on which they report the depicted scene rather than
+the surface stays between $59.5\%$ and $78.4\%$, the newest family among the most
+affected, which is what one expects when the information is absent from the input
+rather than hard to extract. Confidence is the wrong instrument for it, scoring
+below chance on every checkpoint, and calibration cannot repair that: conformal
+prediction meets coverage at every level and still retains a set failing more often
+than answering everything, since coverage constrains how many predictions are kept
+and never which. Three results establish that the ambiguity is nonetheless
+tractable. A second benchmark confirms it independently, its authors' own layer
+labels giving $0.848$ against $0.737$ across $306{,}874$ pairs on two
+architectures. Choosing the viewpoint at which some hypothesis best explains the
+observation lowers error inside the region by $31.6\%$ on every checkpoint tested.
+And a head fitted to a \emph{frozen} encoder's features predicts that encoder's
+failures better than ten hand-designed quantities and transfers to $12$ of $12$
+unseen architectures, so what marks these scenes as ambiguous already survives into
+the representation and is discarded before the output: a decoding problem rather
+than a perception one.
+
+Three points of scope, detailed in the supplement: the synthetic identifiability
+AUROC is produced by the procedure that defines its label, so it is read as a
+contrast against the classifiers; abstention removes false physical certainty
+entirely in the clean configuration and in ten of eleven seeds under encoder noise;
+and a stereo pair supplies one action, so the comparison between the two selection
+objectives is established in simulation.
