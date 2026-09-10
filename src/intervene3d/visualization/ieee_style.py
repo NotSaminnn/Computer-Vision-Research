@@ -260,9 +260,9 @@ METHOD_SHORT_NAMES = {
     "max_baseline_intervention": "max-baseline",
     "entropy_nbv": "generic NBV",
     "intervene3d_no_hypothesis_conditioning": "no H-cond.",
-    "intervene3d_no_abstention": "ours (forced)",
-    "intervene3d_noisy_encoder": "ours (noisy enc.)",
-    "intervene3d": "ours",
+    "intervene3d_no_abstention": "Intervene3D (forced)",
+    "intervene3d_noisy_encoder": "Intervene3D (noisy enc.)",
+    "intervene3d": "Intervene3D",
 }
 
 
