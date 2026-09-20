@@ -140,12 +140,7 @@ photograph through the decision proposed here.
 \begin{center}
 \includegraphics[width=\linewidth]{figures/fig_system.png}
 \end{center}
-\caption{A high-level overview of Intervene3D. A stereo pair provides the executed action
-and the annotated region marks where the surface becomes ambiguous. The encoder geometry yields
-$H_D$ and, after a plane fit over that region, $H_E$. Warping the second view under each
-hypothesis then produces the separability $\Delta_{DE}$ of \eqref{eq:delta-photometric}. Its
-identifiability falls below the perceptual threshold, and \eqref{eq:abstain} therefore declines
-to answer on a scene that the predictor answers wrongly.}
+\caption{A high-level overview of Intervene3D on one real image. A stereo pair provides the executed action and the annotated region marks where the surface becomes ambiguous. The encoder geometry yields the direct hypothesis $H_D$ and, after a plane fit over that region, the flat-panel hypothesis $H_E$. Warping the second view under each hypothesis produces the separability $\Delta_{DE}$ of \eqref{eq:delta-photometric}, which \eqref{eq:abstain} compares against the perceptual threshold $\epsilon$ to decide between answering and abstaining.}
 \label{fig:system}
 \vspace{-1.5em}
 \end{figure}
@@ -176,7 +171,7 @@ across both settings. On the matched benchmark, a single-view classifier stays a
 chance in every seed. Abstention then lowers false physical certainty from $0.832$ to $0.000$,
 and maximin selection reaches a committed accuracy of $1.000$ across four mechanisms. On real
 photographs, deferring on identifiability lowers the failure rate among retained images from
-$65.2\%$ to $54.4\%$, whereas deferring on the confidence of the predictor raises that rate to
+$65.2\%$ to $53.1\%$, whereas deferring on the confidence of the predictor raises that rate to
 $76.6\%$. Choosing the best-explained viewpoint lowers ambiguous-region error by $31.3\%$ on
 every checkpoint, and a gate over frozen encoder features lowers the failure rate to $50.2\%$
 at $70\%$ coverage. The remainder of this work develops the four contributions set out below.
@@ -199,8 +194,8 @@ from Depth Anything, DepthPro, MoGe, Metric3D, and UniDepth report depicted rath
 physical geometry on $59.5$ to $78.4\%$ of illusion-benchmark images, and on $67.0\%$ of $123$
 Mirror3D frames, while their confidence stays below chance at flagging these errors.
 
-\item \textbf{A predictor-agnostic abstention gate.} A head over frozen encoder features
-predicts failures at $0.887$ out of fold across all $13$ held-out checkpoints.
+\item \textbf{A predictor-agnostic abstention gate.} A boosted policy predicts failures at
+$0.881$ out of fold across all $13$ held-out checkpoints.
 
 \end{enumerate}
 
@@ -405,8 +400,8 @@ The synthetic benchmark instantiates each base scene under every mechanism and a
 until the reference views coincide to order $10^{-14}$~px, which makes chance-level single-view
 performance a verified property of the data. The benchmark also retains configurations that no
 permitted action resolves, which makes correct abstention measurable. Splits follow base scenes
-throughout. We report causal explanation accuracy (CEA), committed accuracy, the false physical
-certainty rate (FPCR), and normalized regret, all defined in Table~\ref{tab:supp-metrics}.
+throughout. We report causal explanation accuracy (CEA), committed accuracy and the false physical
+certainty rate (FPCR), all defined in Table~\ref{tab:supp-metrics}.
 
 The action set contains translations of $\{0.05, 0.10, 0.20, 0.30\}$~m along three axes,
 rotations of $\{5^\circ, 10^\circ\}$ in yaw and pitch, and the null action, which yields
@@ -415,9 +410,9 @@ $\lambda_o = 4.0$~px, and $\lambda_g = \lambda_f = 0$. Priors stay uniform at $t
 three remaining constants stay at $\epsilon = 1.0$~px, $\beta = 1.0$, and $\tau = 0.45$ without tuning. Appendices~\ref{sec:supp-occlusion}, \ref{sec:supp-sensitivity} and
 \ref{sec:supp-hyper} sweep each one.
 
-We experimented with models,  spanning seven architecture families and a $38\times$
+We experimented with thirteen models spanning seven architecture families and a $38\times$
 range in parameter count, without training or tuning on any evaluation set. Every model stays
-frozen, and we fit only a small policy on top, under folds split by base scene, hyperparameters
+frozen, and we fit only a policy on top, under folds split by base scene, hyperparameters
 chosen on inner folds, and a leave-one-model-out protocol (Appendix~\ref{sec:supp-learned}).
 
 \subsection{Synthetic Benchmark}
@@ -436,12 +431,10 @@ its maximum at an action that separates pairs outside contention while leaving t
 pair unseparated. An action scoring zero on a pair cannot separate that pair at any $\epsilon$, and no choice of threshold closes the gap.
 
 \begin{table}[t]
-\caption{Choosing the intervention decides the outcome on the synthetic benchmark. Eleven
-seeds per method, where chance stands at $0.333$ and CEA counts abstention as an error.}
+\caption{Phase~1 of the synthetic benchmark, over three mechanisms, eleven seeds, chance at $0.333$. CEA counts abstention as an error, and committed accuracy scores the answered scenes alone.}
 \label{tab:phase1}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{1.6pt}
+\footnotesize \setlength{\tabcolsep}{1.6pt}
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Method} & \textbf{CEA} & \textbf{Committed} & \textbf{Abstention} &
@@ -458,7 +451,8 @@ no hypothesis conditioning & $0.000{\pm}0.000$ & --- & $100\%$ & $0.500{\pm}0.00
 noisy encoder & $0.557{\pm}0.034$ & $0.848{\pm}0.049$ & $34\%$ & $0.994{\pm}0.016$ & $0.008{\pm}0.026$ \\
 no abstention & $\mathbf{0.722{\pm}0.029}$ & $0.722{\pm}0.029$ & $0\%$ & $1.000{\pm}0.000$ & $0.832{\pm}0.107$ \\
 \midrule
-\textbf{Intervene3D} & $0.560{\pm}0.032$ & $\mathbf{0.855{\pm}0.054}$ & $34\%$ & $1.000{\pm}0.000$ & $\mathbf{0.000{\pm}0.000}$ \\
+Intervene3D (summed) & $0.560{\pm}0.032$ & $0.855{\pm}0.054$ & $34\%$ & $1.000{\pm}0.000$ & $0.000{\pm}0.000$ \\
+\textbf{Intervene3D (maximin)} & $0.563{\pm}0.076$ & $\mathbf{1.000{\pm}0.000}$ & $44\%$ & $0.927{\pm}0.032$ & $\mathbf{0.000{\pm}0.000}$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -468,12 +462,10 @@ no abstention & $\mathbf{0.722{\pm}0.029}$ & $0.722{\pm}0.029$ & $0\%$ & $1.000{
 \label{sec:res-universal}
 
 \begin{table}[!t]
-\caption{Real mirrors produce the same failure as displays. Thirteen checkpoints on $123$
-annotated frames, where a mean of $67.0\%$ report the reflected room rather than the glass.}
+\caption{Thirteen checkpoints on $123$ annotated frames of real mirrors \citep{mirror3d2021}. The last two columns carry relative error inside against outside the mirror region and the share of frames placing the first surface behind the glass.}
 \label{tab:mirrors}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\footnotesize \setlength{\tabcolsep}{4pt}
 \begin{tabular}{llccc}
 \toprule
 \textbf{Checkpoint} & \textbf{Family} & \textbf{Fooled} &
@@ -503,19 +495,19 @@ We evaluate thirteen published checkpoints spanning seven architecture families 
 $38\times$ range in parameter count, all as released
 \citep{depthanything2024,da32026,depthpro2025,moge2025,moge32026,metric3d2023,unidepth2024,unidepthv22025}
 (Figure~\ref{fig:main}a,b). Every checkpoint fails on $59.5$ to $78.4\%$ of admissible images,
-with the newest family among the most affected. The confidence proxy taken from each predictor stays below chance at predicting its own failure, with values from $0.234$ to $0.465$. Identifiability, by contrast, ranges from $0.467$ to $0.719$ and
-exceeds confidence on all thirteen. Calibration cannot repair a signal ordered against the
-quantity of interest. Both signals meet split-conformal coverage at all five levels. Deferring
-on confidence, however, leaves a retained set failing at $76.6\%$ against a base rate of
-$65.2\%$, whereas identifiability lowers the same quantity to $54.4\%$
-(Figure~\ref{fig:main}d). 
+with the newest family among the most affected. The confidence proxy taken from each predictor
+stays below chance at predicting its own failure, with values from $0.234$ to $0.465$.
+Identifiability, by contrast, ranges from $0.467$ to $0.719$ and exceeds confidence on all
+thirteen. Calibration cannot repair a signal ordered against the quantity of interest. Both
+signals meet split-conformal coverage at all four levels. Deferring on confidence, however,
+leaves a retained set failing at $76.6\%$ against a base rate of $65.2\%$, whereas
+identifiability lowers the same quantity to $53.1\%$ (Figure~\ref{fig:main}d).
 \begin{figure}[!htb]
 %\vspace{-2.7em}
 \begin{center}
 \includegraphics[width=0.9\linewidth]{figures/fig_main.pdf}
 \end{center}
-\caption{The primary results are summarized here. (a) Images fooled. (b) Confidence
-AUROC. (c) Committed accuracy on mirrors. (d) Split-conformal selective risk.}
+\caption{Four views of the evaluation over the thirteen checkpoints. (a) Images fooled. (b) Confidence AUROC. (c) Committed accuracy on mirrors. (d) Split-conformal selective risk.}
 \label{fig:main}
 \end{figure}The criterion of Section~\ref{sec:real-protocol} excludes $159$ of
 $455$ images whose stereo reference locks onto displayed content. Beyond this benchmark, two
@@ -530,8 +522,7 @@ plane rather than a stereo reference, therefore produces the same rate.
 \subsection{Qualitative and Error Analysis}
 \label{sec:res-qualitative}
 \begin{table}[t]
-\caption{Failure concentrates where the executed action separates the hypotheses least. The
-three categories of the illusion benchmark \citep{illusion2025}, over thirteen checkpoints.}
+\caption{The three categories of the illusion benchmark \citep{illusion2025}, over thirteen checkpoints. Median $\Delta$ is the median separability, and the last column counts images falling below the perceptual threshold $\epsilon$.}
 \label{tab:category}
 \begin{center}
 \footnotesize \setlength{\tabcolsep}{3.4pt}
@@ -559,17 +550,17 @@ region, whereas every checkpoint reports the structure painted on the poster.
 \vspace{-0.9\baselineskip}
 \centering
 \includegraphics[width=0.6\textwidth]{figures/fig_model_grid.pdf}
-\caption{Every checkpoint reports the poster instead of the panel. Inside the outlined region the relative depth error reaches $1.1$ to $7.2$ times the error outside.}
+\caption{All thirteen checkpoints on one photograph of a poster beside a window frame, with the ambiguous region outlined and the stereo reference beside each prediction.}
 \label{fig:model-grid}
 \end{wrapfigure}
-The failure stays local to that region, at $1.1$ to $7.2$ times the error each checkpoint makes
+There the failure stays local, at $1.1$ to $7.2$ times the error each checkpoint makes
 outside. The aggregate rate above averages over three conditions that behave differently, and
 Table~\ref{tab:category} separates them. On the $97$ images of a sheet lying on a table,
-failure remains a minority outcome at $43.0\%$. The median separability of $1.07$~px clears the
-threshold, and the relative error inside the ambiguous region stays below the error outside
+failure remains a minority outcome at $43.0\%$. The median separability of $1.07$ leads the
+three categories, and the relative error inside the ambiguous region stays below the error outside
 that region at $0.91\times$. On the $95$ images containing a monitor, failure instead becomes
 total, and twelve of the thirteen checkpoints fail on \emph{every} image. The relative error
-inside the region reaches $2.62\times$, the median separability falls to $0.25$~px, and every
+inside the region reaches $2.62\times$, the median separability falls to $0.25$, and every
 image lies below $\epsilon$. Failure therefore concentrates exactly where the executed action
 separates the two hypotheses least, which is the pattern predicted by the criterion of
 Section~\ref{sec:separability}.
@@ -592,8 +583,7 @@ rather than a mechanism.
 %\vspace{-0.9\baselineskip}
 \centering
 \includegraphics[width=0.7\textwidth]{figures/fig_qualitative.pdf}
-\caption{Three photographs with the reference surface beside each prediction.
-Every prediction recovers the depicted scene rather than the panel.}
+\caption{Three photographs with the reference surface beside each prediction, namely a monitor in the frame, a sheet lying on a table, and a poster beside an object.}
 \label{fig:qualitative}
 \end{wrapfigure}
 \needspace{14\baselineskip}
@@ -602,8 +592,7 @@ Every prediction recovers the depicted scene rather than the panel.}
 %\vspace{-0.8\baselineskip}
 \centering
 \includegraphics[width=0.45\textwidth]{figures/fig_delta_transfer.pdf}
-\caption{Separability from one checkpoint predicts the failures of a \emph{different}
-checkpoint, over $156$ ordered pairs.}
+\caption{Separability from one checkpoint scored against the failures of a \emph{different} checkpoint, over all $156$ ordered pairs.}
 \label{fig:delta-transfer}
 %\vspace{-0.8\baselineskip}
 \end{wrapfigure}
@@ -613,7 +602,8 @@ or that one network (Figure~\ref{fig:delta-transfer}). Scoring the separability 
 checkpoint against the failures of a different checkpoint, over all $156$ ordered pairs,
 reaches $\mathbf{0.637}$. The cross-model score stays above chance on every pair and above the
 $0.597$ that each checkpoint attains on its own failures. Idiosyncrasy does not transfer across
-networks, whereas scene structure does. A separability built from one predictor consequently describes the scene rather than the predictor itself.
+networks, whereas scene structure does. A separability built from one predictor consequently
+describes the scene rather than the predictor itself.
 
 \subsection{Choosing Where to Look on Real Photographs}
 \label{sec:res-viewpoint}
@@ -700,10 +690,10 @@ and their confidence stays below chance at predicting these errors. Split confor
 meanwhile meets its coverage guarantee while retaining a set that fails more often than
 answering everywhere. Three further measurements indicate where the missing evidence can come
 from. The layer labels of an independent benchmark yield $0.848$ against $0.737$, and the
-best-explained viewpoint lowers ambiguous-region error by $31.3\%$ on every checkpoint. A gate
-over frozen encoder features then reaches $0.887$ out of fold across all thirteen unseen
-architectures, lowering the failure rate from $65.2\%$ to $50.2\%$ at $70\%$ coverage while the
-predictor itself stays unchanged.
+best-explained viewpoint lowers ambiguous-region error by $31.3\%$ on every checkpoint. A boosted
+policy then reaches $0.881$ out of fold across all thirteen unseen architectures, and a
+frozen-encoder gate lowers the failure rate from $65.2\%$ to $50.2\%$ at $70\%$ coverage while
+the predictor stays unchanged.
 
 \paragraph{Limitations.} Intervene3D requires an executed action, the hypothesis family covers planar optics alone, and real photographs provide a single stereo baseline.
 Appendix~\ref{sec:supp-limits} states the scope in full, and Appendix~\ref{sec:supp-extension}
@@ -724,6 +714,10 @@ describes the route beyond planar optics.
 \setcounter{topnumber}{2}
 \setcounter{bottomnumber}{1}
 \setcounter{totalnumber}{2}
+% Discourage float-only pages, so deferred floats sit on text pages and the surrounding
+% prose fills the remainder instead of leaving a gap at the foot of the page.
+\renewcommand{\floatpagefraction}{0.92}
+\renewcommand{\textfraction}{0.08}
 \section*{Supplementary Material}
 
 % The appendix carries its own contents list. Entries destined for the table of
@@ -754,14 +748,13 @@ describes the route beyond planar optics.
 \bigskip
 
 
-Every number reported here comes from the same runs as the main paper. No part of this
-appendix revises a result of Section~\ref{sec:results}, and the tables below extend those
-results with the remaining metrics, the per-family breakdown, and the analytical component
-that space kept out of the main text.
+%Every number reported here comes from the same runs as the main paper. No part of this
+%appendix revises a result of Section~\ref{sec:results}, and the tables below extend those
+%results with the remaining metrics, the per-family breakdown, and the analytical component
+%that space kept out of the main text.
 
-\section{Intervene3D in Detail}
+\section{Experimental Details}
 
-\FloatBarrier
 \subsection{Why One Image Admits Several Mechanisms}
 \label{sec:supp-concept}
 
@@ -775,43 +768,46 @@ screen, a mirror reflects the camera across its plane and therefore doubles the 
 of the virtual scene, and a transparent slab displaces content along the optical axis by an
 amount fixed by its thickness and refractive index. The colored plane in each panel marks where
 a hand would stop, which is the quantity that a depth prediction has to recover before an agent
-can act on it.
+can act on it. Each law also leaves a different signature under the same motion, which is what
+makes the mechanisms separable at all. A panel shifts rigidly with its own plane and therefore
+produces no parallax between the content and the surface carrying it. A mirror instead produces
+parallax at twice the rate of a real scene at the same distance, alongside a rim that occludes
+and reveals content as the viewing angle changes. A slab produces a small, nearly constant
+offset that barely varies with viewpoint. Where one of those signatures stays below the
+perceptual threshold over the whole action set, the arrangement remains unidentifiable however
+capable the predictor happens to be.
 
-\begin{figure}[!ht]
+\begin{figure}[htb]
 \begin{center}
 \includegraphics[width=0.92\linewidth]{figures/fig_concept.pdf}
 \end{center}
-\caption{\textbf{One image admits three mechanisms, and motion tells them apart.} The colored plane
-marks the surface a hand would touch in each arrangement.}
+\caption{Three physical arrangements that produce the same image, with the effect of one executed motion on each. The colored plane marks the surface a hand would touch.}
 \label{fig:concept}
 \end{figure}
 
-\FloatBarrier
 \subsection{The Decision Pipeline}
 \label{sec:supp-pipeline}
 
-Figure~\ref{fig:pipeline} sets out how the pieces of Section~\ref{sec:method} compose into a
-single decision. The encoder reports geometry for the reference image, and the four hypotheses
-inherit that geometry as their common starting point. Each hypothesis then predicts a
-consequence for every action in the bounded set, which turns one image into a table of
+Figure~\ref{fig:pipeline} demonstrates how the pieces of Section~\ref{sec:method} compose into
+a single decision. The encoder first reports geometry for the reference image, and the four
+hypotheses inherit that geometry as their common starting point. Each hypothesis then predicts
+a consequence for every action in the bounded set, which turns one image into a table of
 predicted observations. Pairwise distances over that table give the separability of each pair
 under each action, and the largest of those distances defines the identifiability of the pair.
-The smallest identifiability across contending pairs decides the outcome. Below the perceptual
-threshold the system declines to answer, and above it the system executes the maximin action,
-scores the residual of each hypothesis against the view obtained, and updates the belief. A
-commitment names the mechanism and reports the contact geometry, namely the first physical
-surface that a hand would meet along each ray.
+The smallest identifiability across contending pairs then decides the outcome. Below the
+perceptual threshold, in turn, the system declines to answer, whereas above it the system
+executes the maximin action, scores the residual of each hypothesis against the view obtained,
+and updates the belief. A commitment names the mechanism and reports the contact geometry,
+namely the first physical surface that a hand would meet along each ray.
 
-\begin{figure}[!ht]
+\begin{figure}[htb]
 \begin{center}
-\includegraphics[width=0.96\linewidth]{figures/fig_pipeline.pdf}
+\includegraphics[width=0.96\linewidth]{figures/fig_pipeline.png}
 \end{center}
-\caption{\textbf{The pieces compose into a single decision.} The system acts only when identifiability
-clears the perceptual threshold, and declines to answer otherwise.}
+\caption{The stages of Intervene3D, running from the encoder through the hypothesis transitions and the separability test to the belief update.}
 \label{fig:pipeline}
 \end{figure}
 
-\FloatBarrier
 \subsection{The Real-Photograph Protocol in Detail}
 \label{sec:supp-protocol}
 
@@ -820,17 +816,26 @@ place where we fit each quantity. A physical sheet or panel is flat, and referen
 inside the annotated region should therefore stay planar. Where planarity fails, the stereo
 reference has locked onto displayed content rather than onto the panel and cannot settle what
 the predictor reported. We retain an image only when a plane fitted to that disparity attains
-$R^2 \geq 0.90$. We report the number of images that this rule excludes.
+$R^2 \geq 0.90$. We report the number of images that this rule excludes. Comparing two warps
+rather than two depth maps carries a further advantage. A depth-space comparison, by contrast,
+would score every pixel where the hypotheses disagree geometrically, including pixels whose
+appearance cannot tell the two apart. A photometric comparison scores the same region through
+the image that an observer actually receives, and a featureless patch therefore contributes
+nothing whichever hypothesis holds. The median over valid pixels then guards against the small
+fraction of positions where occlusion or a rectification residual leaves one warp undefined.
+Both warps meanwhile read from the same photograph, hence exposure, sensor noise, and lens
+shading enter each side of the difference identically and cancel. What remains, then, is the
+disagreement that the two geometries imply, expressed in the intensity units of the photograph
+that produced the pair.
 
-\begin{figure}[!ht]
+\begin{figure}[htb]
 \begin{center}
-\includegraphics[width=\linewidth]{figures/fig_supp_protocol.pdf}
+\includegraphics[width=\linewidth]{figures/fig_supp_protocol.png}
 \end{center}
-\caption{\textbf{How we build the real-data measurement.} Comparing two warps of the same photograph cancels illumination, sensor noise, and rectification error.}
+\caption{Construction of the real-data measurement, with the region where each quantity is fitted alongside the region where the same quantity is scored.}
 \label{fig:supp-protocol}
 \end{figure}
 
-\FloatBarrier
 \subsection{Minimum Causal Resolving Baseline}
 \label{sec:supp-mcrb}
 
@@ -854,17 +859,18 @@ evaluating \eqref{eq:mcrb}. A violated assumption therefore yields a missing pre
 than a number. The proposition covers neither view-tracked displays, which no baseline
 resolves, nor mirrors, whose virtual scene carries genuine parallax.
 
-\FloatBarrier
 \subsection{Metric Definitions}
 \label{sec:supp-metrics}
 
-Table~\ref{tab:supp-metrics} defines the metrics used throughout. The unresolvable
+Table~\ref{tab:supp-metrics} defines the metrics used throughout this paper. The unresolvable
 configurations that Section~\ref{sec:setup} retains take two forms, namely view-tracked
 displays observed within their aperture, which no baseline resolves, and mirrors arranged to
-mimic an opening of the same shape.
+mimic an opening of the same shape. Retaining both forms keeps the abstention metrics
+meaningful. A benchmark of resolvable cases alone would reward a method that answers
+everywhere, because every answer would then be available to some action.
 
-\begin{table}[!ht]
-\caption{\textbf{The metrics reported throughout the paper.} Here $\hat{H}$ denotes the predicted
+\begin{table}[htb]
+\caption{The metrics reported throughout the paper. Here $\hat{H}$ denotes the predicted
 mechanism, $H^\star$ the true one, and $y_{\mathrm{id}} = 0$ a case that no action resolves.}
 \label{tab:supp-metrics}
 \begin{center}
@@ -888,7 +894,6 @@ Motion cost & translation plus weighted rotation & how much movement the decisio
 
 \section{The Synthetic Benchmark}
 
-\FloatBarrier
 \subsection{Choosing the Intervention, in Full}
 \label{sec:supp-phase2}
 
@@ -900,17 +905,15 @@ shares its parallax signature with a physically present scene over a wide range 
 only a narrow band of actions produces the visibility change that decides the pair. A summed
 objective spreads its weight over all six pairs and therefore drifts toward actions that
 separate easy pairs, which leaves $41.3\%$ of its mirror commitments incorrect. Maximin
-selection optimizes the weakest pair by construction and resolves every mirror scene in every
-seed. The two objectives agree once the mirror pair leaves contention, which is why the
-four-mechanism columns differ by $0.014$ while the mirror column differs by $0.413$.
+selection, by contrast, optimizes the weakest pair by construction and resolves every mirror
+scene in every seed. The two objectives agree once the mirror pair leaves contention, which is
+why the four-mechanism columns differ by $0.014$ while the mirror column differs by $0.413$.
 
-\begin{table}[!ht]
-\caption{\textbf{Maximin selection resolves mirrors where a summed objective does not.} Eleven seeds
-per study, where chance stands at $0.250$ over the four mechanisms.}
+\begin{table}[htb]
+\caption{Every selection objective on both studies, with eleven seeds each and chance at $0.250$ over the four mechanisms. The selector study covers reflection scenes alone.}
 \label{tab:phase2}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{4.5pt}
+\footnotesize \setlength{\tabcolsep}{4.5pt}
 \begin{tabular}{lccccc}
 \toprule
 & \multicolumn{2}{c}{\textbf{Mirror committed}} &
@@ -928,7 +931,6 @@ Summed \eqref{eq:sum}  & $0.587{\pm}0.164$ & $0.956{\pm}0.035$ & $0.986{\pm}0.01
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Calibrated Deferral and Imperfect Execution}
 \label{sec:supp-noise}
 
@@ -939,21 +941,35 @@ motion would lose its advantage in deployment. Under $\pm 1$~cm and $\pm 0.5^{\c
 execution error the hypothesis-blind proxy falls by $48.4\%$ and a random choice by $29.0\%$,
 whereas Intervene3D falls by $2.9\%$. The margin explains the difference, because maximin
 selection prefers an action whose weakest pair separates by a wide margin, and a small
-perturbation of such an action still clears the threshold. Table~\ref{tab:conformal} then turns
-to calibration on real photographs. Both signals meet the coverage guarantee at all five target
-levels, which confirms that the conformal wrapper behaves as advertised in each case.
-Calibration, however, preserves the ranking of whichever score enters it, and the two scores
-rank oppositely at $0.339$ for confidence against $0.645$ for identifiability. Deferring on
-identifiability therefore lowers the failure rate among retained images by up to $12.1$ points,
-while deferring on confidence raises that rate.
+perturbation of such an action still clears the threshold. The passive baseline anchors the
+comparison from the other side. A method that executes no action has nothing to perturb, hence
+its accuracy holds at $0.621$ under both conditions and its change registers as exactly zero.
+Every acting method falls between that anchor and the proxy, and the ordering of the drops
+follows how tightly each one depends on the exact motion commanded. The paired $t$ statistics
+separate the two regimes plainly, at $-14.05$ for the proxy against $-3.05$ for Intervene3D
+over the same eleven seeds. Table~\ref{tab:conformal} then turns to calibration on real
+photographs. Both signals meet the coverage guarantee at all four target levels, which confirms
+that the conformal wrapper behaves as advertised in each case. Calibration, however, preserves
+the ranking of whichever score enters it, and the two scores rank oppositely at $0.344$ for
+confidence against $0.645$ for identifiability. Deferring on identifiability therefore lowers
+the failure rate among retained images by up to $12.1$ points, while deferring on confidence
+raises that rate. The split of labour between wrapper and score explains the pattern. A
+coverage guarantee constrains how many predictions a system keeps, and the identity of those
+predictions follows from the score alone. Both rows of Table~\ref{tab:conformal} consequently
+meet their target at every level while moving risk in opposite directions. Deferring on
+confidence retains a set that fails at $76.6\%$ against a base rate of $65.2\%$, which is worse
+than answering everywhere. Deferring on identifiability retains a set that fails at $53.1\%$ at
+its best level. The wrapper contributes the guarantee, and the score contributes the ranking
+that decides whether the retained set improves at all. A practitioner reading coverage alone
+would accept both columns as sound, and the failure rate among retained images is what
+separates them. The same reasoning applies to any wrapper built on a fixed score, which is why
+Section~\ref{sec:related} treats deferral rules and conformal prediction together.
 
-\begin{table}[!ht]
-\caption{\textbf{A large separability margin absorbs imperfect execution.} Under $\pm 1$~cm and
-$\pm 0.5^{\circ}$ of error, the hypothesis-blind proxy loses half its accuracy and Intervene3D
-$2.9\%$.}
+\begin{table}[htb]
+\caption{CEA under clean and perturbed execution, at $\pm 1$~cm and $\pm 0.5^{\circ}$ of error, with the paired $t$ statistic over the same eleven seeds.}
 \label{tab:noise}
 \begin{center}
-\footnotesize
+\scriptsize
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Method} & \textbf{Clean CEA} & \textbf{Perturbed CEA} & \textbf{Change} & \textbf{$t$} \\
@@ -962,19 +978,17 @@ Passive multi-view (does not act) & $0.621$ & $0.621$ & $+0.0\%$ & --- \\
 Generic next-best-view proxy   & $0.371$ & $0.192$ & $-48.4\%$ & $-14.05$ \\
 Random intervention & $0.409$ & $0.291$ & $-29.0\%$ & $-10.64$ \\
 Max-baseline        & $0.502$ & $0.478$ & $-4.7\%$  & $-3.68$ \\
-\textbf{Intervene3D} & $0.560$ & $0.544$ & $\mathbf{-2.9\%}$ & $-3.05$ \\
+\textbf{Intervene3D} (summed) & $0.560$ & $0.544$ & $\mathbf{-2.9\%}$ & $-3.05$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 \end{table}
 
-\begin{table}[!ht]
-\caption{\textbf{Coverage holds for both signals, while only identifiability lowers risk.}
-Split-conformal deferral over $296$ images, at four target levels.}
+\begin{table}[htb]
+\caption{Split-conformal deferral over $296$ images at four target levels $\alpha$, with the failure rate among retained images for each deferral signal.}
 \label{tab:conformal}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{3.2pt}
+\scriptsize \setlength{\tabcolsep}{3.2pt}
 \begin{tabular}{lccccccc}
 \toprule
 & & \multicolumn{4}{c}{\textbf{Failure rate among retained images}} & & \\
@@ -983,8 +997,8 @@ Split-conformal deferral over $296$ images, at four target levels.}
 $\alpha{=}0.4$ & $\alpha{=}0.5$ & \textbf{Coverage} & \textbf{Best gain} \\
 \midrule
 No abstention            & ---     & \multicolumn{4}{c}{$65.2\%$} & --- & --- \\
-Confidence, augmented & $0.339$ & $64.2\%$ & $65.8\%$ & $69.2\%$ & $76.6\%$ & $5/5$ & $-1.0$ \\
-\textbf{Identifiability} & $\mathbf{0.645}$ & $58.1\%$ & $54.7\%$ & $\mathbf{53.1\%}$ & $55.0\%$ & $5/5$ & $\mathbf{-12.1}$ \\
+Confidence, augmented & $0.344$ & $64.2\%$ & $65.8\%$ & $69.2\%$ & $76.6\%$ & $4/4$ & $-1.0$ \\
+\textbf{Identifiability} & $\mathbf{0.645}$ & $58.1\%$ & $54.7\%$ & $\mathbf{53.1\%}$ & $55.0\%$ & $4/4$ & $\mathbf{-12.1}$ \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -992,7 +1006,6 @@ Confidence, augmented & $0.339$ & $64.2\%$ & $65.8\%$ & $69.2\%$ & $76.6\%$ & $5
 
 \section{Real Photographs}
 
-\FloatBarrier
 \subsection{Per-Checkpoint Results}
 \label{sec:supp-models}
 
@@ -1000,15 +1013,20 @@ Table~\ref{tab:models} lists the per-checkpoint values summarized in
 Section~\ref{sec:res-universal} for the released checkpoints
 \citep{depthanything2024,da32026,depthpro2025,moge2025,moge32026,metric3d2023,unidepth2024,unidepthv22025},
 together with parameter counts and family membership, while Figure~\ref{fig:model-grid} of the
-main text places all thirteen checkpoints on one photograph of a poster.
+main text places all thirteen checkpoints on one photograph of a poster. Parameter count
+carries no signal here. The smallest checkpoint in the roster holds $24.8$M parameters and the
+largest $952.0$M, a range of $38\times$, and the fooled rates at the two ends sit within a
+point of each other. Sorting the column instead places DA3-Large at the top with $78.4\%$ and
+the transparency fine-tuned variant at the bottom with $59.5\%$, two checkpoints from one
+lineage that differ in scale and data. Confidence AUROC stays below chance for all thirteen
+without a single exception, and identifiability stays above confidence for all thirteen, which is
+the pattern that Section~\ref{sec:res-universal} summarizes in aggregate.
 
-\begin{table}[!ht]
-\caption{\textbf{Every published checkpoint fails, and none of them anticipates its own failure.}
-Confidence takes the better of raw confidence and a four-member ensemble.}
+\begin{table}[htb]
+\caption{Per-checkpoint values for the thirteen released checkpoints, with parameter counts and family membership. Confidence takes the better of raw confidence and a four-member ensemble.}
 \label{tab:models}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\footnotesize \setlength{\tabcolsep}{4pt}
 \begin{tabular}{llrccc}
 \toprule
 \textbf{Checkpoint} & \textbf{Family} & \textbf{Parameters} & \textbf{Fooled} &
@@ -1027,29 +1045,31 @@ MoGe-3-ViT-L    & MoGe-3            & $330.9$M & $61.8\%$ & $0.360$ & $0.595$ \\
 Metric3D-Small  & Metric3D          & $37.5$M  & $64.5\%$ & $0.323$ & $0.593$ \\
 Metric3D-Large  & Metric3D          & $343.0$M & $67.6\%$ & $0.406$ & $0.593$ \\
 UniDepth-v2     & UniDepth          & $353.8$M & $66.2\%$ & $0.295$ & $0.692$ \\
-\midrule
-\emph{range} & \emph{7 families} & $38\times$ & $59.5$--$78.4\%$ & $0.234$--$0.465$ & $0.467$--$0.719$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Extended Results by Architecture Family}
 \label{sec:supp-family}
 
 Table~\ref{tab:supp-family} averages within architecture family, which confirms that a single
 lineage does not drive the pattern. Mean fooled rates run from $61.8\%$ for MoGe-3 to $74.3\%$
 for Depth-Anything-3, a spread of twelve points across seven families that differ in backbone,
-supervision, and training data. Mean confidence AUROC stays below chance for every family, from
-$0.295$ for UniDepth to $0.409$ for Depth-Anything-3, and mean identifiability stays above
-chance for every family, from $0.522$ to $0.692$. The newest lineage carries the highest
+supervision, and training data. Mean confidence AUROC likewise stays below chance for every
+family, from $0.295$ for UniDepth to $0.409$ for Depth-Anything-3, while mean identifiability
+stays above chance throughout, from $0.522$ to $0.692$. The newest lineage carries the highest
 failure rate, which indicates that scale and recency alone move the phenomenon in the wrong
-direction rather than the right one.
+direction rather than the right one. Family membership also explains the one visible dip.
+Depth-Anything-V2 averages $64.6\%$ over four checkpoints, and one of those four is the
+transparency fine-tuned variant that fails least often across the whole roster. Removing that
+variant would raise the family mean rather than lower it, which places the dip in a training
+recipe instead of an architecture. The ordering between the two signals, moreover, holds inside
+every family without exception. Mean confidence stays below $0.5$ in all seven, mean
+identifiability stays above $0.5$ in all seven, and no family reverses the gap.
 
-\begin{table}[!ht]
-\caption{\textbf{No single lineage drives the pattern.} Every architecture family fails on roughly two
-images in three and stays below chance in mean confidence AUROC.}
+\begin{table}[htb]
+\caption{The same thirteen checkpoints averaged within architecture family, with the number of checkpoints contributing to each row.}
 \label{tab:supp-family}
 \begin{center}
 \footnotesize
@@ -1072,7 +1092,6 @@ UniDepth          & $1$ & $66.2\%$ & $0.295$ & $0.692$ \\
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Choosing Where to Look}
 \label{sec:supp-viewpoint}
 
@@ -1081,18 +1100,17 @@ content offer three or more camera positions of the same static content. We excl
 scenes because their frames differ by displayed content rather than by observer position, and
 treating those frames as an action set would count a change of stimulus as a change of
 viewpoint. The four rules consult increasing amounts of evidence, and the error inside the
-ambiguous region follows that ordering. Holding the first frame consults nothing about the
-scene and leaves the error at $0.0671$. A uniformly random choice consults nothing either, yet
-averaging over positions removes the worst of them and reaches $0.0591$. The confidence of the
-predictor consults the reference image alone and reaches $0.0439$. The best-explained
-observation consults the view that each candidate action actually produces and reaches
-$0.0406$, an improvement of $31.3\%$ over the random choice and of $7.5\%$ over confidence.
-Scoring inside the annotated region alone keeps the comparison independent of every other part
-of the image, where the four rules would otherwise agree.
+ambiguous region follows that ordering. Holding the first frame, at one extreme, consults
+nothing about the scene and leaves the error at $0.0671$. A uniformly random choice consults
+nothing either, yet averaging over positions removes the worst of them and reaches $0.0591$.
+The confidence of the predictor then consults the reference image alone and reaches $0.0439$.
+The best-explained observation, finally, consults the view that each candidate action actually
+produces and reaches $0.0406$, an improvement of $31.3\%$ over the random choice and of $7.5\%$
+over confidence. Scoring inside the annotated region alone keeps the comparison independent of
+every other part of the image, where the four rules would otherwise agree.
 
-\begin{table}[!ht]
-\caption{\textbf{The best-explained viewpoint lowers error inside the ambiguous region.} Thirteen
-checkpoints over $55$ scenes, against a random choice of viewpoint.}
+\begin{table}[htb]
+\caption{Four rules for choosing a viewpoint, over $55$ scenes and thirteen checkpoints, scored by error inside the ambiguous region.}
 \label{tab:supp-viewpoint}
 \begin{center}
 \footnotesize
@@ -1100,18 +1118,15 @@ checkpoints over $55$ scenes, against a random choice of viewpoint.}
 \toprule
 \textbf{Viewpoint chosen by} & \textbf{Error inside region} & \textbf{Fooled} \\
 \midrule
-first frame, no choice          & $0.0671$ & $48.7\%$ \\
-uniformly at random             & $0.0591$ & $48.0\%$ \\
-the predictor's own confidence  & $0.0439$ & $46.4\%$ \\
-\textbf{best-explained observation} \eqref{eq:evidence-selection} & $\mathbf{0.0406}$ & $\mathbf{44.1\%}$ \\
-\midrule
-\multicolumn{3}{l}{\emph{ahead of a random choice on $13/13$ checkpoints by error, $9/13$ by fooled rate}} \\
+First frame, no choice          & $0.0671$ & $48.7\%$ \\
+Uniformly at random             & $0.0591$ & $48.0\%$ \\
+The predictor's own confidence  & $0.0439$ & $46.4\%$ \\
+\textbf{Best-explained observation} \eqref{eq:evidence-selection} & $\mathbf{0.0406}$ & $\mathbf{44.1\%}$  \\
 \bottomrule
 \end{tabular}
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Second Dataset with Ordinal Supervision}
 \label{sec:supp-layered}
 
@@ -1120,14 +1135,17 @@ together with a per-point layer index authored independently of the present work
 form suits the question here, because a relation between two points holds under the scale and
 shift ambiguity that a monocular predictor leaves open. Splitting the relations by layer index
 then separates pairs that lie on a first visible surface from pairs that lie behind glass, with
-no quantity of ours entering the split. Both checkpoints answer the first-surface pairs well
-and lose ground on the pairs behind glass, at $0.848$ against $0.737$ for DA-V2-Small and
+no quantity of ours entering the split. Both checkpoints answer the single-layer pairs well
+and lose ground on the multi-layer pairs, at $0.848$ against $0.737$ for DA-V2-Small and
 $0.843$ against $0.669$ for DepthPro. An annotation authored by another group therefore
-reproduces the ordering that Section~\ref{sec:res-universal} measures with stereo.
+reproduces the ordering that Section~\ref{sec:res-universal} measures with stereo. The size of
+the gap tracks the architecture rather than the benchmark. DA-V2-Small loses $0.111$ across
+layers and DepthPro loses $0.175$, against first-surface accuracies of $0.847$ and $0.842$ that
+differ by half a point. Two networks that agree closely on the surfaces they can see therefore
+diverge on the surfaces behind an interface, which is where the ambiguity under study lives.
 
-\begin{table}[!ht]
-\caption{\textbf{An independent layer annotation separates the same failure.} LayeredDepth
-validation \citep{layereddepth2025}, where both architectures fall behind through glass.}
+\begin{table}[htb]
+\caption{LayeredDepth validation \citep{layereddepth2025}, with ordinal accuracy split by the per-point layer index into single-layer and multi-layer point pairs.}
 \label{tab:supp-layered}
 \begin{center}
 \footnotesize
@@ -1143,7 +1161,6 @@ DepthPro    & $0.843$ & $0.669$ & $\mathbf{+0.175}$ & $0.842$ & $0.741$ \\
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Real Mirrors, with Annotated Contact Geometry}
 \label{sec:supp-mirrors}
 
@@ -1166,9 +1183,15 @@ shift the principal point to match.
 Table~\ref{tab:mirrors} in the main text reports the outcome over $123$ annotated frames for
 the same thirteen checkpoints that the display benchmark uses, which places the two results on
 one roster. Eleven of the thirteen lie between $62.6\%$ and $79.7\%$, around a mean of
-$67.0\%$. Figure~\ref{fig:supp-mirrors} presents individual photographs from this set.
+$67.0\%$. Working in inverse-depth space keeps the comparison on the terms that the predictors
+themselves use. A monocular network reports relative inverse depth, and converting to metres
+would require the very scale that the annotation leaves open on a mirror. Fitting scale and
+shift outside the annotated region against reference depth, then applying both inside, puts
+every checkpoint on the annotated plane's own footing without granting any of them information
+from the region under test. Figure~\ref{fig:supp-mirrors} presents individual photographs from
+this set.
 
-Two checkpoints stand apart at $41.5\%$, and we report them separately. The first is the
+Two checkpoints stand apart at $41.5\%$. The first is the
 transparency fine-tuned variant, where training that targets one non-Lambertian mechanism
 appears to transfer to another. The same checkpoint also fails least often on the display
 benchmark, at $59.5\%$. The second is Metric3D-Large, whose small counterpart fails on $78.9\%$
@@ -1176,24 +1199,35 @@ of the same frames, while the two agree closely on displays at $64.5\%$ and $67.
 divergence therefore describes that checkpoint on this data rather than the family, and we
 leave the difference unexplained.
 
-\begin{figure}[!ht]
+\begin{figure}[htb]
 \begin{center}
 \includegraphics[width=\linewidth]{figures/fig_nyu_mirrors.pdf}
 \end{center}
-\caption{\textbf{A predictor places a mirror surface inside the reflected room.} The reported depth
-reaches about twice the distance of the annotated plane, outlined in every panel.}
+\caption{Individual photographs from the annotated mirror set, with the human-placed mirror plane outlined in every panel.}
 \label{fig:supp-mirrors}
 \end{figure}
 
-NYUv2 provides no camera poses and only accelerometer orientation, which leaves the action set
-empty. The experiment therefore carries a narrower message, namely that the phenomenon
-formalized here extends past displays and persists when an independent annotation, rather than
-a plane fit, states where the physical surface lies.
+The magnitude of the failure matters alongside its frequency. Relative error inside the mirror
+region reaches $5.47\times$ the error outside for Metric3D-Small, and two thirds of that
+checkpoint's frames place the first surface well behind the glass. A predictor that merely
+smoothed over the mirror, by contrast, would leave the error ratio near unity and the surface
+at the wall. Placing the surface metres behind the wall instead reproduces the reflected room,
+which is the same failure that a display produces with a depicted scene. The two mechanisms
+therefore differ in their optics while agreeing in what they do to a predictor. NYUv2 provides
+no camera poses and only accelerometer orientation, which leaves the action set empty. The
+experiment therefore carries a narrower message, namely that the phenomenon formalized here
+extends past displays and persists when an independent annotation, rather than a plane fit,
+states where the physical surface lies. Agreement between the two sources also rules out a
+family of alternative explanations. The display benchmark measures against a stereo reference,
+on photographs of printed sheets, posters, and monitors, annotated by one group. The mirror
+benchmark, by contrast, measures against a human-placed plane, on photographs of household
+mirrors, annotated by another group years earlier and for another purpose. A matching rate near
+two images in three consequently leaves little room for an artifact of one annotation protocol,
+one capture rig, or one class of scene content.
 
 \section{Learned Abstention}
 
-\FloatBarrier
-\subsection{Learned Abstention, Summary}
+\subsection{Learned Abstention}
 \label{sec:supp-learned}
 
 We pool the features over the ambiguous region as three contrasts, namely the difference
@@ -1216,12 +1250,11 @@ Section~\ref{sec:res-learned}, and Figure~\ref{fig:transfer} plots the transfer 
 next subsection then expands the leave-one-model-out column to every one of the thirteen
 held-out checkpoints.
 
-\begin{table}[!ht]
-\caption{\textbf{A learned policy predicts failure across held-out predictors.} Cross-validation (CV) folds follow base scenes, which keeps frames of one scene inside a single partition.}
+\begin{table}[htb]
+\caption{Four policies under grouped, nested, and leave-one-model-out protocols. Folds follow base scenes, which keeps every frame of one scene inside a single partition.}
 \label{tab:supp-learned}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\footnotesize \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Policy} & \shortstack{\textbf{Grouped}\\\textbf{cross-validation}} & \shortstack{\textbf{Nested}\\\textbf{cross-validation}} & \textbf{Leave-one-model-out} \\
@@ -1241,16 +1274,14 @@ Hand-designed features      & $0.858$ & --- & --- \\
 \end{center}
 \end{table}
 
-\begin{figure}[!ht]
+\begin{figure}[htb]
 \begin{center}
 \includegraphics[width=\linewidth]{figures/fig_transfer.pdf}
 \end{center}
-\caption{\textbf{The learned policy transfers and the selection stays stable.} (a) Held-out
-checkpoints against the strongest single feature. (b) Accuracy under imperfect execution.}
+\caption{(a) Held-out checkpoints against the strongest single feature. (b) Committed accuracy under imperfect execution.}
 \label{fig:transfer}
 \end{figure}
 
-\FloatBarrier
 \subsection{Full Leave-One-Model-Out Results}
 \label{sec:supp-lomo}
 
@@ -1262,16 +1293,20 @@ on all thirteen, by margins from $+0.043$ on the transparency fine-tuned variant
 DA-V2-Base, for a mean margin of $+0.113$. A policy that had memorized one network would lose
 its advantage on an unseen one, and the uniform lead therefore points to a property of the
 image rather than of a particular predictor. The lower block sweeps the regularization strength
-across three decades, where the AUROC moves by $0.036$ in total and decreases monotonically as
-the penalty weakens.
+across four decades, where the AUROC moves by $0.036$ in total and decreases monotonically as
+the penalty weakens. The two hardest rows locate the residual difficulty. DA-transparency, on
+one side, yields the smallest margin at $+0.043$, while DA3-Large yields the lowest absolute
+value at $0.828$. Both are checkpoints whose own failure rate departs furthest from the roster
+mean, at $59.5\%$ and $78.4\%$ against $66.8\%$, hence the policy meets an unfamiliar base rate
+when either one is held out. Predicting failure for a network that fails far more or far less
+often than its twelve neighbours remains the harder case, and a margin of $+0.043$ in the worst
+of them still favors the learned policy.
 
-\begin{table}[!ht]
-\caption{\textbf{The policy leads on every held-out checkpoint.} The upper block reaches a mean margin
-of $+0.113$, and the lower block varies by $0.036$ across three decades of $C$.}
+\begin{table}[htb]
+\caption{The leave-one-model-out protocol over every held-out checkpoint. The lower block sweeps the regularization strength $C$ for the frozen-encoder head.}
 \label{tab:supp-lomo}
 \begin{center}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
+\scriptsize \setlength{\tabcolsep}{3pt}
 \begin{tabular}{lccc|lccc}
 \toprule
 \textbf{Held out} & \textbf{Learned} & \textbf{Baseline} & \textbf{$\Delta$} &
@@ -1295,22 +1330,20 @@ AUROC & $\mathbf{0.879}$ & $0.875$ & $0.873$ & $0.866$ & $0.859$ & $0.853$ & $0.
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Full Abstention Retention Curve}
 \label{sec:supp-operating}
 
 The main text quotes three operating points, and Table~\ref{tab:supp-operating} reports the
 complete curve. Every threshold comes from out-of-fold scores under folds split by scene, which
 keeps the choice of operating point independent of the images that it scores. The failure rate
-falls monotonically from $65.2\%$ at full coverage to $23.6\%$ at $30\%$ coverage, with no
-reversal along the way. Answering seven inputs in ten avoids $89$ of the failures, and
-answering half avoids $137$. Monotonicity matters for deployment, because an operator who
-tightens the gate can rely on the failure rate moving in the intended direction rather than on
-a single tuned point.
+then falls monotonically from $65.2\%$ at full coverage to $23.6\%$ at $30\%$ coverage, with no
+reversal along the way. In practical terms, answering seven inputs in ten avoids $89$ of the
+failures, and answering half avoids $137$. Monotonicity matters for deployment, because an
+operator who tightens the gate can rely on the failure rate moving in the intended direction
+rather than on a single tuned point.
 
-\begin{table}[!ht]
-\caption{\textbf{Answering fewer inputs lowers the failure rate monotonically.} The frozen-encoder
-gate on $296$ images from DA-V2-Small, against a base failure rate of $65.2\%$.}
+\begin{table}[htb]
+\caption{The frozen-encoder gate on $296$ images from DA-V2-Small, at coverage levels from $100\%$ down to $30\%$, against a base failure rate of $65.2\%$.}
 \label{tab:supp-operating}
 \begin{center}
 \footnotesize
@@ -1334,7 +1367,6 @@ $30\%$  & $23.6\%$ & $-41.6$ & $172$ \\
 
 \section{Robustness and Controls}
 
-\FloatBarrier
 \subsection{Threshold Sensitivity}
 \label{sec:supp-sensitivity}
 
@@ -1349,15 +1381,14 @@ experiment or redrawing a seed. Each row therefore records the decision that the
 would have taken under a different threshold on identical data. The admissibility sweep answers
 a question about selection rather than about accuracy. A criterion that admitted only the
 images most favorable to the measure would inflate every number downstream of it. Moving the
-criterion from $R^2 \geq 0.70$ to $R^2 \geq 0.98$ changes the retained fraction from $70.5\%$
-to $55.4\%$, a swing of fifteen points in how much of the benchmark remains. The fooled rate
-over that swing moves by $1.6$ points and the identifiability AUROC by $0.051$, both in the
-direction that a stricter reference measurement predicts. Neither quantity depends on where the
-criterion falls within the range tested.
+criterion from $R^2 \geq 0.70$ to $R^2 \geq 0.98$, however, changes the retained fraction from
+$70.5\%$ to $55.4\%$, a swing of fifteen points in how much of the benchmark remains. The
+fooled rate over that swing meanwhile moves by $1.6$ points and the identifiability AUROC by
+$0.051$, both in the direction that a stricter reference measurement predicts. Neither
+quantity, therefore, depends on where the criterion falls within the range that we tested.
 
-\begin{table}[!ht]
-\caption{\textbf{The conclusions hold wherever the admissibility criterion falls.} Retaining $55\%$ to
-$71\%$ of the benchmark moves the fooled rate by $1.6$ points.}
+\begin{table}[htb]
+\caption{The admissibility criterion swept from $R^2 \geq 0.70$ to $0.98$ on DA-V2-Small, with the retained fraction and two AUROC values.}
 \label{tab:supp-admissibility}
 \begin{center}
 \footnotesize
@@ -1376,13 +1407,11 @@ $0.98$ & $55.4\%$ & $64.3\%$ & $0.692$ & $0.827$ \\
 \end{center}
 \end{table}
 
-\begin{table}[!ht]
-\caption{\textbf{The criterion removes measurements that cannot arbitrate.} Excluded images reach a
-median reference planarity of $0.015$ and retained images $0.995$ or above.}
+\begin{table}[htb]
+\caption{What the admissibility criterion retains and removes in each category, with median reference planarity for both groups.}
 \label{tab:supp-category-exclusion}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{3.5pt}
+\footnotesize \setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Category} & \textbf{total} & \textbf{retained} & \textbf{excluded} &
@@ -1399,29 +1428,28 @@ Monitor filling the frame & $99$  & $0$   & $99$  & --- & $\mathbf{0.015}$ \\
 
 Table~\ref{tab:supp-category-exclusion} then reports what the criterion removes, category by
 category. Exclusions concentrate almost entirely where a monitor fills the frame, at $99$ of
-$99$ images, and stay rare elsewhere, at $7$ of $104$ printed sheets and $4$ of $99$ framed
-monitors. Median reference planarity separates the two groups cleanly, at $0.995$ or above
-among retained images against $0.015$ where a monitor fills the frame. A displayed scene that
-occupies the whole frame leaves the stereo matcher no physical structure to lock onto, and the
-resulting disparity describes the displayed content rather than the panel. Such a measurement
-cannot arbitrate between the two hypotheses under test, and the criterion removes it for that
-reason rather than for its difficulty. \paragraph{Computational Cost.} The decision itself
-remains inexpensive. On the four-mechanism benchmark the selector enumerates $|\mathcal{A}| =
-33$ actions against six hypothesis pairs, which amounts to $198$ separability evaluations. The
-full enumeration takes $0.079$~ms per scene on a central processing unit in \textsc{NumPy},
+$99$ images, and thin elsewhere, at $49$ of $153$ posters, $7$ of $104$ sheets, $4$ of $99$
+monitors. Median reference planarity, in turn, separates the two groups cleanly, at $0.995$ or
+above among retained images against $0.015$ where a monitor fills the frame. A displayed scene
+that occupies the whole frame leaves the stereo matcher no physical structure to lock onto, and
+the resulting disparity describes the displayed content instead of the panel. Such a
+measurement cannot arbitrate between the two hypotheses under test, and the criterion removes
+it for that reason alone. \paragraph{Computational Cost:} The decision itself remains
+inexpensive. On the four-mechanism benchmark the selector enumerates $|\mathcal{A}| = 33$
+actions against six hypothesis pairs, which amounts to $198$ separability evaluations. The full
+enumeration then takes $0.079$~ms per scene on a central processing unit in \textsc{NumPy},
 without graphics acceleration. On real photographs the depth forward pass dominates the cost
 rather than the decision, at $462$~ms per image end to end for the smallest checkpoint and
-$1140$~ms for the largest. Scaling to a larger action set grows linearly in $|\mathcal{A}|$.
-The evaluations also remain independent, which allows a direct parallelization of the
-enumeration over available cores.
+$1140$~ms for the largest. Scaling to a larger action set, in turn, grows linearly in
+$|\mathcal{A}|$. The evaluations also remain independent, which allows a direct parallelization
+of the enumeration over available cores.
 
-\paragraph{Conformal Calibration on the Identifiability Score.}
+\paragraph{Conformal Calibration on the Identifiability Score:}
 The split-conformal results of Table~\ref{tab:conformal} already use identifiability as the
 nonconformity score. The coverage guarantee therefore arrives together with the reduction in
-selective risk, since the procedure meets that guarantee at all five levels while lowering the
+selective risk, since the procedure meets that guarantee at all four levels while lowering the
 failure rate among retained images at every level.
 
-\FloatBarrier
 \subsection{Sensitivity to the Occlusion Weight}
 \label{sec:supp-occlusion}
 
@@ -1431,20 +1459,17 @@ chooses raises the question of how far the conclusions depend on that constant. 
 rerun the same eleven seeds at $\lambda_o \in \{1, 2, 4, 8, 16\}$, a $16\times$ range, with
 every other setting fixed. Table~\ref{tab:supp-occlusion} reports the outcome. Committed
 accuracy moves by $0.018$ across the whole range, and the selector stays ahead of the passive
-multi-view baseline at every weight. The reflection mechanism, where the choice of action
-carries the most weight, also resolves at a similar rate throughout. The value used in the
-paper is not the best-performing one, and the conclusions rest on the ordering rather than on
-that choice.
+multi-view baseline at every weight. The reflection column follows the summed objective
+of Table~\ref{tab:phase1} and holds its rate throughout. Two larger weights edge past the value used in the paper, and the conclusions rest on the ordering alone.
 
-\begin{table}[!ht]
-\caption{\textbf{Committed accuracy barely moves with the occlusion weight.} Eleven seeds per entry,
-with the value used in the paper in bold and reflection scenes at right.}
+\begin{table}[htb]
+\caption{Committed accuracy over eleven seeds at five occlusion weights $\lambda_o$, with the value used in the paper in bold and reflection scenes at right.}
 \label{tab:supp-occlusion}
 \begin{center}
 \footnotesize
 \begin{tabular}{ccccc}
 \toprule
-$\boldsymbol{\lambda_o}$ & \textbf{Intervene3D} & \textbf{Passive multi-view} &
+$\boldsymbol{\lambda_o}$ & \textbf{Intervene3D (sum)} & \textbf{Passive multi-view} &
 \textbf{Max-baseline} & \textbf{Reflection only} \\
 \midrule
 $1$  & $0.841 \pm 0.051$ & $0.621 \pm 0.043$ & $0.818 \pm 0.020$ & $0.453 \pm 0.173$ \\
@@ -1457,7 +1482,6 @@ $16$ & $0.859 \pm 0.055$ & $0.621 \pm 0.043$ & $0.824 \pm 0.019$ & $0.598 \pm 0.
 \end{center}
 \end{table}
 
-\FloatBarrier
 \subsection{Threshold, Temperature and Sensor Scale}
 \label{sec:supp-hyper}
 
@@ -1473,16 +1497,14 @@ arm regenerates its data under a distinct name, which also reseeds the draw. Tho
 accordingly admit only an unpaired comparison, and differences of a few thousandths there
 include sampling noise.
 
-\begin{table}[!ht]
-\caption{\textbf{None of the three fixed constants carries the result.} Committed accuracy over eleven
-seeds, where the resolution block admits an unpaired comparison alone.}
+\begin{table}[htb]
+\caption{Committed accuracy over eleven seeds for the belief temperature $\beta$, the commitment threshold $\tau$, and sensor resolution. The resolution block admits an unpaired comparison alone.}
 \label{tab:supp-hyper}
 \begin{center}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\footnotesize \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Configuration} & \textbf{Intervene3D} & \textbf{Max-baseline} &
+\textbf{Configuration} & \textbf{Intervene3D (sum)} & \textbf{Max-baseline} &
 \shortstack{\textbf{Passive}\\\textbf{multi-view}} & \shortstack{\textbf{Reflection}\\\textbf{only}} \\
 \midrule
 \multicolumn{5}{l}{\emph{belief temperature $\beta$, paired}} \\
@@ -1501,7 +1523,7 @@ $0.80$ & $0.855 \pm 0.051$ & $0.824 \pm 0.019$ & $0.621 \pm 0.043$ & $0.587$ \\
 \multicolumn{5}{l}{\emph{sensor resolution and $\epsilon$, unpaired}} \\
 $160 \times 120$, $\epsilon = 1.0$~px & $0.864 \pm 0.027$ & $0.820 \pm 0.024$ & $0.620 \pm 0.044$ & $0.619$ \\
 $160 \times 120$, $\epsilon = 0.5$~px & $0.864 \pm 0.027$ & $0.820 \pm 0.024$ & $0.620 \pm 0.044$ & $0.619$ \\
-$\mathbf{320 \times 240}$, $\boldsymbol{\epsilon = 1.0}$~\textbf{px (reported)} & $\mathbf{0.863 \pm 0.046}$ & $0.821 \pm 0.047$ & $0.605 \pm 0.038$ & $0.626$ \\
+$\mathbf{320 \times 240}$, $\boldsymbol{\epsilon = 1.0}$~\textbf{px (used)} & $\mathbf{0.863 \pm 0.046}$ & $0.821 \pm 0.047$ & $0.605 \pm 0.038$ & $0.626$ \\
 $640 \times 480$, $\epsilon = 1.0$~px & $0.858 \pm 0.043$ & $0.834 \pm 0.028$ & $0.606 \pm 0.061$ & $0.599$ \\
 $640 \times 480$, $\epsilon = 2.0$~px & $0.858 \pm 0.043$ & $0.834 \pm 0.028$ & $0.606 \pm 0.061$ & $0.599$ \\
 \bottomrule
@@ -1513,14 +1535,14 @@ Committed accuracy moves by $0.017$ across a sixteenfold range of $\beta$, by no
 at all across $\tau$, and by $0.006$ across a fourfold range of linear resolution,
 which is a sixteenfold range in pixel count. Moreover, the selector stays ahead of the passive baseline in every configuration.
 
-Two of these results deserve an explanation. The $\beta$ result forms a plateau, because at
-$0.5$ and above the update already stays decisive enough to leave the posterior ordering
-unchanged. Only at $0.25$ does the discount on the evidence cost accuracy. The invariance to
-$\tau$ has a structural cause. The identifiability rule of \eqref{eq:abstain} declines first,
-and no unresolvable case therefore reaches the commitment threshold. The commitment threshold
-then governs only cases that the action set has already separated. A larger $\tau$ does change
-the internal confidence rate on identifiable scenes, from $1.000$ at $\tau \leq 0.45$ to
-$0.789$ at $\tau \geq 0.60$, while the commitments of the system remain the same.
+The $\beta$ result forms a plateau, because at $0.5$ and above the update already stays
+decisive enough to leave the posterior ordering unchanged. Only at $0.25$ does the discount on
+the evidence cost accuracy. The invariance to $\tau$ has a structural cause. The
+identifiability rule of \eqref{eq:abstain} declines first, and no unresolvable case therefore
+reaches the commitment threshold. The commitment threshold then governs only cases that the
+action set has already separated. A larger $\tau$ does change the internal confidence rate on
+identifiable scenes, from $1.000$ at $\tau \leq 0.45$ to $0.789$ at $\tau \geq 0.60$, while the
+commitments that the system makes remain the same throughout.
 
 The resolution result answers the question that a threshold stated in pixels raises. Holding
 $\epsilon$ at $1.0$~px while the sensor changes tests an absolute pixel threshold, and scaling
@@ -1529,14 +1551,13 @@ identical outcomes at every resolution, which follows from the bimodal separabil
 benchmark. Almost no scene lies between $0.5$ and $2.0$~px, and any threshold inside that band
 picks out an identical set of scenes.
 
-\FloatBarrier
-\subsection{Additional Analyses}
+\subsection{Comprehensive Analyses}
 \label{sec:supp-additional}
 
 We recompute every number in this section from the per-image records that the reported
 evaluations already produced, without re-running a model or redrawing a seed.
 
-\paragraph{The Failure Label, and Whether Region Size Is Doing the Work.}
+\paragraph{The Failure Label and Whether Region Size Is Doing the Work:}
 A predictor counts as fooled when its relative error inside the annotated region exceeds its
 error outside that region. The strongest trivial baseline uses the fraction of the frame that
 the region occupies, at $0.819$ against $0.645$ for identifiability, which invites the reading
@@ -1547,9 +1568,8 @@ whereas identifiability holds at $0.618$. Under a label demanding a margin ($e_{
 1.5\,e_{\text{out}}$, base rate $51.7\%$) the two reach $0.601$ and $0.772$, which makes the
 ordering independent of the chosen inequality.
 
-\begin{table}[!ht]
-\caption{\textbf{Region size loses its advantage once held fixed.} Terciles of region size on $296$
-admissible images, where that baseline approaches chance and identifiability holds.}
+\begin{table}[htb]
+\caption{Identifiability and the region-size baseline rescored within terciles of region size, over $296$ admissible images.}
 \label{tab:supp-strata}
 \begin{center}
 \footnotesize
@@ -1568,27 +1588,27 @@ pooled & $296$ & $0.645$ & $\mathbf{0.819}$ \\
 \end{center}
 \end{table}
 
-\paragraph{Whether $\Delta$ Describes the Scene or the Predictor.}
+\paragraph{Whether $\Delta$ Describes the Scene or the Predictor:}
 Both hypotheses come from the aligned disparity of the predictor itself, which raises the
 question of whether $\Delta$ measures a property of the scene or the habits of one network. The
 test proceeds directly, by scoring the $\Delta$ of one checkpoint against the failures of a
-\emph{different} checkpoint. Over $13$ checkpoints and $156$ ordered cross pairs, the mean
-cross-model AUROC reaches $\mathbf{0.637}$, against $0.597$ when each checkpoint faces its own
+different checkpoint. Over $13$ checkpoints and $156$ ordered cross pairs, the mean
+cross-model AUROC reaches $0.637$, against $0.597$ when each checkpoint faces its own
 failures. Every cross pair also stays above chance, over a range from $0.504$ to $0.859$. A
 separability computed from one predictor therefore anticipates the failures of another
 predictor at least as well as its own, which characterizes a quantity carrying scene structure
 rather than predictor idiosyncrasy.
 
-\paragraph{What the Admissibility Criterion Removes.}
+\paragraph{What the Admissibility Criterion Removes:}
 The criterion retains $296$ of $455$ images. The excluded group differs from the retained one
 almost entirely in the property that the criterion tests. Median reference planarity reaches
 $0.024$ among excluded images against $0.995$ among retained ones, which is the signature of
 stereo matching that locks onto displayed content rather than onto the panel. Median region
 size stays nearly identical across the two groups, at $0.333$ against $0.357$, and the filter
 has no preference for the size of the ambiguous region. Exclusions also concentrate in the
-video category, at $103$ of $159$ images, the category in which a monitor fills the frame.
+video category, at $99$ of $159$ images, the category in which a monitor fills the frame.
 
-\paragraph{Which Decisions the Perceptual Threshold Governs.}
+\paragraph{Which Decisions the Perceptual Threshold Governs:}
 Identifiability AUROC rests on ranks and therefore stays invariant to $\epsilon$ by
 construction, since the threshold moves which images receive an answer rather than how the
 score orders them. The threshold governs instead the split between answering and abstaining.
@@ -1599,9 +1619,9 @@ Table~\ref{tab:conformal} report this regime, in which a useful fraction of the 
 receives an answer. In the extreme tail, below $10\%$ answered, the ordering no longer holds,
 and the operating points reported here retain at least a third of the images.
 
-\paragraph{A Flat-Panel Hypothesis Independent of the Predictor.}
+\paragraph{A Flat-Panel Hypothesis Independent of the Predictor:}
 Both hypotheses come from the aligned disparity of the predictor. We therefore built a second
-$H_E$ with no access to the prediction, namely a plane fitted to \emph{reference} disparity in
+$H_E$ with no access to the prediction, namely a plane fitted to reference disparity in
 an annulus outside the annotated region and extrapolated inward. The fit lies where the
 alignment already lies, and the reference stays outside the computed quantity. On identical
 images the prediction-based construction reaches $0.645$ and the surroundings-based
@@ -1614,7 +1634,7 @@ and the aligned prediction yields a closer plane than the surrounding disparity.
 cross-model result above indicates that the dependence rests on the hypothesis rather than on
 one network, since $\Delta$ from one checkpoint predicts the failures of another at $0.637$.
 
-\paragraph{Whether Cheap Spatial Cues Would Improve the Learned Gate.}
+\paragraph{Whether Cheap Spatial Cues Would Improve the Learned Gate:}
 Region size, local texture, reference planarity, and the disparity gap cost nothing to compute,
 which raises the question of whether adding them lifts the frozen-encoder gate.
 Table~\ref{tab:supp-cues} reports three arms on identical folds split by base scene, at the
@@ -1625,9 +1645,8 @@ carries whatever those cues measure. Choosing the layer on inner folds rather th
 layer at the last one raises the gate to $0.887$, and the selected layers remain consistently
 early ones.
 
-\begin{table}[!ht]
-\caption{\textbf{Adding cheap spatial cues to the encoder features changes nothing.} Out-of-fold
-AUROC over $296$ images with $193$ failures, on identical folds.}
+\begin{table}[htb]
+\caption{Three feature sets scored out of fold on identical folds, over $296$ images carrying $193$ failures.}
 \label{tab:supp-cues}
 \begin{center}
 \footnotesize
@@ -1643,19 +1662,18 @@ Encoder features $+$ cues & $1156$ & $0.873$ \\
 \end{center}
 \end{table}
 
-\paragraph{Where the Region Boundary Is Drawn.}
+\paragraph{Where the Region Boundary Is Drawn:}
 The annotated regions come from the benchmark authors, which raises the question of whether the
 conclusions depend on a boundary placed a few pixels differently. Table~\ref{tab:supp-mask}
-grows and shrinks every region by a fixed radius and re-runs the evaluation. Across a $16$~px
+grows and shrinks every region by a fixed radius and re-runs the evaluation. Across a $16$px
 range the identifiability AUROC moves between $0.621$ and $0.653$, against $0.645$ as reported.
 Eroding by $8$~px admits more images, at $395$ against $296$, and lowers the fooled rate to
 $50.6\%$. The smaller region explains that direction, because a narrower region stays planar
 more often in the reference measurement and also drops the boundary pixels where the mechanisms
 disagree most.
 
-\begin{table}[!ht]
-\caption{\textbf{The measure holds when the region boundary moves.} Every annotated region
-grows or shrinks by a fixed radius, with the evaluation re-run from the images each time.}
+\begin{table}[htb]
+\caption{Every annotated region grown or shrunk by a fixed radius on DA-V2-Small, with the evaluation re-run at each radius.}
 \label{tab:supp-mask}
 \begin{center}
 \footnotesize
@@ -1674,7 +1692,7 @@ $+8$~px & $285$ & $63.5\%$ & $0.649$ & $36.5\%$ \\
 \end{center}
 \end{table}
 
-\paragraph{A Robust Fit for the Admissibility Criterion.}
+\paragraph{A Robust Fit for the Admissibility Criterion:}
 An ordinary least-squares plane fitted to reference disparity decides admissibility, and a
 handful of outlying measurements can drag such a fit. We therefore recomputed the criterion
 with a random sample consensus fit that ignores those measurements. On all $455$ images the two
@@ -1682,7 +1700,7 @@ criteria select the same set at every threshold tested, agreeing on $100\%$ of i
 \geq 0.80$, $0.90$, and $0.95$, and on $99.8\%$ at $0.85$. A few poor disparities pulling the
 plane thus do not produce the criterion.
 
-\paragraph{Whether the Advantage Depends on Being Allowed to Rotate.}
+\paragraph{Whether the Advantage Depends on Being Allowed to Rotate:}
 The action set contains rotations of $\{5^\circ, 10^\circ\}$ in yaw and pitch alongside the
 translations, which raises the question of how much of the advantage of the selector follows
 from permission to rotate. Removing the rotations entirely reduces $|\mathcal{A}|$ from $33$ to
@@ -1691,11 +1709,11 @@ matched control run at the full action set over the same eleven seeds. We quote 
 rather than Table~\ref{tab:phase1}, because this ablation redraws the benchmark and the two
 arms therefore compare with each other rather than with the main run. The selector stays ahead
 of the passive multi-view baseline at $0.629$ by the same margin. The advantage thus rests on
-choosing which motion to execute rather than on access to a richer motion vocabulary. The
-distinction matters for the intended deployment, where a device may translate a little without
-rotating freely.
+choosing which motion to execute, not on access to a richer motion vocabulary. The distinction
+matters for the intended deployment, where a device may translate a little without rotating
+freely.
 
-\paragraph{The Two Selection Objectives, on Every Mechanism.}
+\paragraph{The Two Selection Objectives on Every Mechanism:}
 The argument for the weakest-pair criterion runs through mirrors, and the present paragraph
 reports the other three mechanisms as well. Over $11$ seeds, committed accuracy under the
 summed objective reaches $1.000$ on direct, emissive, and transmission scenes and $0.956 \pm
@@ -1706,7 +1724,7 @@ the outcome, exactly as \eqref{eq:sum} predicts. A sum reaches its maximum at an
 separating pairs outside contention, and the mirror pair remains the pair that such an action
 can leave unseparated.
 
-\paragraph{Which Layer the Gate Uses, and How the Head Pools.}
+\paragraph{Which Layer the Gate Uses and How the Head Pools:}
 The head pools the frozen tokens of the encoder over the annotated region and its surroundings.
 The pooling keeps three quantities, namely the difference between the pooled representation
 inside and outside the region, the spread within the region, and the difference between a
@@ -1721,10 +1739,10 @@ made that choice. Across the five outer folds the selection lands on layers $3$ 
 $13$ and at no point on the last, which places the evidence available to the gate in
 early-to-mid features rather than in the final representation. A layer fixed at the last
 yields $0.873$, whereas a selected layer yields $0.887$. Sensitivity to the regularization
-strength remains mild, with the AUROC moving between $0.843$ and $0.879$ across three decades
+strength remains mild, with the AUROC moving between $0.843$ and $0.879$ across four decades
 of $C$ at a fixed layer.
 
-\paragraph{What Each Signal Observes, and Why.}
+\paragraph{What Each Signal Observes and Why:}
 Figure~\ref{fig:main}d places a separability computed from a stereo pair beside a confidence
 computed from a single image. The two quantities carry different sensory budgets, and that
 difference states the claim. Under the premise of this work the reference image does not
@@ -1745,7 +1763,7 @@ untested. Reporting only the second would invite the reading that the advantage 
 the extra observation rather than from the use made of that observation, and both families
 therefore appear above.
 
-\paragraph{Visibility, and the Unused Distance Term.}
+\paragraph{Visibility and the Unused Distance Term:}
 Z-buffering the predicted geometry of each hypothesis decides visibility under that hypothesis,
 and a landmark counted as occluded under one mechanism and visible under another therefore
 contributes to $D_{\text{occlusion}}$. At grazing incidence the decision follows the predicted
@@ -1759,19 +1777,18 @@ expressed in pixels.
 
 \paragraph{Landmarks, Belief and Runtime.}
 Each synthetic scene carries $40$ content landmarks placed by jittered stratified sampling over
-the interface extent, on a $7 \times 7$ grid with one sample per entry, together with $3$
+the interface extent, on a $7 \times 7$ grid over forty of its cells, together with $3$
 observer markers. The camera itself measures $320 \times 240$ with $f_x = f_y = 320$.
 Stratification serves coverage of the region, which determines whether a visibility change
 becomes observable at all. The belief update uses $\beta = 1.0$ and a posterior floor of
 $10^{-6}$, which stops one unlucky observation from eliminating a hypothesis permanently. Cost
 stays small at both ends. Identifiability over $|\mathcal{A}| = 33$ takes $0.079$~ms per scene,
 with each hypothesis predicting its consequence in closed form and no model running per action.
-The gate then costs $0.0029$~ms per region on $768$-dimensional pooled features, on top of an
+The gate then costs $0.0029$~ms per region on $1152$-dimensional pooled features, on top of an
 encoder pass that the system already performs.
 
-\section{Scope, Concurrent Work and Reproducibility}
+\section{Scope, Limitations and Reproducibility}
 
-\FloatBarrier
 \subsection{Extending Beyond Planar Optics}
 \label{sec:supp-extension}
 
@@ -1779,18 +1796,18 @@ The hypothesis family used here stays planar, covering a flat panel, a planar mi
 planar slab. Curved mirrors and non-planar transparent surfaces occur commonly, and the
 present section states precisely what would change to admit them and what would remain.
 
-\paragraph{The Formulation Does Not Change.}
-No part of the decision rule depends on planarity. Separability \eqref{eq:separability}
-holds between the predicted consequences of any two hypotheses under any action,
-identifiability \eqref{eq:identifiability} maximizes that quantity over the action set, and
-the abstention rule \eqref{eq:abstain} minimizes over contending pairs against a perceptual
-threshold. A curved mirror enters as a further $H_k$ carrying its own transition $W$, and
-reaches the maximin selector \eqref{eq:maximin} as one more pair without any change to the
-criterion. The belief update \eqref{eq:belief} behaves the same way, since that update
-requires a residual and nothing further. Adding a mechanism therefore changes the hypothesis
-set and the transition while leaving the deciding machinery untouched.
+\paragraph{The Formulation Does Not Change:}
+No part of the decision rule depends on planarity. Separability \eqref{eq:separability} holds
+between the predicted consequences of any two hypotheses under any action, identifiability
+\eqref{eq:identifiability} maximizes that quantity over the action set, and the abstention rule
+\eqref{eq:abstain} minimizes over contending pairs against a perceptual threshold. A curved
+mirror, for instance, enters as a further $H_k$ carrying its own transition $W$, and reaches
+the maximin selector \eqref{eq:maximin} as one more pair without any change to the criterion.
+The belief update \eqref{eq:belief} behaves the same way, since that update requires a residual
+and nothing further. Adding a mechanism therefore changes the hypothesis set and the transition
+while leaving the deciding machinery untouched.
 
-\paragraph{What Does Change Is the Guarantee, and That Is the Real Barrier.}
+\paragraph{What Does Change Is the Guarantee and That Is the Real Barrier:}
 The present construction derives its value from closed-form transitions, since a planar mirror
 reflects exactly across a plane and a planar slab displaces content axially by $d\,(1 - 1/n)$.
 Both branches remain exact. Reference views therefore match to a maximum deviation of order
@@ -1800,19 +1817,18 @@ weakens a different property.
 
 \begin{itemize}
 \item \textbf{A parametric surface}, a spherical mirror of given radius say,
-keeps a closed-form transition and therefore keeps the matched guarantee exactly. Such a
-family extends in a controlled way, although only to the surfaces that the parameterization
-covers, which replaces one restriction with a weaker restriction rather than removing the
-restriction altogether.
+keeps a closed-form transition and therefore keeps the matched guarantee exactly. Such a family
+extends in a controlled way, although only to the surfaces that the parameterization covers,
+which replaces one restriction with a weaker restriction rather than removing the restriction
+altogether.
 \item \textbf{A learned transition} covers arbitrary geometry while forfeiting the property
 on which the design depends. Once a separate fit produces $W$ per mechanism, a difference
-between two predictions may follow from a difference between fitted models rather than
-between physical mechanisms, which is exactly the confound that the shared projection
-removes. The matched-counterfactual guarantee would then hold only approximately, by an
-amount that itself resists bounding.
+between two predictions may follow from a difference between fitted models instead of physical
+mechanisms, which is exactly the confound that the shared projection removes. The
+matched-counterfactual guarantee would then hold only approximately, by an amount that itself
+resists bounding.
 \end{itemize}
 
-\paragraph{Consequences for the Reported Claims.}
 The synthetic results state claims about the four named mechanisms, and the real-data results
 concern physical and emissive surfaces, which are planar in fact rather than by assumption. The
 second dataset used here contains real glass, where annotations authored independently confirm
@@ -1821,23 +1837,16 @@ transparent surfaces, although we do not evaluate mechanism recovery on those su
 optics remain outside the measurements, where the decision rule would apply unchanged while the
 benchmark guarantee behind the rule would lapse.
 
-\FloatBarrier
-\subsection{Scope, Limitations and Concurrent Work}
+\subsection{Scope and  Limitations}
 \label{sec:supp-limits}
 \label{sec:supp-concurrent}
 
-Three limits bound what the reported numbers establish.
-
-\textbf{The synthetic identifiability AUROC is a contrast rather than an absolute score.} One
+Three limits bound what the reported numbers establish. First, the synthetic identifiability AUROC is a contrast rather than an absolute score. One
 computation produces both the identifiability prediction and the ground-truth label on the
 synthetic benchmark. The value of $1.000$ in Table~\ref{tab:phase1} therefore stands only
-against the $0.505$ and $0.748$ that the classifiers reach on identical scenes.
-
-\textbf{Abstention holds under encoder noise, with one seed apart.} The clean configuration
+against the $0.505$ and $0.748$ that the classifiers reach on identical scenes. Second, abstention holds under encoder noise, with one seed apart. The clean configuration
 reaches a false physical certainty rate of $0.000 \pm 0.000$ across all $11$ seeds, and the
-noisy-encoder ablation reaches $0.000$ in ten of eleven seeds, averaging $0.008 \pm 0.026$.
-
-\textbf{Real photographs provide a single action.} A calibrated stereo pair yields
+noisy-encoder ablation reaches $0.000$ in ten of eleven seeds, averaging $0.008 \pm 0.026$. Third, real photographs provide a single action. A calibrated stereo pair yields
 $|\mathcal{A}| = 1$, hence \eqref{eq:identifiability} reduces to one term and the selection
 results of Table~\ref{tab:phase2} rest on the synthetic benchmark. Evaluating the choice of
 intervention on real imagery calls for a multi-view capture or a controllable camera.
@@ -1855,7 +1864,6 @@ uses the same frozen substrate for a different purpose, namely decoding whether 
 decidable rather than forecasting how that scene will evolve. The agreement on that substrate
 therefore offers independent support for the read-out described there.
 
-\FloatBarrier
 \subsection{Reproducibility}
 \label{sec:supp-repro}
 
@@ -1868,11 +1876,10 @@ convention of each checkpoint against reference stereo disparity before use, bec
 attribute conventionally named \texttt{predicted\_depth} carries metric depth in some families
 and inverse depth in others. One checkpoint, UniDepth-v2, runs without its optimized attention
 kernel on the available hardware, and its numbers form a lower bound on the released model
-rather than a tuned comparison.
+rather than a tuned comparison. We release the code upon acceptance for reproducibility and encourage further research on this topic.
 
 
 
-\FloatBarrier
 \subsection{Use of Generative Artificial Intelligence}
 \label{sec:supp-ai-disclosure}
 
@@ -1883,7 +1890,6 @@ assistant under our direct supervision, for implementation and routine programmi
 scripts, supplementary controls, dataset cleaning, and refinement of text that we had already
 drafted. We reviewed every assisted output before inclusion, verified all citations against the
 original sources, and obtained every reported number from experiments that we ran with the
-released code. Responsibility for the manuscript and for all claims, results, and artifacts
-remains entirely ours.
+released code.
 
 \end{document}
